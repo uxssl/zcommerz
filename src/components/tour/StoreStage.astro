@@ -410,7 +410,9 @@ const hasBuild = buildIds !== '';
   .stage { --ta: #1E6B43; --tb: #F6F3EA; --tt: #ECE6D6; }
   .stage[data-theme="fashion"] { --ta: #B4325A; --tb: #FBF5F2; --tt: #F6E6EA; }
   .stage[data-theme="electronics"] { --ta: #2A4FA8; --tb: #F2F5FC; --tt: #E2E9F7; }
-  .stage[data-theme="beauty"] { --ta: #7A4DD8; --tb: #F6F2FF; --tt: #ECE4FB; }
+  /* matte sage green (violet read as odd, then terracotta; the user picked matte green, 2026-11-10).
+     Distinct from Grocery: greyer and softer, not a second saturated green. */
+  .stage[data-theme="beauty"] { --ta: #5E7F6A; --tb: #F4F6F3; --tt: #E3EAE4; }
   .stage .store { --serif: Georgia, "Times New Roman", serif; transition: --ta .5s ease, --tb .5s ease, --tt .5s ease; }
   .stage .sf { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 1.8cqw; padding: 2.4cqw 4cqw 2.8cqw 10cqw; background: var(--tb, #FAFBFC); }
   .stage .sf-head { display: flex; align-items: center; gap: 3cqw; height: 3.6cqw; }
