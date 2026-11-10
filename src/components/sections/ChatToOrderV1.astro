@@ -1,0 +1,296 @@
+---
+/**
+ * D · Chat to order. Navy section so it reads as a change of pace; reuses the approved hero
+ * stage geometry (phone + browser of equal height; browser on top / phone below on mobile)
+ * and the approved tour rail. Phone = the customer's WhatsApp, browser = the merchant side.
+ *   0  phone: Rahim on WhatsApp       · browser: Nusrat on Messenger
+ *   1  phone: Rahim's chat            · browser: Live Chat, every chat in one inbox
+ *   2  phone: Rahim's chat            · browser: create the order from the chat
+ *   3  phone: automatic order updates · browser: order #1051 delivery timeline
+ * All messages, names, prices and statuses verbatim from the product-team file (sample conversations).
+ */
+import SectionHead from './SectionHead.astro';
+import TourRail from '../tour/TourRail.astro';
+import Logo from '../ui/Logo.astro';
+import { Lock, ChevronLeft, ChevronRight, Check, Phone, Video, Plus, Send } from '@lucide/astro';
+import { chatHead, chatSteps, SIGNUP } from '../../data/sections';
+
+const ic = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
+const rahim = [
+  { d: 'in', en: 'Hi! Do you have mustard honey?', bn: 'হ্যালো! সরিষার মধু আছে?' },
+  { d: 'out', en: 'Yes! 500g is ৳650. Want to order?', bn: 'জি! ৫০০ গ্রাম ৳650। অর্ডার করবেন?' },
+  { d: 'card' },
+  { d: 'in', en: '2 jars please. Mirpur, Dhaka.', bn: '২টা দিন। মিরপুর, ঢাকা।' },
+] as const;
+const updates = [
+  { en: 'Order #1051 confirmed. Thank you!', bn: 'অর্ডার #1051 কনফার্ম হয়েছে। ধন্যবাদ!' },
+  { en: 'Your order #1051 has been shipped with Pathao.', bn: 'আপনার অর্ডার #1051 পাঠাও-এর মাধ্যমে শিপ হয়েছে।' },
+  { en: 'Delivered! Enjoy your mustard honey.', bn: 'ডেলিভারি সম্পন্ন! সরিষার মধু উপভোগ করুন।' },
+];
+const track = [
+  { en: 'Order received', bn: 'অর্ডার গৃহীত' },
+  { en: 'Shipped', bn: 'শিপড' },
+  { en: 'Delivered', bn: 'ডেলিভারড' },
+];
+---
+
+<section id="chat" class="sec chat-sec on-navy" aria-labelledby="chat-title" data-chat>
+  <div class="page">
+    <SectionHead id="chat-title" h2={chatHead.h2} lead={chatHead.lead} tone="dark">
+      <a class="btn btn-primary" href={SIGNUP} data-bn={chatHead.cta.bn}>{chatHead.cta.en}</a>
+    </SectionHead>
+
+    <div class="chat-product" data-sr>
+      <div role="region" aria-label="Animated walkthrough: chat to order" data-bn-aria-label="অ্যানিমেটেড ওয়াকথ্রু: চ্যাট থেকে অর্ডার">
+        <div class="stage" data-tour-stage>
+          <!-- ============ Browser (merchant side) ============ -->
+          <div class="win">
+            <div class="win-bar">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="nav-glyphs" aria-hidden="true"><ChevronLeft {...ic} /><ChevronRight {...ic} /></span>
+              <span class="url-slot">
+                <span class="url" data-scene="0"><Lock {...ic} /><span>messenger.com</span></span>
+                <span class="url" data-scene="1"><Lock {...ic} /><span>merchant.zcommerz.com</span></span>
+                <span class="url" data-scene="2"><Lock {...ic} /><span>merchant.zcommerz.com</span></span>
+                <span class="url" data-scene="3"><Lock {...ic} /><span>merchant.zcommerz.com</span></span>
+              </span>
+              <span class="live-slot"></span>
+            </div>
+            <div class="win-body">
+              <!-- 0 · Messenger: Nusrat -->
+              <div class="ws cw-ms" data-scene="0">
+                <div class="cw-head">
+                  <span class="av av-n">N</span>
+                  <span class="who"><b>Nusrat</b><small data-bn="এখন সক্রিয়">Active now</small></span>
+                  <span class="cw-icons" aria-hidden="true"><Phone {...ic} /><Video {...ic} /><Logo k="messenger" h="2.4cqw" label /></span>
+                </div>
+                <div class="cw-thread ms">
+                  <p class="bub in" data-a="nm"><span data-bn="লাল চাল ৫ কেজি আছে?">Is red rice 5kg available?</span></p>
+                  <p class="typing" data-a="ntyping" aria-hidden="true"><i></i><i></i><i></i></p>
+                  <p class="bub out" data-a="nm"><span data-bn="জি, ৳540। কনফার্ম করব?">Yes, ৳540. Shall I confirm?</span></p>
+                  <p class="bub in" data-a="nm"><span data-bn="হ্যাঁ, কনফার্ম করুন।">Yes, confirm please.</span></p>
+                </div>
+                <div class="cw-compose" aria-hidden="true"><Plus {...ic} /><span></span><Send {...ic} /></div>
+              </div>
+
+              <!-- 1 · Live Chat inbox -->
+              <div class="ws lc" data-scene="1" data-enter="wipe">
+                <div class="lc-list">
+                  <div class="lc-h"><b data-bn="লাইভ চ্যাট">Live Chat</b><span class="cnt" data-bn="২টি নতুন">2 new</span></div>
+                  <div class="lc-row act" data-a="lrow"><span class="av av-r">R</span><span class="lc-t"><b>Rahim</b><small data-bn="২টা দিন। মিরপুর, ঢাকা।">2 jars please. Mirpur, Dhaka.</small></span><span class="lc-r"><Logo k="whatsapp" h="1.9cqw" label /><i class="ub">1</i></span></div>
+                  <div class="lc-row" data-a="lrow"><span class="av av-n">N</span><span class="lc-t"><b>Nusrat</b><small data-bn="হ্যাঁ, কনফার্ম করুন।">Yes, confirm please.</small></span><span class="lc-r"><Logo k="messenger" h="1.9cqw" label /><i class="ub">1</i></span></div>
+                  <div class="lc-row" data-a="lrow"><span class="av av-k">K</span><span class="lc-t"><b>Karim</b><small data-bn="ধন্যবাদ, পেয়েছি!">Thanks, received!</small></span><span class="lc-r"><Logo k="whatsapp" h="1.9cqw" label /></span></div>
+                </div>
+                <div class="lc-thread">
+                  <div class="lc-th"><span class="av av-r">R</span><b>Rahim</b><span class="chip"><Logo k="whatsapp" h="1.5cqw" />WhatsApp</span></div>
+                  <div class="cw-thread wa">
+                    <p class="bub in" data-a="lm"><span data-bn="হ্যালো! সরিষার মধু আছে?">Hi! Do you have mustard honey?</span></p>
+                    <p class="bub out" data-a="lm"><span data-bn="জি! ৫০০ গ্রাম ৳650। অর্ডার করবেন?">Yes! 500g is ৳650. Want to order?</span></p>
+                    <p class="bub in" data-a="lm"><span data-bn="২টা দিন। মিরপুর, ঢাকা।">2 jars please. Mirpur, Dhaka.</span></p>
+                  </div>
+                </div>
+                <div class="lc-prof" data-a="lprof">
+                  <span class="av av-r big">R</span>
+                  <b>Rahim</b>
+                  <small>Mirpur, Dhaka</small>
+                  <span class="lc-kv"><small data-bn="আগের অর্ডার">Previous orders</small><b>2</b></span>
+                  <span class="lc-btn" data-a="lbtn" data-bn="অর্ডার বানান">Create order</span>
+                </div>
+              </div>
+
+              <!-- 2 · Create order from chat -->
+              <div class="ws co2" data-scene="2" data-enter="wipe">
+                <div class="co2-h"><b data-bn="চ্যাট থেকে অর্ডার">Create order from chat</b><span class="chip"><Logo k="whatsapp" h="1.5cqw" />Rahim</span></div>
+                <div class="co2-body">
+                  <div class="cw-thread wa mini">
+                    <p class="bub out"><span data-bn="জি! ৫০০ গ্রাম ৳650। অর্ডার করবেন?">Yes! 500g is ৳650. Want to order?</span></p>
+                    <p class="bub in"><span data-bn="২টা দিন। মিরপুর, ঢাকা।">2 jars please. Mirpur, Dhaka.</span></p>
+                  </div>
+                  <div class="co2-form">
+                    <div class="fr" data-a="frow"><small data-bn="পণ্য">Product</small><span class="fr-p"><img src="/assets/products/honey.svg" alt="" width="40" height="40" /><span><b>Mustard honey 500g</b><small>×2</small></span></span><b class="fr-amt">৳1,300</b></div>
+                    <div class="fr" data-a="frow"><small data-bn="ঠিকানা">Deliver to</small><b>Mirpur, Dhaka</b></div>
+                    <div class="fr" data-a="frow"><small data-bn="পেমেন্ট">Payment</small><span class="fr-l"><b data-bn="মোবাইল ওয়ালেট">Mobile wallet</b></span></div>
+                    <div class="fr" data-a="frow"><small data-bn="কুরিয়ার">Courier</small><span class="fr-l"><Logo k="pathao" h="2.4cqw" label /></span></div>
+                    <span class="obtn" data-a="obtn">
+                      <span class="o1" data-bn="অর্ডার বানান">Create order</span>
+                      <span class="o2"><Check size={14} stroke-width={3} aria-hidden="true" /><span data-bn="অর্ডার #1051 তৈরি হয়েছে">Order #1051 created</span></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3 · Order tracking -->
+              <div class="ws trk3" data-scene="3" data-enter="wipe">
+                <div class="trk3-card">
+                  <div class="trk3-h"><b data-bn="অর্ডার #1051">Order #1051</b><Logo k="pathao" h="2.6cqw" label /></div>
+                  <div class="trk3-sum"><img src="/assets/products/honey.svg" alt="" width="40" height="40" /><span><b>Mustard honey 500g</b><small>×2 · Mirpur, Dhaka</small></span><b>৳1,300</b></div>
+                  <ol class="trk3-tl">
+                    {track.map((t) => <li data-a="tstep"><i><Check size={12} stroke-width={3} aria-hidden="true" /></i><span data-bn={t.bn}>{t.en}</span></li>)}
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ Phone (customer's WhatsApp) ============ -->
+          <div class="phone">
+            <div class="screen">
+              <span class="island" aria-hidden="true"></span>
+              {[0, 1, 2].map((sc) => (
+                <div class="ps pw" data-scene={sc}>
+                  <div class="pw-head"><span class="av av-r">R</span><span class="who"><b>Rahim</b><small data-bn="অনলাইন">online</small></span></div>
+                  <div class="pw-body">
+                    {rahim.map((m) => m.d === 'card'
+                      ? <div class="bub out card" data-a={sc === 0 ? 'rm' : undefined}><img src="/assets/products/honey.svg" alt="" width="40" height="40" /><span><b>Mustard honey 500g</b><small>৳650</small></span></div>
+                      : <p class:list={['bub', m.d]} data-a={sc === 0 ? 'rm' : undefined}><span data-bn={m.bn}>{m.en}</span></p>
+                    )}
+                    {sc === 0 && <p class="typing" data-a="rtyping" aria-hidden="true"><i></i><i></i><i></i></p>}
+                  </div>
+                </div>
+              ))}
+              <div class="ps pw" data-scene="3" data-enter="wipe">
+                <div class="pw-head"><span class="av av-s"><img src="/assets/logos/leaf.svg" alt="" width="20" height="20" /></span><span class="who"><b>SSL Organic BD</b><small>WhatsApp</small></span></div>
+                <div class="pw-body">
+                  {updates.map((u) => <p class="bub in" data-a="um"><span data-bn={u.bn}>{u.en}</span></p>)}
+                  <p class="bub out" data-a="um"><span data-bn="ধন্যবাদ!">Thank you!</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- cursor for scene 2 -->
+          <span class="rip" data-scene="2"><i data-a="rip"></i></span>
+          <svg class="cur" data-scene="2" viewBox="0 0 24 24" aria-hidden="true"><path data-a="cur" d="M5 3l14 7.5-6 1.8-2.4 6.2L5 3z" fill="#fff" stroke="#0E1A2B" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <TourRail steps={chatSteps} label={{ en: 'Chat walkthrough steps', bn: 'চ্যাট ওয়াকথ্রুর ধাপ' }} tone="dark" />
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .chat-sec { padding: var(--sec-y) 0; background: var(--color-navy); color: #fff; }
+  .chat-sec .chat-product { margin-top: var(--head-gap); }
+  .chat-sec .win, .chat-sec .phone { box-shadow: 0 0 0 1px rgb(255 255 255 / .08), 0 30px 60px -30px rgb(0 0 0 / .7); }
+  .chat-sec .phone { background: linear-gradient(150deg, #3a4155, #10131d 45%); }
+
+  /* shared chat atoms (cqw = window or phone width) */
+  .chat-sec .av { display: grid; place-items: center; flex: none; border-radius: 50%; color: #fff; font-weight: 700; }
+  .chat-sec .av-r { background: #1E8E4E; }
+  .chat-sec .av-n { background: #7A4DD8; }
+  .chat-sec .av-k { background: #E8940B; }
+  .chat-sec .av-s { background: #fff; }
+  .chat-sec .av-s img { width: 70%; height: 70%; }
+  .chat-sec .bub { max-width: 78%; padding: .6em .85em; border-radius: 1em; line-height: 1.35; }
+  .chat-sec .bub.in { align-self: flex-start; background: #fff; color: var(--color-ink); border-bottom-left-radius: .3em; box-shadow: 0 1px 1px rgb(0 0 0 / .06); }
+  .chat-sec .bub.out { align-self: flex-end; border-bottom-right-radius: .3em; }
+  .chat-sec .wa .bub.out, .chat-sec .pw .bub.out { background: #D9FDD3; color: var(--color-ink); }
+  .chat-sec .ms .bub.out { background: #0A7CFF; color: #fff; }
+  .chat-sec .ms .bub.in { background: #F0F0F0; box-shadow: none; }
+  .chat-sec .typing { align-self: flex-start; display: flex; gap: .3em; padding: .8em 1em; border-radius: 1em; background: #fff; }
+  .chat-sec .ms .typing { background: #F0F0F0; }
+  .chat-sec .typing i { width: .45em; height: .45em; border-radius: 50%; background: #9AA1B0; }
+  .chat-sec .chip { display: inline-flex; align-items: center; gap: .5em; padding: .25em .7em; border-radius: 99px; background: #E9F8EF; color: #11703D; font-size: .85em; font-weight: 650; }
+  .chat-sec .win-body { font-size: 2cqw; }
+
+  /* 0 · Messenger web */
+  .chat-sec .cw-ms { display: flex; flex-direction: column; background: #fff; }
+  .chat-sec .cw-head { display: flex; align-items: center; gap: 1.4cqw; padding: 1.8cqw 3cqw; border-bottom: 1px solid #EEF0F4; }
+  .chat-sec .cw-head .av { width: 4.4cqw; height: 4.4cqw; font-size: 1.8cqw; }
+  .chat-sec .who { display: grid; }
+  .chat-sec .who b { font-weight: 700; }
+  .chat-sec .who small { font-size: .8em; color: #6B7385; }
+  .chat-sec .cw-icons { margin-left: auto; display: flex; align-items: center; gap: 2cqw; color: #0A7CFF; }
+  .chat-sec .cw-icons svg { width: 2.2cqw; height: 2.2cqw; }
+  .chat-sec .cw-thread { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 1.4cqw; padding: 3cqw 3cqw; } /* anchored to the composer, like a real chat */
+  .chat-sec .cw-thread.wa { background: #EFEAE2; }
+  .chat-sec .cw-compose { display: flex; align-items: center; gap: 1.6cqw; padding: 1.6cqw 3cqw; border-top: 1px solid #EEF0F4; color: #0A7CFF; }
+  .chat-sec .cw-compose span { flex: 1; height: 3.6cqw; border-radius: 99px; background: #F0F2F5; }
+  .chat-sec .cw-compose svg { width: 2.2cqw; height: 2.2cqw; }
+
+  /* 1 · Live Chat inbox: list | thread | profile */
+  .chat-sec .lc { display: grid; grid-template-columns: 30% 1fr 24%; background: #fff; }
+  .chat-sec .lc-list { border-right: 1px solid #EEF0F4; }
+  .chat-sec .lc-h { display: flex; justify-content: space-between; align-items: center; padding: 2cqw 1.8cqw; border-bottom: 1px solid #EEF0F4; }
+  .chat-sec .lc-h b { font-size: 1.15em; }
+  .chat-sec .lc-h .cnt { padding: .15em .6em; border-radius: 99px; background: #FFF1D1; color: #8A5A00; font-size: .8em; font-weight: 650; }
+  .chat-sec .lc-row { display: flex; align-items: center; gap: 1.2cqw; padding: 1.6cqw 1.8cqw; border-bottom: 1px solid #F4F5F8; }
+  .chat-sec .lc-row.act { background: #F1F6FD; box-shadow: inset .4cqw 0 0 var(--color-blue); }
+  .chat-sec .lc-row .av { width: 3.8cqw; height: 3.8cqw; font-size: 1.5cqw; }
+  .chat-sec .lc-t { display: grid; min-width: 0; }
+  .chat-sec .lc-t small { font-size: .82em; color: #6B7385; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chat-sec .lc-r { margin-left: auto; display: grid; justify-items: end; gap: .4cqw; }
+  .chat-sec .ub { display: grid; place-items: center; min-width: 2cqw; height: 2cqw; border-radius: 99px; background: #19C28F; color: #fff; font-size: .75em; font-style: normal; font-weight: 700; }
+  .chat-sec .lc-thread { display: flex; flex-direction: column; min-width: 0; }
+  .chat-sec .lc-th { display: flex; align-items: center; gap: 1.2cqw; padding: 1.6cqw 2cqw; border-bottom: 1px solid #EEF0F4; }
+  .chat-sec .lc-th .av { width: 3.6cqw; height: 3.6cqw; font-size: 1.4cqw; }
+  .chat-sec .lc-th .chip { margin-left: auto; }
+  .chat-sec .lc-prof { display: flex; flex-direction: column; align-items: center; gap: .6cqw; padding: 3cqw 1.6cqw; border-left: 1px solid #EEF0F4; text-align: center; }
+  .chat-sec .lc-prof .av.big { width: 7cqw; height: 7cqw; font-size: 2.8cqw; margin-bottom: .6cqw; }
+  .chat-sec .lc-prof small { color: #6B7385; font-size: .85em; }
+  .chat-sec .lc-kv { display: grid; margin-top: 1.4cqw; padding: 1cqw 2cqw; border-radius: 1cqw; background: #F4F5F8; }
+  .chat-sec .lc-btn { margin-top: auto; padding: 1cqw 2cqw; border-radius: .9cqw; background: var(--color-blue); color: #fff; font-weight: 650; }
+
+  /* 2 · Create order */
+  .chat-sec .co2 { display: flex; flex-direction: column; background: #F4F5F8; }
+  .chat-sec .co2-h { display: flex; align-items: center; justify-content: space-between; padding: 2cqw 3cqw; background: #fff; border-bottom: 1px solid #EEF0F4; }
+  .chat-sec .co2-h b { font-size: 1.2em; }
+  .chat-sec .co2-body { flex: 1; display: grid; grid-template-columns: 34% 1fr; gap: 2.4cqw; padding: 2.4cqw 3cqw; }
+  .chat-sec .cw-thread.mini { padding: 2cqw; border-radius: 1.2cqw; }
+  .chat-sec .co2-form { display: flex; flex-direction: column; gap: 1cqw; }
+  .chat-sec .fr { display: flex; align-items: center; gap: 1.6cqw; padding: 1.4cqw 1.8cqw; border-radius: 1cqw; background: #fff; box-shadow: 0 0 0 1px #E6E8EE; }
+  .chat-sec .fr > small { width: 11cqw; flex: none; color: #6B7385; font-size: .85em; }
+  .chat-sec .fr-p { display: flex; align-items: center; gap: 1cqw; }
+  .chat-sec .fr-p img { width: 4cqw; height: 4cqw; }
+  .chat-sec .fr-p span { display: grid; }
+  .chat-sec .fr-p small { color: #6B7385; }
+  .chat-sec .fr-amt { margin-left: auto; font-variant-numeric: tabular-nums; }
+  .chat-sec .fr-l { display: flex; align-items: center; gap: .8cqw; }
+  .chat-sec .obtn { position: relative; align-self: flex-end; display: grid; margin-top: .6cqw; padding: 1.2cqw 2.6cqw; border-radius: 1cqw; background: var(--color-blue); color: #fff; font-weight: 700; overflow: hidden; }
+  .chat-sec .obtn > span { grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; gap: .6cqw; transition: opacity .3s, transform .4s var(--ease-out-expo); }
+  .chat-sec .obtn .o2 { opacity: 0; transform: translateY(100%); }
+  .chat-sec .obtn[data-on="1"] { background: var(--color-mint); color: var(--color-ink); }
+  .chat-sec .obtn[data-on="1"] .o1 { opacity: 0; transform: translateY(-100%); }
+  .chat-sec .obtn[data-on="1"] .o2 { opacity: 1; transform: none; }
+
+  /* 3 · Tracking */
+  .chat-sec .trk3 { display: grid; place-items: center; background: #F4F5F8; }
+  .chat-sec .trk3-card { width: min(100% - 8cqw, 72cqw); padding: 3.6cqw 4cqw; font-size: 1.15em; border-radius: 1.6cqw; background: #fff; box-shadow: 0 0 0 1px #E6E8EE; }
+  .chat-sec .trk3-h { display: flex; justify-content: space-between; align-items: center; }
+  .chat-sec .trk3-h b { font-size: 1.3em; }
+  .chat-sec .trk3-sum { display: flex; align-items: center; gap: 1.4cqw; margin-top: 2cqw; padding: 1.4cqw; border-radius: 1cqw; background: #F4F5F8; }
+  .chat-sec .trk3-sum img { width: 4.4cqw; height: 4.4cqw; }
+  .chat-sec .trk3-sum span { display: grid; flex: 1; }
+  .chat-sec .trk3-sum small { color: #6B7385; }
+  .chat-sec .trk3-tl { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 4cqw; }
+  .chat-sec .trk3-tl::before { content: ""; position: absolute; left: 1.4cqw; right: calc(33.3% - 1.4cqw); top: 1.4cqw; height: .3cqw; background: #E6E8EE; }
+  .chat-sec .trk3-tl li { position: relative; display: grid; gap: 1cqw; color: #9AA1B0; font-weight: 600; transition: color .3s; }
+  .chat-sec .trk3-tl li i { display: grid; place-items: center; width: 2.8cqw; height: 2.8cqw; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 .3cqw #D8DCE4; color: transparent; transition: background-color .3s, box-shadow .3s, color .3s; }
+  .chat-sec .trk3-tl li i svg { width: 60%; height: 60%; }
+  .chat-sec .trk3-tl li[data-on="1"] { color: var(--color-ink); }
+  .chat-sec .trk3-tl li[data-on="1"] i { background: var(--color-mint); box-shadow: none; color: #fff; }
+
+  /* Phone: WhatsApp */
+  .chat-sec .pw { display: flex; flex-direction: column; padding-top: 0 !important; background: #EFEAE2; }
+  .chat-sec .pw-head { display: flex; align-items: center; gap: 3cqw; padding: 14cqw 4.5cqw 3.4cqw; background: #075E54; color: #fff; }
+  .chat-sec .pw-head .av { width: 10cqw; height: 10cqw; font-size: 4.4cqw; }
+  .chat-sec .pw-head .who small { color: rgb(255 255 255 / .75); }
+  .chat-sec .pw-body { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 3cqw; padding: 4cqw 3.6cqw 6cqw; font-size: 4.8cqw; }
+  .chat-sec .pw .bub.card { display: flex; align-items: center; gap: 2.4cqw; }
+  .chat-sec .pw .bub.card img { width: 11cqw; height: 11cqw; }
+  .chat-sec .pw .bub.card span { display: grid; }
+  .chat-sec .pw .bub.card small { color: #11703D; font-weight: 650; }
+  .chat-sec .pw .typing { font-size: 4cqw; }
+
+  @media (max-width: 767.98px) {
+    .chat-sec .lc { grid-template-columns: 38% 1fr; }
+    .chat-sec .lc-prof { display: none; }
+    .chat-sec .co2-body { grid-template-columns: 1fr; }
+    .chat-sec .co2-body .cw-thread.mini { display: none; }
+  }
+</style>
+
+<script>
+  import { initChatTour } from '../../scripts/chat-tour';
+  initChatTour();
+</script>

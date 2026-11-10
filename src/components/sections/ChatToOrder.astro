@@ -1,5 +1,10 @@
 ---
 /**
+ * D+G · Sell & chat (landing). Chat to order merged with Channels on 2026-11-10 to shorten the page:
+ * Channels' heading + its three claims (connPoints) close this section; its demo connect lanes were
+ * dropped (the hero proof strip already lists every partner). id="channels" with a #chat alias so
+ * both old anchors land here. /old keeps ChatToOrderV1 + Channels.
+ *
  * D · Chat to order. Navy section so it reads as a change of pace; reuses the approved hero
  * stage geometry (phone + browser of equal height; browser on top / phone below on mobile)
  * and the approved tour rail. Phone = the customer's WhatsApp, browser = the merchant side.
@@ -9,11 +14,11 @@
  *   3  phone: automatic order updates · browser: order #1051 delivery timeline
  * All messages, names, prices and statuses verbatim from the product-team file (sample conversations).
  */
-import SectionHead from './SectionHead.astro';
 import TourRail from '../tour/TourRail.astro';
 import Logo from '../ui/Logo.astro';
 import { Lock, ChevronLeft, ChevronRight, Check, Phone, Video, Plus, Send } from '@lucide/astro';
-import { chatHead, chatSteps, SIGNUP } from '../../data/sections';
+import { sellChatHead as chatHead, chatSteps, SIGNUP } from '../../data/sections';
+import { connPoints } from '../../data/sections2';
 
 const ic = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
 const rahim = [
@@ -34,11 +39,25 @@ const track = [
 ];
 ---
 
-<section id="chat" class="sec chat-sec on-navy" aria-labelledby="chat-title" data-chat>
+<section id="channels" class="sec chat-sec on-navy navy-lit" aria-labelledby="chat-title" data-chat>
+  <span id="chat" class="anchor-alias" aria-hidden="true"></span>
   <div class="page">
-    <SectionHead id="chat-title" h2={chatHead.h2} lead={chatHead.lead} tone="dark">
-      <a class="btn btn-primary" href={SIGNUP} data-bn={chatHead.cta.bn}>{chatHead.cta.en}</a>
-    </SectionHead>
+    <!-- head: promise + action left, the three claims (from Channels) right -->
+    <header class="sc-head">
+      <div class="sc-main" data-sr>
+        <h2 id="chat-title" data-bn={chatHead.h2.bn}>{chatHead.h2.en}</h2>
+        <p class="sc-lead" data-bn={chatHead.lead.bn}>{chatHead.lead.en}</p>
+        <a class="btn btn-primary" href={SIGNUP} data-bn={chatHead.cta.bn}>{chatHead.cta.en}</a>
+      </div>
+      <ul class="cpts" data-sr data-sr-stagger>
+        {connPoints.map((p) => (
+          <li>
+            <span class="cp-ic" aria-hidden="true"><Check size={14} stroke-width={2.8} /></span>
+            <span><b data-bn={p.t.bn}>{p.t.en}</b><small data-bn={p.s.bn}>{p.s.en}</small></span>
+          </li>
+        ))}
+      </ul>
+    </header>
 
     <div class="chat-product" data-sr>
       <div role="region" aria-label="Animated walkthrough: chat to order" data-bn-aria-label="অ্যানিমেটেড ওয়াকথ্রু: চ্যাট থেকে অর্ডার">
@@ -103,8 +122,10 @@ const track = [
                 <div class="co2-h"><b data-bn="চ্যাট থেকে অর্ডার">Create order from chat</b><span class="chip"><Logo k="whatsapp" h="1.5cqw" />Rahim</span></div>
                 <div class="co2-body">
                   <div class="cw-thread wa mini">
-                    <p class="bub out"><span data-bn="জি! ৫০০ গ্রাম ৳650। অর্ডার করবেন?">Yes! 500g is ৳650. Want to order?</span></p>
-                    <p class="bub in"><span data-bn="২টা দিন। মিরপুর, ঢাকা।">2 jars please. Mirpur, Dhaka.</span></p>
+                    {rahim.map((m) => m.d === 'card'
+                      ? <div class="bub out card"><img src="/assets/products/honey.svg" alt="" width="40" height="40" /><span><b>Mustard honey 500g</b><small>৳650</small></span></div>
+                      : <p class:list={['bub', m.d]}><span data-bn={m.bn}>{m.en}</span></p>
+                    )}
                   </div>
                   <div class="co2-form">
                     <div class="fr" data-a="frow"><small data-bn="পণ্য">Product</small><span class="fr-p"><img src="/assets/products/honey.svg" alt="" width="40" height="40" /><span><b>Mustard honey 500g</b><small>×2</small></span></span><b class="fr-amt">৳1,300</b></div>
@@ -165,11 +186,29 @@ const track = [
       </div>
       <TourRail steps={chatSteps} label={{ en: 'Chat walkthrough steps', bn: 'চ্যাট ওয়াকথ্রুর ধাপ' }} tone="dark" />
     </div>
+
   </div>
 </section>
 
 <style is:global>
-  .chat-sec { padding: var(--sec-y) 0; background: var(--color-navy); color: #fff; }
+  .chat-sec { padding: var(--sec-y) 0; background-color: var(--color-navy); color: #fff; } /* lit ground: .navy-lit in global.css */
+  .chat-sec { position: relative; }
+  .chat-sec .anchor-alias { position: absolute; top: 0; left: 0; width: 1px; height: 1px; }
+
+  /* head: promise + action left, the three claims right (no rules or boxes) */
+  .chat-sec .sc-head { display: grid; gap: 30px; }
+  @media (min-width: 1024px) { .chat-sec .sc-head { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); column-gap: clamp(48px, 6vw, 104px); align-items: end; } }
+  .chat-sec .sc-main { display: grid; justify-items: start; }
+  .chat-sec .sc-main h2 { max-width: 15ch; font-size: var(--h2); font-weight: 800; line-height: 1.03; letter-spacing: -0.035em; color: #fff; }
+  :lang(bn) .chat-sec .sc-main h2 { letter-spacing: 0; line-height: 1.22; font-weight: 700; }
+  .chat-sec .sc-lead { max-width: 34rem; margin-top: 18px; font-size: clamp(1.02rem, .98rem + .25vw, 1.15rem); line-height: 1.6; color: var(--color-mist); }
+  .chat-sec .sc-main .btn { margin-top: 22px; } /* same lead→action gap as SectionHead */
+  .chat-sec .cpts { display: grid; gap: 20px; padding-bottom: .3em; }
+  .chat-sec .cpts li { display: flex; align-items: flex-start; gap: 14px; }
+  .chat-sec .cp-ic { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 50%; background: rgb(25 194 143 / .16); color: var(--color-mint); }
+  .chat-sec .cpts li > span:last-child { display: grid; gap: 3px; }
+  .chat-sec .cpts b { font-size: 1rem; font-weight: 650; color: #fff; }
+  .chat-sec .cpts small { font-size: .88rem; line-height: 1.5; color: var(--color-mist); }
   .chat-sec .chat-product { margin-top: var(--head-gap); }
   .chat-sec .win, .chat-sec .phone { box-shadow: 0 0 0 1px rgb(255 255 255 / .08), 0 30px 60px -30px rgb(0 0 0 / .7); }
   .chat-sec .phone { background: linear-gradient(150deg, #3a4155, #10131d 45%); }
@@ -280,6 +319,11 @@ const track = [
   .chat-sec .pw .bub.card img { width: 11cqw; height: 11cqw; }
   .chat-sec .pw .bub.card span { display: grid; }
   .chat-sec .pw .bub.card small { color: #11703D; font-weight: 650; }
+  /* same product card in the order screen's side thread */
+  .chat-sec .cw-thread.mini .bub.card { display: flex; align-items: center; gap: 1.4cqw; }
+  .chat-sec .cw-thread.mini .bub.card img { width: 4cqw; height: 4cqw; flex: none; }
+  .chat-sec .cw-thread.mini .bub.card span { display: grid; }
+  .chat-sec .cw-thread.mini .bub.card small { color: #11703D; font-weight: 650; }
   .chat-sec .pw .typing { font-size: 4cqw; }
 
   @media (max-width: 767.98px) {

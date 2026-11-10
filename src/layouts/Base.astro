@@ -5,10 +5,13 @@ import displayFont from '@fontsource-variable/bricolage-grotesque/files/bricolag
 interface Props {
   title?: string;
   description?: string;
+  /** Keep a page out of search results (used by the /old backup) */
+  noindex?: boolean;
 }
 const {
-  title = 'ZCOMMERZ | Turn your Facebook page into an online store',
-  description = 'Build your online store from your Facebook page. Ready themes, AI product descriptions, SSLCOMMERZ payments, Pathao and eCourier delivery, Daraz and WhatsApp, all from one dashboard.',
+  title = 'ZCOMMERZ | Start an online business that sells',
+  description = 'Build your online business from scratch or from your Facebook page. Ready themes, AI product descriptions, SSLCOMMERZ payments, Pathao and eCourier delivery, Daraz and WhatsApp, all from one dashboard.',
+  noindex = false,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -20,6 +23,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="theme-color" content="#FFFFFF" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />

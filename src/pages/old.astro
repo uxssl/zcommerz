@@ -1,0 +1,52 @@
+---
+/**
+ * Backup of the previous homepage (/old): hero "Start an online business that sells / ships / grows".
+ * Not linked from anywhere and not indexed. Sections below the hero are shared with the homepage.
+ */
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import FbToSite from '../components/sections/FbToSite.astro';
+import Pillars from '../components/sections/PillarsV1.astro';
+import StoreBuilder from '../components/sections/StoreBuilder.astro';
+import Management from '../components/sections/ManagementV1.astro';
+import ChatToOrder from '../components/sections/ChatToOrderV1.astro';
+import AiWriter from '../components/sections/AiWriterV1.astro';
+import Channels from '../components/sections/Channels.astro';
+import Insights from '../components/sections/Insights.astro';
+import MoreWays from '../components/sections/MoreWays.astro';
+import HowItWorks from '../components/sections/HowItWorksV1.astro';
+import Pricing from '../components/sections/Pricing.astro';
+import Faq from '../components/sections/FaqV1.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
+---
+<Base noindex>
+  <Header />
+  <main id="main">
+    <Hero />
+    <FbToSite />
+    <Pillars />
+    <StoreBuilder />
+    <Management />
+    <ChatToOrder />
+    <AiWriter />
+    <Channels />
+    <Insights />
+    <MoreWays />
+    <HowItWorks />
+    <Pricing />
+    <Faq />
+    <CtaBand />
+  </main>
+  <Footer />
+  <script>
+    import { initReveals } from '../scripts/reveal';
+    initReveals();
+  </script>
+  <!-- backup keeps its original title face (the landing moved to Sora on 2026-11-10) -->
+  <style is:global>
+    html:root { --font-display: "Bricolage Grotesque Variable", "Hind Siliguri", system-ui, sans-serif; }
+    html:root:lang(bn) { --font-display: "Hind Siliguri", "Bricolage Grotesque Variable", system-ui, sans-serif; }
+  </style>
+</Base>

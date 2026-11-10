@@ -63,7 +63,7 @@ export const connPoints = [
 export const connRows = [
   {
     id: 'fb', logos: ['facebook', 'messenger'] as const, name: 'Facebook & Messenger', on: true,
-    s: { en: 'Start a store from your page in one click, and reply to customers on Messenger.', bn: 'এক ক্লিকে পেজ থেকে স্টোর শুরু করুন, আর মেসেঞ্জারে কাস্টমারকে উত্তর দিন।' },
+    s: { en: 'Start an online business from your page in one click, and reply to customers on Messenger.', bn: 'এক ক্লিকে পেজ থেকে অনলাইন বিজনেস শুরু করুন, আর মেসেঞ্জারে কাস্টমারকে উত্তর দিন।' },
   },
   {
     id: 'dz', logos: ['daraz'] as const, name: 'Daraz', on: false,
@@ -113,7 +113,7 @@ export const insBars = [
 /* ---------- I · More ways ---------- */
 export const moreHead: T = { en: 'More ways ZCOMMERZ powers your business', bn: 'আরও যেভাবে ZCOMMERZ আপনার ব্যবসাকে এগিয়ে নেয়' };
 export const moreRows = [
-  { href: '#features', t: { en: 'Build a store with zero coding', bn: 'কোডিং ছাড়াই স্টোর বানান' }, s: { en: 'Pick a theme and go live.', bn: 'থিম বেছে লাইভ করুন।' } },
+  { href: '#how', t: { en: 'Build an online business with zero coding', bn: 'কোডিং ছাড়াই অনলাইন বিজনেস বানান' }, s: { en: 'Pick a theme and go live.', bn: 'থিম বেছে লাইভ করুন।' } },
   { href: '#tools', t: { en: 'Create discount codes with Coupons', bn: 'কুপন দিয়ে ডিসকাউন্ট দিন' }, s: { en: 'Reward customers and lift sales.', bn: 'কাস্টমারকে পুরস্কৃত করুন, বিক্রি বাড়ান।' } },
   { href: '#chat', t: { en: 'Talk to customers with Live Chat', bn: 'লাইভ চ্যাটে কাস্টমারের সঙ্গে কথা বলুন' }, s: { en: 'Answer questions the moment they arrive.', bn: 'প্রশ্ন আসামাত্র উত্তর দিন।' } },
   { href: '#ai', t: { en: 'Write listings with AI', bn: 'AI দিয়ে বিবরণ লিখুন' }, s: { en: 'English or Bangla in seconds.', bn: 'সেকেন্ডে ইংরেজি বা বাংলায়।' } },
@@ -124,12 +124,12 @@ export const moreRows = [
 /* ---------- J · How it works ---------- */
 export const howHead = {
   h2: { en: 'Live in four steps', bn: 'চারটি ধাপেই লাইভ' },
-  lead: { en: 'A simple path from idea to a store that takes orders.', bn: 'ঝামেলা ছাড়া ধাপে ধাপে ব্যবসা অনলাইনে আনুন।' },
+  lead: { en: 'A simple path from idea to an online business that takes orders.', bn: 'ঝামেলা ছাড়া ধাপে ধাপে ব্যবসা অনলাইনে আনুন।' },
 };
 export const howSteps = [
   {
     t: { en: 'Add your business, or connect your Facebook page', bn: 'ব্যবসার তথ্য দিন, অথবা ফেসবুক পেজ কানেক্ট করুন' },
-    s: { en: 'Enter your store name, logo, category and contact details. Or pick your page.', bn: 'স্টোরের নাম, লোগো, ক্যাটাগরি ও যোগাযোগের তথ্য দিন। অথবা পেজ বেছে নিন।' },
+    s: { en: 'Enter your online business name, logo, category and contact details. Or pick your page.', bn: 'অনলাইন বিজনেসের নাম, লোগো, ক্যাটাগরি ও যোগাযোগের তথ্য দিন। অথবা পেজ বেছে নিন।' },
   },
   {
     t: { en: 'Choose a theme', bn: 'থিম বেছে নিন' },
@@ -232,10 +232,10 @@ export const faqHead: T = { en: 'Questions, answered', bn: 'সাধারণ �
 export const faqs = [
   {
     q: { en: 'What is ZCOMMERZ?', bn: 'ZCOMMERZ কী?' },
-    a: { en: 'ZCOMMERZ lets you build and run an online store in Bangladesh: themes, products, payments, delivery and sales channels in one place.', bn: 'ZCOMMERZ দিয়ে আপনি বাংলাদেশে অনলাইন স্টোর বানাতে ও চালাতে পারবেন: থিম, পণ্য, পেমেন্ট, ডেলিভারি ও সেলস চ্যানেল এক জায়গায়।' },
+    a: { en: 'ZCOMMERZ lets you build and run an online business in Bangladesh: themes, products, payments, delivery and sales channels in one place.', bn: 'ZCOMMERZ দিয়ে আপনি বাংলাদেশে অনলাইন বিজনেস বানাতে ও চালাতে পারবেন: থিম, পণ্য, পেমেন্ট, ডেলিভারি ও সেলস চ্যানেল এক জায়গায়।' },
   },
   {
-    q: { en: 'Can I build my store from my Facebook page?', bn: 'ফেসবুক পেজ থেকে কি স্টোর বানানো যায়?' },
+    q: { en: 'Can I build my online business from my Facebook page?', bn: 'ফেসবুক পেজ থেকে কি অনলাইন বিজনেস বানানো যায়?' },
     a: { en: 'Yes. Connect your page, review what comes across, pick a theme and publish. You can edit everything afterwards.', bn: 'হ্যাঁ। পেজ কানেক্ট করুন, যা এসেছে দেখে নিন, থিম বেছে প্রকাশ করুন। পরে সবকিছু এডিট করা যাবে।' },
   },
   {
@@ -244,7 +244,7 @@ export const faqs = [
   },
   {
     q: { en: 'Can I sell on Daraz and WhatsApp too?', bn: 'দারাজ ও হোয়াটসঅ্যাপেও কি বিক্রি করা যাবে?' },
-    a: { en: 'Yes. Connect Daraz and WhatsApp from the dashboard and manage them alongside your store.', bn: 'হ্যাঁ। ড্যাশবোর্ড থেকে দারাজ ও হোয়াটসঅ্যাপ কানেক্ট করে স্টোরের সঙ্গে একসাথে চালান।' },
+    a: { en: 'Yes. Connect Daraz and WhatsApp from the dashboard and manage them alongside your online business.', bn: 'হ্যাঁ। ড্যাশবোর্ড থেকে দারাজ ও হোয়াটসঅ্যাপ কানেক্ট করে অনলাইন বিজনেসের সঙ্গে একসাথে চালান।' },
   },
   {
     q: { en: 'How do customers pay?', bn: 'কাস্টমার কীভাবে পেমেন্ট করবে?' },

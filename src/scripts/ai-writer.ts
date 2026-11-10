@@ -146,6 +146,22 @@ export function initAiWriter() {
   }
 
   goBtn.addEventListener('click', write);
+
+  /* ---------- data-ai-auto: rest on a finished result, type it once when first seen ---------- */
+  if (root.hasAttribute('data-ai-auto')) {
+    if (!out.classList.contains('is-empty') && out.textContent?.trim()) {
+      text = out.textContent.trim();
+      setMeta(true);
+    }
+    if (!prefersReducedMotion() && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        write();
+      }, { threshold: 0.45 });
+      io.observe(out);
+    }
+  }
   nameEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); write(); } });
 
   /* ---------- copy ---------- */

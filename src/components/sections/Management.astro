@@ -1,7 +1,12 @@
 ---
 /**
  * C · Management platform — a merchant operations showcase, not a menu.
- * One realistic dashboard (sidebar + content) with three switchable views:
+ * One realistic dashboard (sidebar + content) that plays its three views on its own (2026-11-10,
+ * user: "animated, not clickable"). The sidebar is static labels; scripts/dash-auto.ts cycles the
+ * views with its own cursor (points at something in each view, then clicks the next sidebar
+ * item; the earlier progress line read as a loader), and only plays while on screen. Hover pauses it
+ * (the pause button was removed at the user's request, 2026-11-10). Reduced motion: Orders, still. /old keeps ManagementV1.
+ * The three views:
  *   Orders              order list with payment, delivery and status + a contextual action
  *   Products & stock    catalog with stock levels, low-stock flag and Inventory Aging (PRO)
  *   Sales overview      the day's metrics, a 7-day bar chart, payments and deliveries
@@ -16,7 +21,7 @@ import {
   ShoppingCart, Package, ChartColumn, Search, Bell, Plus, Filter, ChevronRight,
   Hourglass, Truck, Wallet, MessagesSquare, Users, TicketPercent, Palette, Settings,
 } from '@lucide/astro';
-import { toolsHead, toolGroups, SIGNUP } from '../../data/sections';
+import { toolsHead, toolsLeadLanding, toolGroups, SIGNUP } from '../../data/sections';
 
 const ic = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
 const find = (name: string) => toolGroups.flatMap((g) => g.items).find((i) => i.name === name)!;
@@ -31,7 +36,7 @@ const views = [
 const navRest = [
   { n: 'Customer Management', i: Users }, { n: 'Coupons', i: TicketPercent },
   { n: 'Live Chat', i: MessagesSquare }, { n: 'Storefront & Themes', i: Palette },
-  { n: 'Store Settings', i: Settings },
+  { n: 'Online Business Settings', i: Settings },
 ];
 
 /* ---- sample data (labelled in the UI) ---- */
@@ -88,29 +93,27 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
 ---
 <section id="tools" class="sec tools-sec" aria-labelledby="tools-title">
   <div class="page">
-    <SectionHead id="tools-title" tag={toolsHead.tag} h2={toolsHead.h2} lead={toolsHead.bullets[0]}>
+    <SectionHead id="tools-title" tag={toolsHead.tag} h2={toolsHead.h2} lead={toolsLeadLanding}>
       <a class="btn btn-primary" href={SIGNUP} data-bn={toolsHead.cta.bn}>{toolsHead.cta.en}</a>
     </SectionHead>
 
     <!-- ===================== The dashboard ===================== -->
-    <div class="app" data-sr data-tools>
+    <div class="app" data-sr data-dash role="region" aria-label="Animated dashboard preview" data-bn-aria-label="অ্যানিমেটেড ড্যাশবোর্ড প্রিভিউ">
       <!-- sidebar -->
       <div class="side">
         <div class="side-store">
           <img src="/assets/logos/leaf.svg" alt="" width="26" height="26" />
           <span><b>SSL Organic BD</b><small>merchant.zcommerz.com</small></span>
         </div>
-        <div class="side-nav" role="tablist" aria-orientation="vertical"
-             aria-label={toolsHead.tools.en} data-bn-aria-label={toolsHead.tools.bn}>
+        <div class="side-nav" aria-hidden="true" data-dash-nav>
           {views.map((v, i) => {
             const I = v.icon;
             return (
-              <button class="nv" type="button" role="tab" id={`vtab-${v.id}`} data-group={v.id}
-                aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`vpanel-${v.id}`} tabindex={i === 0 ? 0 : -1}>
-                <span class="nv-ic" aria-hidden="true"><I size={17} stroke-width={1.9} /></span>
+              <span class="nv" data-group={v.id} aria-current={i === 0 ? 'true' : 'false'}>
+                <span class="nv-ic"><I size={17} stroke-width={1.9} /></span>
                 <span class="nv-t" data-bn={v.t.bn}>{v.t.en}</span>
-                <span class="nv-go" aria-hidden="true"><ChevronRight size={15} stroke-width={2} /></span>
-              </button>
+                <span class="nv-go"><ChevronRight size={15} stroke-width={2} /></span>
+              </span>
             );
           })}
         </div>
@@ -136,7 +139,7 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
 
         <div class="panels">
           <!-- ============ 1 · Orders ============ -->
-          <div class="pnl" role="tabpanel" id="vpanel-orders" aria-labelledby="vtab-orders" data-gpanel="orders">
+          <div class="pnl" data-gpanel="orders">
             <div class="p-head d-ph">
               <div>
                 <h3 data-bn="অর্ডার ম্যানেজমেন্ট">Order Management</h3>
@@ -158,8 +161,8 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
                 <span data-bn="পেমেন্ট">Payment</span><span data-bn="ডেলিভারি">Delivery</span>
                 <span data-bn="স্ট্যাটাস">Status</span><span></span>
               </div>
-              {orders.map((o) => (
-                <div class="tr" data-trow>
+              {orders.map((o, i) => (
+                <div class="tr" data-trow data-dash-poi={i === 0 ? 'orders' : undefined}>
                   <span class="c-ord">
                     <b>{o.id}</b>
                     <small data-bn={o.item.bn}>{o.item.en}</small>
@@ -188,7 +191,7 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
           </div>
 
           <!-- ============ 2 · Products & stock ============ -->
-          <div class="pnl" role="tabpanel" id="vpanel-stock" aria-labelledby="vtab-stock" data-gpanel="stock" data-off inert aria-hidden="true">
+          <div class="pnl" data-gpanel="stock" data-off inert aria-hidden="true">
             <div class="p-head d-ph">
               <div>
                 <h3 data-bn="পণ্য ও স্টক">Products &amp; stock</h3>
@@ -212,7 +215,7 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
                     <span class="c-cat"><span data-bn="গ্রোসারি">Grocery</span></span>
                     <b class="c-price">{p.price}</b>
                     <span class="c-stock">
-                      <span class="sq"><b>{p.qty}</b>{p.low && <em class="low" data-bn="কম স্টক">Low</em>}</span>
+                      <span class="sq"><b>{p.qty}</b>{p.low && <em class="low" data-bn="কম স্টক" data-dash-poi="stock">Low</em>}</span>
                       <i class="meter" aria-hidden="true"><u class={p.low ? 'lowbar' : ''} style={`width:${Math.round((p.qty / p.cap) * 100)}%`}></u></i>
                     </span>
                   </div>
@@ -232,7 +235,7 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
           </div>
 
           <!-- ============ 3 · Sales overview ============ -->
-          <div class="pnl" role="tabpanel" id="vpanel-sales" aria-labelledby="vtab-sales" data-gpanel="sales" data-off inert aria-hidden="true">
+          <div class="pnl" data-gpanel="sales" data-off inert aria-hidden="true">
             <div class="p-head d-ph">
               <div>
                 <h3 data-bn="ড্যাশবোর্ড">Dashboard</h3>
@@ -255,7 +258,7 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
                 <div class="ch-h"><b data-bn="দৈনিক বিক্রি">Daily sales</b><span class="ch-peak" data-bn="সর্বোচ্চ ৳৩,১০০">Peak ৳3,100</span></div>
                 <div class="bars">
                   {week.map((w) => (
-                    <span class:list={['cb', w.now && 'now']}>
+                    <span class:list={['cb', w.now && 'now']} data-dash-poi={w.now ? 'sales' : undefined}>
                       <i style={`height:${Math.round((w.v / peak) * 100)}%`}><em>৳{w.v.toLocaleString('en-US')}</em></i>
                       <small data-bn={w.d.bn}>{w.d.en}</small>
                     </span>
@@ -288,13 +291,18 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
           </div>
         </div>
       </div>
+
+      <!-- the demo's own cursor (dash-auto.ts) -->
+      <span class="drip" data-dash-rip aria-hidden="true"></span>
+      <svg class="dcur" data-dash-cur viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 7.5-6 1.8-2.4 6.2L5 3z" fill="#fff" stroke="#0E1A2B" stroke-width="1.4" stroke-linejoin="round" /></svg>
     </div>
 
   </div>
 </section>
 
 <style>
-  .tools-sec { padding: var(--sec-y) 0; background: var(--color-paper); }
+  /* paper-2 band: a tonal section break after the white Pillars cards (user, 2026-11-10) */
+  .tools-sec { padding: var(--sec-y) 0; background: var(--color-paper-2); }
 
   /* ===================== App shell ===================== */
   .app {
@@ -316,17 +324,29 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
 
   .side-nav { display: grid; gap: 3px; padding-top: 10px; border-top: 1px solid #EEF0F4; }
   .nv {
-    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
-    padding: 9px 10px; border-radius: 9px; text-align: left; cursor: pointer;
+    position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: 9px; text-align: left; cursor: default; user-select: none;
     font-size: .88rem; font-weight: 550; color: var(--color-ink-2);
-    transition: background-color .2s, color .2s;
+    transition: background-color .35s, color .35s, box-shadow .35s;
   }
-  .nv:hover { background: #EFF1F5; color: var(--color-ink); }
-  .nv-ic { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: #EDEFF4; color: #6B7488; transition: background-color .2s, color .2s; }
-  .nv-go { color: #C3C9D4; opacity: 0; transition: opacity .2s; }
-  .nv[aria-selected="true"] { background: var(--color-blue); color: #fff; font-weight: 650; box-shadow: 0 10px 20px -12px rgb(42 93 168 / .9); }
-  .nv[aria-selected="true"] .nv-ic { background: rgb(255 255 255 / .18); color: #fff; }
-  .nv[aria-selected="true"] .nv-go { color: rgb(255 255 255 / .8); opacity: 1; }
+  .nv-ic { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: #EDEFF4; color: #6B7488; transition: background-color .35s, color .35s; }
+  .nv-go { color: #C3C9D4; opacity: 0; transition: opacity .35s; }
+  .nv[aria-current="true"] { background: var(--color-blue); color: #fff; font-weight: 650; box-shadow: 0 10px 20px -12px rgb(42 93 168 / .9); }
+  .nv[aria-current="true"] .nv-ic { background: rgb(255 255 255 / .18); color: #fff; }
+  .nv[aria-current="true"] .nv-go { color: rgb(255 255 255 / .8); opacity: 1; }
+
+  /* ---------- the demo cursor: points, hovers, clicks the next view ---------- */
+  .app { position: relative; }
+  .dcur { position: absolute; top: 0; left: 0; z-index: 5; width: 22px; height: 22px; pointer-events: none; opacity: 0; filter: drop-shadow(0 3px 5px rgb(7 11 36 / .3)); will-change: transform; }
+  .drip { position: absolute; top: 0; left: 0; z-index: 4; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: rgb(42 93 168 / .28); pointer-events: none; opacity: 0; }
+  .nv.is-hover:not([aria-current="true"]) { background: #EFF1F5; color: var(--color-ink); }
+  .tr { transition: background-color .25s; }
+  .tr.is-hover { background: #F5F8FC; }
+  .low { transition: box-shadow .25s; }
+  .low.is-hover { box-shadow: 0 0 0 3px rgb(217 119 6 / .2); }
+  .cb.is-hover i { background: var(--color-blue-d); }
+  .cb.is-hover em { opacity: 1; }
+
 
   .side-rest { margin-top: 16px; padding-top: 12px; border-top: 1px solid #EEF0F4; }
   .side-lbl { font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #A4AAB6; padding: 0 10px 8px; }
@@ -382,7 +402,6 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
   :global(:lang(bn)) .th { text-transform: none; letter-spacing: 0; }
   .tr { display: grid; align-items: center; gap: 12px; padding: 13px 16px; font-size: .88rem; transition: background-color .18s; }
   .tr + .tr { border-top: 1px solid #F2F4F7; }
-  .tr:hover { background: #FBFCFD; }
 
   .o-tbl .th, .o-tbl .tr { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr) minmax(0, 1fr) 84px 104px minmax(0, 1.1fr); }
   .c-ord { display: grid; min-width: 0; }
@@ -465,12 +484,9 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
   .ch-peak { font-size: .76rem; color: #8A91A0; font-variant-numeric: tabular-nums; }
   .bars { display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; gap: 8px; height: 150px; margin-top: 14px; }
   .cb { display: grid; grid-template-rows: 1fr auto; align-items: end; height: 100%; gap: 8px; text-align: center; }
-  .cb i { position: relative; display: block; align-self: end; border-radius: 7px 7px 3px 3px; background: #DCE4EF; transition: background-color .2s; }
+  .cb i { position: relative; display: block; align-self: end; border-radius: 7px 7px 3px 3px; background: #DCE4EF; transform-origin: bottom center; }
   .cb.now i { background: var(--color-blue); }
-  .cb:hover i { background: #B9C6DA; }
-  .cb.now:hover i { background: var(--color-blue-d); }
   .cb em { position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% 0; padding: 3px 7px; border-radius: 6px; background: var(--color-ink); color: #fff; font-style: normal; font-size: .68rem; font-weight: 650; white-space: nowrap; opacity: 0; transition: opacity .18s; pointer-events: none; }
-  .cb:hover em { opacity: 1; }
   .cb small { font-size: .7rem; color: #9AA1AF; }
   .cb.now small { color: var(--color-ink); font-weight: 700; }
 
@@ -487,6 +503,6 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
 </style>
 
 <script>
-  import { initToolTabs } from '../../scripts/tool-tabs';
-  initToolTabs();
+  import { initDashAuto } from '../../scripts/dash-auto';
+  initDashAuto();
 </script>

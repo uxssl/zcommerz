@@ -1,0 +1,229 @@
+---
+/**
+ * A · Manage · Sell · Grow (v1, frozen for the /old backup page). An editorial ledger, not a feature directory.
+ * Each pillar is a full-width row in the hero's language:
+ *   left   numbered verb with the hero's hand-drawn underline, in the pillar's tone
+ *   middle the one-line promise + its tools as a quiet index (no chips)
+ *   right  one small, real piece of the product that proves the verb:
+ *            Manage  the order list (sample orders #1048-1050, same data as section C)
+ *            Sell    four channels merging into one checkout
+ *            Grow    the AI product description writer
+ * The verb links to the section that shows it in full.
+ */
+import SectionHead from './SectionHead.astro';
+import Logo from '../ui/Logo.astro';
+import { ArrowUpRight, Sparkles, Store, QrCode, CreditCard, Wallet } from '@lucide/astro';
+import { pillars, pillarsHead, pillarsLead, pillarsNote } from '../../data/sections';
+
+const ic = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
+
+/* Sample orders: identical to the ones used in the management section. */
+const orders = [
+  { id: '#1048', ch: 'facebook' as const, item: { en: 'Honey ×2', bn: 'মধু ×২' }, amt: '৳1,300', st: { en: 'New', bn: 'নতুন' }, tone: 'new' },
+  { id: '#1049', ch: 'daraz' as const, item: { en: 'Ghee 500g', bn: 'ঘি ৫০০ গ্রাম' }, amt: '৳980', st: { en: 'Packed', bn: 'প্যাক হয়েছে' }, tone: 'packed' },
+  { id: '#1050', ch: 'whatsapp' as const, item: { en: 'Red rice 5kg', bn: 'লাল চাল ৫ কেজি' }, amt: '৳540', st: { en: 'Delivered', bn: 'পৌঁছে গেছে' }, tone: 'done' },
+];
+const channels = [
+  { k: 'facebook' as const, n: { en: 'Facebook page', bn: 'ফেসবুক পেজ' } },
+  { k: 'daraz' as const, n: { en: 'Daraz', bn: 'দারাজ' } },
+  { k: 'whatsapp' as const, n: { en: 'WhatsApp', bn: 'হোয়াটসঅ্যাপ' } },
+];
+---
+<section id="pillars" class="sec pillars" aria-labelledby="pillars-title">
+  <div class="page">
+    <SectionHead id="pillars-title" h2={pillarsHead} lead={pillarsLead} />
+
+    <ol class="ledger" data-sr data-sr-stagger>
+      {pillars.map((p, i) => (
+        <li class:list={['row', `tone-${p.tone}`]}>
+          <!-- head: number + verb, the link to the section that shows it -->
+          <a class="verb" href={p.href}>
+            <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span class="word">
+              <span data-bn={p.verb.bn}>{p.verb.en}</span>
+              <svg class="stroke" viewBox="0 0 300 18" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12.5C60 6 150 4 297 8.5" /></svg>
+            </span>
+            <span class="go" aria-hidden="true"><ArrowUpRight size={20} stroke-width={1.9} /></span>
+          </a>
+
+          <!-- body: the promise, one line. The tools themselves live in the sections below. -->
+          <div class="body">
+            <p class="line" data-bn={p.line.bn}>{p.line.en}</p>
+          </div>
+
+          <!-- token: one real piece of the product -->
+          <div class="tok" aria-hidden="true">
+            {p.id === 'manage' && (
+              <div class="t-card t-orders">
+                <div class="t-bar">
+                  <b data-bn="অর্ডার">Orders</b>
+                  <span class="t-live"><i></i><span data-bn="লাইভ">Live</span></span>
+                </div>
+                <ul class="o-list">
+                  {orders.map((o) => (
+                    <li>
+                      <span class="o-ch"><Logo k={o.ch} h="13px" /></span>
+                      <b class="o-id">{o.id}</b>
+                      <span class="o-it" data-bn={o.item.bn}>{o.item.en}</span>
+                      <span class="o-amt">{o.amt}</span>
+                      <span class:list={['o-st', `st-${o.tone}`]} data-bn={o.st.bn}>{o.st.en}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {p.id === 'sell' && (
+              <div class="t-flow">
+                <ul class="c-list">
+                  {channels.map((c) => (
+                    <li><span class="c-ic"><Logo k={c.k} h="15px" /></span><span data-bn={c.n.bn}>{c.n.en}</span></li>
+                  ))}
+                  <li><span class="c-ic c-store"><Store size={14} {...ic} /></span><span data-bn="অনলাইন বিজনেস">Online business</span></li>
+                </ul>
+                <svg class="merge" viewBox="0 0 48 136" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M0 14H16C26 14 26 68 36 68" /><path d="M0 50H16C26 50 26 68 36 68" />
+                  <path d="M0 86H16C26 86 26 68 36 68" /><path d="M0 122H16C26 122 26 68 36 68" />
+                </svg>
+                <div class="t-card t-checkout">
+                  <b data-bn="একটাই চেকআউট">One checkout</b>
+                  <div class="pays">
+                    <span class="pay gw">SSLCOMMERZ</span>
+                    <span class="pay"><Wallet size={14} {...ic} /></span>
+                    <span class="pay"><CreditCard size={14} {...ic} /></span>
+                    <span class="pay"><QrCode size={14} {...ic} /></span>
+                  </div>
+                  <p class="paid"><i></i><span data-bn="পেমেন্ট পাওয়া গেছে">Payment received</span></p>
+                </div>
+              </div>
+            )}
+
+            {p.id === 'grow' && (
+              <div class="t-card t-ai">
+                <div class="t-bar">
+                  <b data-bn="AI পণ্যের বিবরণ">AI product description</b>
+                  <span class="t-spark"><Sparkles size={13} {...ic} /></span>
+                </div>
+                <div class="a-row">
+                  <img src="/assets/shop/honey.svg" alt="" width="40" height="40" />
+                  <span class="a-meta"><b data-bn="সরিষার মধু">Mustard honey</b><small data-bn="৫০০ গ্রাম জার · ৳৬৫০">500 g jar · ৳650</small></span>
+                </div>
+                <p class="a-out" data-bn="খাঁটি সরিষা ফুলের মধু, ছাঁকা হয়নি। হালকা ফুলেল স্বাদ।">Raw mustard-blossom honey, unfiltered. Light floral finish.</p>
+                <div class="a-foot">
+                  <span class="a-btn" data-bn="বিবরণ ব্যবহার করুন">Use description</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <p class="sample micro" data-bn={pillarsNote.bn}>{pillarsNote.en}</p>
+  </div>
+</section>
+
+<style>
+  .pillars { padding: var(--sec-y-lg) 0 var(--sec-y); background: var(--color-paper); }
+  .ledger { margin-top: var(--head-gap); border-top: 1px solid var(--color-ink); }
+  .sample { margin-top: 14px; text-align: right; color: #8A91A0; }
+
+  .row {
+    --tone: var(--color-blue);
+    display: grid;
+    gap: 14px 32px;
+    padding: 22px 0 24px;
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .tone-mango { --tone: var(--color-mango); }
+  .tone-mint { --tone: var(--color-mint); }
+
+  @media (min-width: 760px) {
+    .row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "head tok" "body tok"; align-items: center; column-gap: clamp(32px, 4vw, 56px); }
+    .verb { grid-area: head; align-self: end; }
+    .body { grid-area: body; align-self: start; }
+    .tok  { grid-area: tok; }
+  }
+  @media (min-width: 1120px) {
+    .row { grid-template-columns: minmax(0, 2.6fr) minmax(0, 3.1fr) minmax(0, 6.3fr); grid-template-areas: "head body tok"; padding: 26px 0; column-gap: clamp(26px, 2.6vw, 38px); }
+    .verb, .body { align-self: center; }
+  }
+
+  /* ---------- head: number + verb ---------- */
+  .verb { display: inline-flex; align-items: baseline; gap: 14px; color: var(--color-ink); text-decoration: none; }
+  .verb .num { font-size: .78rem; font-weight: 700; font-variant-numeric: tabular-nums; color: #A4AAB6; transform: translateY(-1.1em); }
+  .verb .word {
+    position: relative;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.4rem, 1.5rem + 3.2vw, 4.2rem);
+    line-height: .95;
+    letter-spacing: -0.045em;
+  }
+  :global(:lang(bn)) .verb .word { letter-spacing: 0; line-height: 1.15; font-weight: 700; }
+  /* the hero's hand-drawn underline, in the pillar's tone */
+  .verb .stroke { position: absolute; left: 0; right: .04em; bottom: -.17em; height: .16em; overflow: visible; transform-origin: left; transition: transform .45s var(--ease-out-expo); }
+  .verb .stroke path { fill: none; stroke: var(--tone); stroke-width: 6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .verb:hover .stroke { transform: scaleX(1.06) translateY(2px); }
+  .verb .go { align-self: center; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: #A4AAB6; transition: background-color .25s, color .25s, transform .35s var(--ease-out-expo); }
+  .verb:hover .go { background: var(--color-blue); color: #fff; transform: rotate(45deg); }
+
+  /* ---------- body: promise + tool index ---------- */
+  .line { font-size: 1.05rem; line-height: 1.5; color: var(--color-ink); max-width: 18rem; }
+
+  /* ---------- tokens: shared ---------- */
+  .tok { width: 100%; font-family: var(--font-ui); }
+  @media (min-width: 760px) { .tok { width: 340px; } }
+  @media (min-width: 1120px) { .tok { width: 100%; max-width: 480px; justify-self: end; } }
+  .t-card { border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--color-rule), 0 18px 34px -26px rgb(14 26 43 / .5); }
+  .t-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--color-rule); }
+  .t-bar b { font-size: .78rem; font-weight: 650; color: var(--color-ink); }
+  .t-live { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 99px; background: #E6F8F1; color: #0F7A58; font-size: .66rem; font-weight: 650; }
+  .t-live i { width: 5px; height: 5px; border-radius: 50%; background: var(--color-mint); }
+
+  /* ---------- Manage: order list ---------- */
+  .o-list li { display: grid; grid-template-columns: 18px auto minmax(0, 1fr) auto auto; align-items: center; gap: 9px; padding: 9px 13px; font-size: .79rem; }
+  .o-list li + li { border-top: 1px solid var(--color-rule); }
+  .o-ch { display: grid; place-items: center; }
+  .o-id { font-weight: 650; color: var(--color-ink); font-variant-numeric: tabular-nums; }
+  .o-it { color: var(--color-ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .o-amt { font-weight: 650; color: var(--color-ink); font-variant-numeric: tabular-nums; }
+  .o-st { padding: 2px 7px; border-radius: 5px; font-size: .64rem; font-weight: 650; white-space: nowrap; }
+  .st-new { background: #EAF1FB; color: #2A5DA8; }
+  .st-packed { background: #FFF3DC; color: #96620A; }
+  .st-done { background: #E6F8F1; color: #0F7A58; }
+
+  /* ---------- Sell: channels merge into one checkout ---------- */
+  .t-flow { display: grid; grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1.05fr); align-items: center; gap: 0; }
+  .c-list { display: grid; gap: 8px; }
+  .c-list li { display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 10px; border-radius: 7px; background: #fff; box-shadow: 0 0 0 1px var(--color-rule); font-size: .76rem; font-weight: 550; color: var(--color-ink-2); white-space: nowrap; }
+  .c-ic { display: grid; place-items: center; width: 16px; }
+  .c-store { color: var(--color-ink-2); }
+  .merge { width: 100%; height: 136px; overflow: visible; }
+  .merge path { fill: none; stroke: var(--color-mango); stroke-width: 1.5; opacity: .55; }
+  .t-checkout { padding: 11px 12px 12px; }
+  .t-checkout > b { display: block; font-size: .8rem; font-weight: 700; color: var(--color-ink); }
+  .pays { display: flex; align-items: center; gap: 6px; margin-top: 9px; }
+  .pay { display: grid; place-items: center; height: 24px; min-width: 30px; padding: 0 6px; border-radius: 6px; background: var(--color-paper-2); color: var(--color-ink-2); }
+  .pay.gw { background: var(--color-ink); color: #fff; font-size: .6rem; font-weight: 700; letter-spacing: .02em; }
+  .paid { display: flex; align-items: center; gap: 6px; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--color-rule); font-size: .72rem; font-weight: 600; color: #0F7A58; }
+  .paid i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-mint); }
+
+  /* ---------- Grow: AI description writer ---------- */
+  .t-spark { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; background: #FFF3DC; color: #96620A; }
+  .a-row { display: flex; align-items: center; gap: 10px; padding: 11px 12px 0; }
+  .a-row img { display: block; width: 40px; height: 40px; }
+  .a-meta { display: grid; }
+  .a-meta b { font-size: .8rem; font-weight: 650; }
+  .a-meta small { font-size: .7rem; color: var(--color-ink-2); }
+  .a-out { margin: 9px 12px 0; padding: 9px 10px; border-radius: 8px; background: var(--color-paper-2); font-size: .78rem; line-height: 1.45; color: var(--color-ink-2); }
+  .a-foot { display: flex; align-items: center; gap: 12px; padding: 10px 12px 12px; }
+  .a-btn { padding: 5px 11px; border-radius: 7px; background: var(--color-mango); color: var(--color-ink); font-size: .72rem; font-weight: 700; }
+  .a-alt { font-size: .72rem; font-weight: 600; color: var(--color-ink-2); }
+
+  /* ---------- narrow ---------- */
+  @media (max-width: 759.98px) {
+    .t-flow { grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr); }
+    .merge { height: 128px; }
+  }
+</style>

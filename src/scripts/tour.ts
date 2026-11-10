@@ -33,10 +33,14 @@ const ANIMATED = 'transform,translate,rotate,scale,opacity,visibility,clipPath,s
 
 export function createTour(root: HTMLElement, { duration, builders }: Options) {
   const stage = root.querySelector<HTMLElement>('[data-tour-stage]')!;
-  const groups = builders.map((_, i) => Array.from(stage.querySelectorAll<HTMLElement>(`[data-scene="${i}"]`)));
+  // A stage may carry only some of the scenes (data-scenes="1,2,3"); builders are indexed by scene id
+  const ids = stage.dataset.scenes ? stage.dataset.scenes.split(',').map(Number) : builders.map((_, i) => i);
+  const scenes = ids.map((id) => builders[id]);
+  // An element can belong to several scenes (data-scene="0 4"), and a scene id can repeat in the order
+  const groups = ids.map((id) => Array.from(stage.querySelectorAll<HTMLElement>(`[data-scene~="${id}"]`)));
   const steps = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-step]'));
   const bars = steps.map((s) => s.querySelector<HTMLElement>('[data-bar]')!);
-  const playBtn = root.querySelector<HTMLButtonElement>('[data-tour-play]')!;
+  const playBtn = root.querySelector<HTMLButtonElement>('[data-tour-play]'); // optional: the hero runs without controls
   const caption = root.querySelector<HTMLElement>('[data-tour-caption]');
 
   const reduce = prefersReducedMotion();
@@ -78,16 +82,21 @@ export function createTour(root: HTMLElement, { duration, builders }: Options) {
     fade?.progress(1).kill();
 
     const next = groups[i];
-    const prev = prevIdx >= 0 && prevIdx !== i ? groups[prevIdx] : null;
+    // The leaving scene, minus any elements it shares with the next one (those simply stay)
+    const prevAll = prevIdx >= 0 && prevIdx !== i ? groups[prevIdx] : null;
+    const prevOnly = prevAll?.filter((el) => !next.includes(el)) ?? [];
+    const prev = prevOnly.length ? prevOnly : null;
 
+    // Hide every other scene, except elements the next or the leaving scene still uses
+    const keep = new Set([...next, ...(prev ?? [])]);
     groups.forEach((g, k) => {
-      if (k !== i && g !== prev) setGroupVisible(g, false);
+      if (k !== i) setGroupVisible(g.filter((el) => !keep.has(el)), false);
     });
     resetGroup(next);
     setGroupVisible(next, true);
 
     const q = (key: string) => next.flatMap((el) => Array.from(el.querySelectorAll<HTMLElement>(`[data-a="${key}"]`)));
-    tl = builders[i]({ els: next, q, stage });
+    tl = scenes[i]({ els: next, q, stage });
 
     if (prev && animate && !reduce) {
       // Scenes marked data-enter="wipe" arrive through a mask over the previous one
@@ -132,7 +141,7 @@ export function createTour(root: HTMLElement, { duration, builders }: Options) {
 
   function sync() {
     root.classList.toggle('is-paused', !state.playing);
-    playBtn.setAttribute('aria-label', state.playing ? tr('Pause tour', 'ট্যুর থামান') : tr('Play tour', 'ট্যুর চালান'));
+    playBtn?.setAttribute('aria-label', state.playing ? tr('Pause tour', 'ট্যুর থামান') : tr('Play tour', 'ট্যুর চালান'));
     if (!tl || reduce) return;
     if (running()) tl.play();
     else tl.pause();
@@ -149,7 +158,7 @@ export function createTour(root: HTMLElement, { duration, builders }: Options) {
   const tick = (_t: number, dt: number) => {
     if (!running() || state.cur < 0) return;
     state.elapsed += Math.min(dt, 100);
-    gsap.set(bars[state.cur], { scaleX: Math.min(state.elapsed / duration, 1) });
+    if (bars[state.cur]) gsap.set(bars[state.cur], { scaleX: Math.min(state.elapsed / duration, 1) });
     if (state.elapsed >= duration) {
       activate((state.cur + 1) % groups.length);
       sync();
@@ -164,7 +173,7 @@ export function createTour(root: HTMLElement, { duration, builders }: Options) {
       sync();
     }),
   );
-  playBtn.addEventListener('click', () => {
+  playBtn?.addEventListener('click', () => {
     state.playing = !state.playing;
     state.started = state.ready = true;
     if (state.playing && !reduce && tl && tl.progress() === 1 && state.elapsed === 0) tl.progress(0);
@@ -210,7 +219,7 @@ export function createTour(root: HTMLElement, { duration, builders }: Options) {
       activate(state.cur, false);
       tl.progress(reduce ? 1 : p);
       state.elapsed = elapsed;
-      gsap.set(bars[state.cur], { scaleX: elapsed / duration });
+      if (bars[state.cur]) gsap.set(bars[state.cur], { scaleX: elapsed / duration });
       sync();
     });
   });

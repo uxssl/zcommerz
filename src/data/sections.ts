@@ -30,7 +30,7 @@ export const pillars = [
     verb: { en: 'Sell', bn: 'সেল' },
     line: { en: 'Every channel, one checkout.', bn: 'সব চ্যানেল, একটাই চেকআউট।' },
     items: [
-      { en: 'Online store and themes', bn: 'অনলাইন স্টোর ও থিম' },
+      { en: 'Online business and themes', bn: 'অনলাইন বিজনেস ও থিম' },
       { en: 'Facebook page', bn: 'ফেসবুক পেজ' },
       { en: 'Daraz and WhatsApp', bn: 'দারাজ ও হোয়াটসঅ্যাপ' },
       { en: '36+ payment channels', bn: '৩৬+ পেমেন্ট চ্যানেল' },
@@ -54,16 +54,16 @@ export const pillars = [
 
 /* ---------- B · Online store ---------- */
 export const storeHead = {
-  tag: { en: 'Online store', bn: 'অনলাইন স্টোর' },
-  h2: { en: 'Launch your online store within minutes', bn: 'কয়েক মিনিটেই চালু করুন আপনার অনলাইন স্টোর' },
+  tag: { en: 'Online business', bn: 'অনলাইন বিজনেস' },
+  h2: { en: 'Launch your online business within minutes', bn: 'কয়েক মিনিটেই চালু করুন আপনার অনলাইন বিজনেস' },
   bullets: [
-    { en: 'Create a professional store, with no coding or hosting needed', bn: 'কোডিং বা হোস্টিং ছাড়াই পেশাদার স্টোর বানান' },
+    { en: 'Create a professional online business, with no coding or hosting needed', bn: 'কোডিং বা হোস্টিং ছাড়াই পেশাদার অনলাইন বিজনেস বানান' },
     { en: 'Start from your Facebook page in one click', bn: 'এক ক্লিকে ফেসবুক পেজ থেকে শুরু করুন' },
     { en: 'Choose a ready-made theme and make it yours', bn: 'তৈরি থিম বেছে নিয়ে নিজের মতো সাজান' },
     { en: 'Payments and delivery are built in', bn: 'পেমেন্ট ও ডেলিভারি আগে থেকেই যুক্ত' },
   ],
   payWith: { en: 'Customers pay with', bn: 'কাস্টমার পেমেন্ট করে' },
-  cta: { en: 'Launch your store', bn: 'আপনার স্টোর চালু করুন' },
+  cta: { en: 'Launch your online business', bn: 'আপনার অনলাইন বিজনেস চালু করুন' },
   link: { en: 'See how it works', bn: 'কীভাবে কাজ করে' },
   note: { en: 'Sample preview. Your theme and products are editable from the dashboard.', bn: 'নমুনা প্রিভিউ। আপনার থিম ও পণ্য ড্যাশবোর্ড থেকে এডিট করা যাবে।' },
 };
@@ -144,10 +144,16 @@ export const toolsHead = {
   pro: { en: 'tools are available on PRO plans.', bn: 'চিহ্নিত টুল PRO প্ল্যানে পাওয়া যায়।' },
   tools: { en: 'Dashboard tools', bn: 'ড্যাশবোর্ড টুল' },
 };
+/* Landing (/): Insights was folded into Management on 2026-11-10 (its chart repeated Sales overview);
+   its promise lives on in this lead. /old keeps toolsHead.bullets[0] + the Insights section. */
+export const toolsLeadLanding = {
+  en: 'Manage orders, products and stock, and see what sells as it happens, all from one place.',
+  bn: 'অর্ডার, পণ্য ও স্টক সামলান, আর কী বিক্রি হচ্ছে দেখুন সঙ্গে সঙ্গে, সবকিছু এক জায়গা থেকে।',
+};
 type Tool = { name: string; en: string; bn: string; pro?: boolean; icon: string };
 export const toolGroups: { id: string; color: string; n: T; items: Tool[] }[] = [
   { id: 'core', color: '#2A5DA8', n: { en: 'Core', bn: 'মূল টুল' }, items: [
-    { name: 'Dashboard', icon: 'LayoutDashboard', en: 'Sales, orders and store activity at a glance.', bn: 'বিক্রি, অর্ডার ও স্টোরের কার্যক্রম এক নজরে।' },
+    { name: 'Dashboard', icon: 'LayoutDashboard', en: 'Sales, orders and online business activity at a glance.', bn: 'বিক্রি, অর্ডার ও অনলাইন বিজনেসের কার্যক্রম এক নজরে।' },
     { name: 'Payment Methods', icon: 'CreditCard', en: 'Choose which payment options customers see at checkout.', bn: 'চেকআউটে কাস্টমার কোন পেমেন্ট অপশন দেখবে তা ঠিক করুন।' },
     { name: 'Integrations', icon: 'Plug', en: 'Connect SSLCOMMERZ, couriers, Daraz and WhatsApp.', bn: 'SSLCOMMERZ, কুরিয়ার, দারাজ ও হোয়াটসঅ্যাপ কানেক্ট করুন।' },
     { name: 'Plans & Subscription', icon: 'BadgeCheck', en: 'See your plan, upgrade or renew in a few clicks.', bn: 'আপনার প্ল্যান দেখুন, কয়েক ক্লিকেই আপগ্রেড বা রিনিউ করুন।' },
@@ -164,17 +170,17 @@ export const toolGroups: { id: string; color: string; n: T; items: Tool[] }[] = 
     { name: 'Customer Management', icon: 'Users', en: 'See who your customers are and what they buy.', bn: 'আপনার কাস্টমার কারা এবং কী কিনছেন তা দেখুন।' },
   ] },
   { id: 'marketing', color: '#E8940B', n: { en: 'Marketing & growth', bn: 'মার্কেটিং ও গ্রোথ' }, items: [
-    { name: 'Campaigns', icon: 'Megaphone', pro: true, en: 'Run campaigns to bring customers back to your store.', bn: 'ক্যাম্পেইনের মাধ্যমে কাস্টমারকে আবার স্টোরে ফিরিয়ে আনুন।' },
+    { name: 'Campaigns', icon: 'Megaphone', pro: true, en: 'Run campaigns to bring customers back to your online business.', bn: 'ক্যাম্পেইনের মাধ্যমে কাস্টমারকে আবার অনলাইন বিজনেসে ফিরিয়ে আনুন।' },
     { name: 'Coupons', icon: 'TicketPercent', en: 'Create discount codes for your customers.', bn: 'কাস্টমারের জন্য ডিসকাউন্ট কোড বানান।' },
   ] },
-  { id: 'config', color: '#D6336C', n: { en: 'Store configuration', bn: 'স্টোর কনফিগারেশন' }, items: [
-    { name: 'Store Settings', icon: 'Settings', en: 'Update your store name, contact details and preferences.', bn: 'স্টোরের নাম, যোগাযোগের তথ্য ও পছন্দ বদলান।' },
+  { id: 'config', color: '#D6336C', n: { en: 'Online business configuration', bn: 'অনলাইন বিজনেস কনফিগারেশন' }, items: [
+    { name: 'Online Business Settings', icon: 'Settings', en: 'Update your online business name, contact details and preferences.', bn: 'অনলাইন বিজনেসের নাম, যোগাযোগের তথ্য ও পছন্দ বদলান।' },
     { name: 'Media Gallery', icon: 'Images', en: 'Keep product photos and banners in one library.', bn: 'পণ্যের ছবি ও ব্যানার এক লাইব্রেরিতে রাখুন।' },
     { name: 'Storefront & Themes', icon: 'Palette', en: 'Pick a theme and shape how your storefront looks.', bn: 'থিম বেছে নিন এবং স্টোরফ্রন্টের চেহারা সাজান।' },
   ] },
   { id: 'staff', color: '#0A8FB0', n: { en: 'Staff management', bn: 'স্টাফ ম্যানেজমেন্ট' }, items: [
     { name: 'Roles', icon: 'ShieldCheck', en: 'Decide what each team member can see and do.', bn: 'প্রতিটি টিম সদস্য কী দেখতে ও করতে পারবেন তা ঠিক করুন।' },
-    { name: 'Staff', icon: 'UserPlus', en: 'Add teammates so you can run the store together.', bn: 'টিমের সদস্য যোগ করুন, একসাথে স্টোর চালান।' },
+    { name: 'Staff', icon: 'UserPlus', en: 'Add teammates so you can run the online business together.', bn: 'টিমের সদস্য যোগ করুন, একসাথে অনলাইন বিজনেস চালান।' },
   ] },
   { id: 'reports', color: '#6B3FD4', n: { en: 'Reports & analytics', bn: 'রিপোর্ট ও অ্যানালিটিক্স' }, items: [
     { name: 'Inventory Aging', icon: 'Hourglass', pro: true, en: 'See which stock has been sitting the longest.', bn: 'কোন স্টক সবচেয়ে বেশি দিন পড়ে আছে তা দেখুন।' },
@@ -186,6 +192,15 @@ export const toolGroups: { id: string; color: string; n: T; items: Tool[] }[] = 
 export const chatHead = {
   h2: { en: 'Chat with customers, turn chats into orders', bn: 'কাস্টমারের সঙ্গে চ্যাট করুন, চ্যাট থেকেই অর্ডার বানান' },
   lead: { en: 'Customers message you on WhatsApp or Messenger. Reply from one inbox and create the order without leaving the chat.', bn: 'কাস্টমার হোয়াটসঅ্যাপ বা মেসেঞ্জারে মেসেজ করে। এক ইনবক্স থেকে উত্তর দিন আর চ্যাট না ছেড়েই অর্ডার বানান।' },
+  cta: { en: 'Start free trial', bn: 'ফ্রি ট্রায়াল শুরু করুন' },
+};
+/* Landing (/): Chat + Channels merged into one section (2026-11-10, page-length cut). /old keeps chatHead. */
+export const sellChatHead = {
+  h2: { en: 'Sell where your customers already are', bn: 'যেখানে কাস্টমার আছে, সেখানেই বিক্রি করুন' },
+  lead: {
+    en: 'Customers find you on Facebook, WhatsApp and Daraz. Reply from one inbox, turn chats into orders, and run it all from one dashboard.',
+    bn: 'কাস্টমার আপনাকে খোঁজে ফেসবুক, হোয়াটসঅ্যাপ আর দারাজে। এক ইনবক্স থেকে উত্তর দিন, চ্যাট থেকেই অর্ডার বানান, আর সবকিছু চালান একটি ড্যাশবোর্ড থেকে।',
+  },
   cta: { en: 'Start free trial', bn: 'ফ্রি ট্রায়াল শুরু করুন' },
 };
 export const chatSteps = [
@@ -214,6 +229,20 @@ export const aiPoints: T[] = [
   { en: 'Pick a tone, from friendly to festive', bn: 'বন্ধুসুলভ থেকে উৎসবের, পছন্দের টোন বেছে নিন' },
   { en: 'Get English or Bangla copy you can edit before publishing', bn: 'ইংরেজি বা বাংলায় বিবরণ পান, প্রকাশের আগে এডিট করুন' },
 ];
+/* Landing (/) copy for the AI section, tightened 2026-11-10 at the user's request. /old keeps aiHead. */
+export const aiHeadLanding = {
+  tag: aiHead.tag,
+  h2: { en: 'Let AI write your product descriptions', bn: 'পণ্যের বিবরণ লিখে দেবে AI' },
+  lead: {
+    en: 'Add a name and a few keywords. Get a ready description in English or Bangla, then edit and publish.',
+    bn: 'নাম আর কয়েকটি কিওয়ার্ড দিন। ইংরেজি বা বাংলায় তৈরি বিবরণ পান, তারপর এডিট করে প্রকাশ করুন।',
+  },
+  cta: { en: 'Try it free', bn: 'ফ্রিতে চেষ্টা করুন' },
+  note: {
+    en: 'Preview only. In the dashboard, AI uses your real product details.',
+    bn: 'এটি শুধু প্রিভিউ। ড্যাশবোর্ডে AI আপনার আসল পণ্যের তথ্য ব্যবহার করে।',
+  },
+};
 export const aiUi = {
   name: { en: 'Product name', bn: 'পণ্যের নাম' },
   kw: { en: 'Keywords (separate with commas)', bn: 'কিওয়ার্ড (কমা দিয়ে আলাদা করুন)' },

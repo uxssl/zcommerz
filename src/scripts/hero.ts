@@ -1,11 +1,9 @@
 /**
- * Hero behaviour: entrance choreography, rotating headline word, tour start and a light
- * scroll depth on the devices. All motion is registered through gsap.matchMedia so it is
+ * Hero behaviour: entrance choreography and the rotating headline word (the media frame's
+ * video is handled by hero-media.ts). All motion is registered through gsap.matchMedia so it is
  * reverted automatically when reduced motion is switched on, or the breakpoint changes.
  */
 import { gsap, prefersReducedMotion, MOTION_OK } from './motion';
-import { createTour } from './tour';
-import { heroScenes } from './hero-tour';
 import { heroHeadline } from '../data/hero';
 import { getLang } from './i18n';
 
@@ -18,8 +16,6 @@ export function initHero() {
   if (!hero) return;
   const h1 = hero.querySelector<HTMLElement>('[data-h1]')!;
   const root = document.documentElement;
-  const tour = createTour(hero, { duration: 4500, builders: heroScenes });
-  if (import.meta.env.DEV) (window as any).__heroTour = tour;
 
   /* ---------- Rotating word: two passes, then it rests on the first word ---------- */
   let rot: gsap.core.Timeline | null = null;
@@ -63,21 +59,14 @@ export function initHero() {
   // Base state, independent of matchMedia (a conditions object only fires when one condition matches)
   root.classList.add('motion-ready');
   startRotator();
-  if (prefersReducedMotion()) tour.setReady();
 
   const mm = gsap.matchMedia();
   mm.add(
     { motion: MOTION_OK, desktop: '(min-width: 1024px)' },
     (ctx) => {
       const { motion } = ctx.conditions as { motion: boolean };
-      if (!motion) {
-        tour.setReady();
-        return;
-      }
+      if (!motion) return;
 
-      const phone = hero.querySelector<HTMLElement>('.phone');
-      const win = hero.querySelector<HTMLElement>('.win');
-      const seam = hero.querySelector<HTMLElement>('.seam');
       const path = h1.querySelector<SVGPathElement>('.rot-line path');
       const len = path?.getTotalLength() ?? 300;
 
@@ -92,16 +81,10 @@ export function initHero() {
           .fromTo(path, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 0.8, ease: 'power2.inOut', clearProps: 'strokeDasharray,strokeDashoffset' }, 0.85)
           .from(q('lead'), { y: 14, autoAlpha: 0, duration: 0.9 }, 0.5)
           .from(q('cta'), { y: 14, autoAlpha: 0, duration: 0.9, clearProps: 'transform,translate' }, 0.62) // the button row moves as one unit
-          // 6 product: browser unmasks from the edge it bleeds into, phone rises, the seam joins them
+          // 6 media frame opens from a centred band to full width
           .from(q('visual'), { autoAlpha: 0, duration: 0.01 }, 0.55)
-          .fromTo(win, { clipPath: 'inset(0% 0% 0% 100% round 14px)' }, { clipPath: 'inset(0% 0% 0% 0% round 14px)', duration: 1.15, ease: 'expo.inOut', clearProps: 'clipPath' }, 0.6)
-          .from(phone, { y: 56, autoAlpha: 0, duration: 1.05 }, 0.95)
-          .from(seam, { opacity: 0, scale: 0.9, duration: 0.6, clearProps: 'opacity,scale' }, 1.45)
-          .from([...q('rail'), ...q('proof')], { y: 12, autoAlpha: 0, duration: 0.8, stagger: 0.08 }, 1.3)
-          // 7 the finished frame holds for a beat, then the demo begins (only if in view)
-          .add(() => tour.setReady(), 2.9);
-      } else {
-        tour.setReady();
+          .fromTo(q('visual'), { clipPath: 'inset(6% 8% 6% 8% round 20px)' }, { clipPath: 'inset(0% 0% 0% 0% round 20px)', duration: 1.2, ease: 'expo.inOut', clearProps: 'clipPath' }, 0.6)
+          .from(q('proof'), { y: 12, autoAlpha: 0, duration: 0.8 }, 1.3);
       }
 
 

@@ -1,0 +1,493 @@
+---
+/**
+ * Frozen for /old on 2026-11-10 (clickable tabs, white ground). / uses Management.astro.
+ * C · Management platform — a merchant operations showcase, not a menu.
+ * One realistic dashboard (sidebar + content) with three switchable views:
+ *   Orders              order list with payment, delivery and status + a contextual action
+ *   Products & stock    catalog with stock levels, low-stock flag and Inventory Aging (PRO)
+ *   Sales overview      the day's metrics, a 7-day bar chart, payments and deliveries
+ * Sample data is internally consistent: three orders (#1048-1050) = ৳2,820 = today's sales,
+ * average ৳940. The same three products appear in both the orders and the catalog.
+ * Below the app, all 20 dashboard tools stay discoverable through a category selector that
+ * keeps the product-team names, descriptions and PRO marks verbatim.
+ */
+import SectionHead from './SectionHead.astro';
+import Logo from '../ui/Logo.astro';
+import {
+  ShoppingCart, Package, ChartColumn, Search, Bell, Plus, Filter, ChevronRight,
+  Hourglass, Truck, Wallet, MessagesSquare, Users, TicketPercent, Palette, Settings,
+} from '@lucide/astro';
+import { toolsHead, toolGroups, SIGNUP } from '../../data/sections';
+
+const ic = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
+const find = (name: string) => toolGroups.flatMap((g) => g.items).find((i) => i.name === name)!;
+
+/* The three dashboard views. Each one maps to a real tool in the product-team list. */
+const views = [
+  { id: 'orders', icon: ShoppingCart, tool: 'Order Management', t: { en: 'Orders', bn: 'অর্ডার' } },
+  { id: 'stock', icon: Package, tool: 'Products', t: { en: 'Products & stock', bn: 'পণ্য ও স্টক' } },
+  { id: 'sales', icon: ChartColumn, tool: 'Dashboard', t: { en: 'Sales overview', bn: 'সেলস ওভারভিউ' } },
+];
+/* Quiet sidebar entries: real tool names, so the nav reads like the real dashboard. */
+const navRest = [
+  { n: 'Customer Management', i: Users }, { n: 'Coupons', i: TicketPercent },
+  { n: 'Live Chat', i: MessagesSquare }, { n: 'Storefront & Themes', i: Palette },
+  { n: 'Online Business Settings', i: Settings },
+];
+
+/* ---- sample data (labelled in the UI) ---- */
+const orders = [
+  {
+    id: '#1048', ch: 'facebook' as const, who: 'Rumana A.', item: { en: 'Mustard honey ×2', bn: 'সরিষার মধু ×২' },
+    amt: '৳1,300', pay: { en: 'Mobile wallet', bn: 'মোবাইল ওয়ালেট' }, paid: true, ship: 'pathao' as const,
+    st: { en: 'New', bn: 'নতুন' }, tone: 'new', act: { en: 'Mark packed', bn: 'প্যাক হয়েছে' },
+  },
+  {
+    id: '#1049', ch: 'daraz' as const, who: 'Nasir H.', item: { en: 'Pure ghee 500g', bn: 'খাঁটি ঘি ৫০০ গ্রাম' },
+    amt: '৳980', pay: { en: 'Card', bn: 'কার্ড' }, paid: true, ship: 'ecourier' as const,
+    st: { en: 'Packed', bn: 'প্যাক হয়েছে' }, tone: 'packed', act: { en: 'Print label', bn: 'লেবেল প্রিন্ট' },
+  },
+  {
+    id: '#1050', ch: 'whatsapp' as const, who: 'Tania R.', item: { en: 'Red rice 5kg', bn: 'লাল চাল ৫ কেজি' },
+    amt: '৳540', pay: { en: 'Cash on delivery', bn: 'ক্যাশ অন ডেলিভারি' }, paid: false, ship: 'pathao' as const,
+    st: { en: 'Delivered', bn: 'পৌঁছে গেছে' }, tone: 'done', act: { en: 'View', bn: 'দেখুন' },
+  },
+];
+const filters = [
+  { t: { en: 'All', bn: 'সব' }, n: 3, on: true },
+  { t: { en: 'New', bn: 'নতুন' }, n: 1 },
+  { t: { en: 'Packed', bn: 'প্যাক হয়েছে' }, n: 1 },
+  { t: { en: 'Delivered', bn: 'পৌঁছে গেছে' }, n: 1 },
+];
+const stock = [
+  { img: 'honey', n: { en: 'Mustard honey', bn: 'সরিষার মধু' }, spec: '500g', price: '৳650', qty: 24, cap: 40, age: 12 },
+  { img: 'ghee', n: { en: 'Pure ghee', bn: 'খাঁটি ঘি' }, spec: '500g', price: '৳980', qty: 6, cap: 40, age: 34, low: true },
+  { img: 'rice', n: { en: 'Red rice', bn: 'লাল চাল' }, spec: '5kg', price: '৳540', qty: 38, cap: 40, age: 5 },
+];
+const kpis = [
+  { l: { en: "Today's sales", bn: 'আজকের বিক্রি' }, v: '৳2,820', vbn: '৳২,৮২০' },
+  { l: { en: 'Orders', bn: 'অর্ডার' }, v: '3', vbn: '৩' },
+  { l: { en: 'Average order', bn: 'গড় অর্ডার' }, v: '৳940', vbn: '৳৯৪০' },
+];
+const week = [
+  { d: { en: 'Sun', bn: 'রবি' }, v: 1980 }, { d: { en: 'Mon', bn: 'সোম' }, v: 2450 },
+  { d: { en: 'Tue', bn: 'মঙ্গল' }, v: 1720 }, { d: { en: 'Wed', bn: 'বুধ' }, v: 3100 },
+  { d: { en: 'Thu', bn: 'বৃহঃ' }, v: 2260 }, { d: { en: 'Fri', bn: 'শুক্র' }, v: 2640 },
+  { d: { en: 'Sat', bn: 'শনি' }, v: 2820, now: true },
+];
+const peak = Math.max(...week.map((w) => w.v));
+const payLines = [
+  { k: null, n: 'Mobile wallets', nbn: 'মোবাইল ওয়ালেট', v: '৳1,300' },
+  { k: null, n: 'Card', nbn: 'কার্ড', v: '৳980' },
+  { k: null, n: 'Cash on delivery', nbn: 'ক্যাশ অন ডেলিভারি', v: '৳540' },
+];
+const shipLines = [
+  { k: 'pathao' as const, n: 'Pathao Courier', v: { en: '2 shipments', bn: '২টি শিপমেন্ট' } },
+  { k: 'ecourier' as const, n: 'eCourier', v: { en: '1 shipment', bn: '১টি শিপমেন্ট' } },
+];
+const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
+---
+<section id="tools" class="sec tools-sec" aria-labelledby="tools-title">
+  <div class="page">
+    <SectionHead id="tools-title" tag={toolsHead.tag} h2={toolsHead.h2} lead={toolsHead.bullets[0]}>
+      <a class="btn btn-primary" href={SIGNUP} data-bn={toolsHead.cta.bn}>{toolsHead.cta.en}</a>
+    </SectionHead>
+
+    <!-- ===================== The dashboard ===================== -->
+    <div class="app" data-sr data-tools>
+      <!-- sidebar -->
+      <div class="side">
+        <div class="side-store">
+          <img src="/assets/logos/leaf.svg" alt="" width="26" height="26" />
+          <span><b>SSL Organic BD</b><small>merchant.zcommerz.com</small></span>
+        </div>
+        <div class="side-nav" role="tablist" aria-orientation="vertical"
+             aria-label={toolsHead.tools.en} data-bn-aria-label={toolsHead.tools.bn}>
+          {views.map((v, i) => {
+            const I = v.icon;
+            return (
+              <button class="nv" type="button" role="tab" id={`vtab-${v.id}`} data-group={v.id}
+                aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`vpanel-${v.id}`} tabindex={i === 0 ? 0 : -1}>
+                <span class="nv-ic" aria-hidden="true"><I size={17} stroke-width={1.9} /></span>
+                <span class="nv-t" data-bn={v.t.bn}>{v.t.en}</span>
+                <span class="nv-go" aria-hidden="true"><ChevronRight size={15} stroke-width={2} /></span>
+              </button>
+            );
+          })}
+        </div>
+        <div class="side-rest" aria-hidden="true">
+          <p class="side-lbl">{toolsHead.tools.en}</p>
+          <ul>
+            {navRest.map((r) => {
+              const I = r.i;
+              return <li><I size={15} stroke-width={1.8} />{r.n}</li>;
+            })}
+          </ul>
+        </div>
+      </div>
+
+      <!-- content -->
+      <div class="main">
+        <div class="bar">
+          <span class="bar-search" aria-hidden="true"><Search {...ic} /><em data-bn="অর্ডার বা পণ্য খুঁজুন">Search orders or products</em></span>
+          <span class="bar-sample" data-bn={sample.bn}>{sample.en}</span>
+          <span class="bar-ic" aria-hidden="true"><Bell {...ic} /><i></i></span>
+          <span class="bar-av" aria-hidden="true">S</span>
+        </div>
+
+        <div class="panels">
+          <!-- ============ 1 · Orders ============ -->
+          <div class="pnl" role="tabpanel" id="vpanel-orders" aria-labelledby="vtab-orders" data-gpanel="orders">
+            <div class="p-head d-ph">
+              <div>
+                <h3 data-bn="অর্ডার ম্যানেজমেন্ট">Order Management</h3>
+                <p data-bn={find('Order Management').bn}>{find('Order Management').en}</p>
+              </div>
+              <span class="p-act" aria-hidden="true"><Plus size={15} stroke-width={2.2} /><span data-bn="অর্ডার তৈরি">Create order</span></span>
+            </div>
+
+            <div class="chips" aria-hidden="true">
+              <span class="f-ic"><Filter size={14} stroke-width={1.9} /></span>
+              {filters.map((f) => (
+                <span class:list={['fc', f.on && 'on']}><span data-bn={f.t.bn}>{f.t.en}</span><i>{f.n}</i></span>
+              ))}
+            </div>
+
+            <div class="tbl o-tbl">
+              <div class="th" aria-hidden="true">
+                <span data-bn="অর্ডার">Order</span><span data-bn="কাস্টমার">Customer</span>
+                <span data-bn="পেমেন্ট">Payment</span><span data-bn="ডেলিভারি">Delivery</span>
+                <span data-bn="স্ট্যাটাস">Status</span><span></span>
+              </div>
+              {orders.map((o) => (
+                <div class="tr" data-trow>
+                  <span class="c-ord">
+                    <b>{o.id}</b>
+                    <small data-bn={o.item.bn}>{o.item.en}</small>
+                  </span>
+                  <span class="c-who">
+                    <Logo k={o.ch} h="16px" label />
+                    <span>{o.who}</span>
+                  </span>
+                  <span class="c-pay">
+                    <b data-bn={o.pay.bn}>{o.pay.en}</b>
+                    <small class:list={[o.paid ? 'ok' : 'wait']} data-bn={o.paid ? 'পেমেন্ট হয়েছে' : 'ডেলিভারিতে'}>{o.paid ? 'Paid' : 'On delivery'}</small>
+                  </span>
+                  <span class="c-ship"><Logo k={o.ship} h="14px" label /></span>
+                  <span class:list={['st', `st-${o.tone}`]} data-bn={o.st.bn}>{o.st.en}</span>
+                  <span class="c-end">
+                    <b class="amt">{o.amt}</b>
+                    <span class:list={['rowact', o.tone === 'new' && 'primary']} data-bn={o.act.bn}>{o.act.en}</span>
+                  </span>
+                </div>
+              ))}
+              <div class="tfoot" data-trow>
+                <span data-bn="আজ ৩টি অর্ডার">3 orders today</span>
+                <b>৳2,820</b>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ 2 · Products & stock ============ -->
+          <div class="pnl" role="tabpanel" id="vpanel-stock" aria-labelledby="vtab-stock" data-gpanel="stock" data-off inert aria-hidden="true">
+            <div class="p-head d-ph">
+              <div>
+                <h3 data-bn="পণ্য ও স্টক">Products &amp; stock</h3>
+                <p data-bn={find('Products').bn}>{find('Products').en}</p>
+              </div>
+              <span class="p-act" aria-hidden="true"><Plus size={15} stroke-width={2.2} /><span data-bn="পণ্য যোগ">Add product</span></span>
+            </div>
+
+            <div class="stock-wrap">
+              <div class="tbl s-tbl">
+                <div class="th" aria-hidden="true">
+                  <span data-bn="পণ্য">Product</span><span data-bn="ক্যাটাগরি">Category</span>
+                  <span data-bn="দাম">Price</span><span data-bn="স্টক">Stock</span>
+                </div>
+                {stock.map((p) => (
+                  <div class="tr" data-trow>
+                    <span class="c-prod">
+                      <i class="shot"><img src={`/assets/products/${p.img}.svg`} alt="" width="34" height="34" /></i>
+                      <span><b data-bn={p.n.bn}>{p.n.en}</b><small>{p.spec} · SSL Organic BD</small></span>
+                    </span>
+                    <span class="c-cat"><span data-bn="গ্রোসারি">Grocery</span></span>
+                    <b class="c-price">{p.price}</b>
+                    <span class="c-stock">
+                      <span class="sq"><b>{p.qty}</b>{p.low && <em class="low" data-bn="কম স্টক">Low</em>}</span>
+                      <i class="meter" aria-hidden="true"><u class={p.low ? 'lowbar' : ''} style={`width:${Math.round((p.qty / p.cap) * 100)}%`}></u></i>
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <aside class="aging" data-trow>
+                <p class="ag-h"><span class="ag-ic" aria-hidden="true"><Hourglass size={15} stroke-width={1.9} /></span><b>Inventory Aging</b><span class="pro">PRO</span></p>
+                <p class="ag-s" data-bn={find('Inventory Aging').bn}>{find('Inventory Aging').en}</p>
+                <ul>
+                  {[...stock].sort((a, b) => b.age - a.age).map((p) => (
+                    <li><span data-bn={p.n.bn}>{p.n.en}</span><b data-bn={`${p.age} দিন`}>{p.age} days</b></li>
+                  ))}
+                </ul>
+              </aside>
+            </div>
+          </div>
+
+          <!-- ============ 3 · Sales overview ============ -->
+          <div class="pnl" role="tabpanel" id="vpanel-sales" aria-labelledby="vtab-sales" data-gpanel="sales" data-off inert aria-hidden="true">
+            <div class="p-head d-ph">
+              <div>
+                <h3 data-bn="ড্যাশবোর্ড">Dashboard</h3>
+                <p data-bn={find('Dashboard').bn}>{find('Dashboard').en}</p>
+              </div>
+              <span class="p-range" aria-hidden="true" data-bn="গত ৭ দিন">Last 7 days</span>
+            </div>
+
+            <dl class="kpis">
+              {kpis.map((k) => (
+                <div data-trow>
+                  <dt data-bn={k.l.bn}>{k.l.en}</dt>
+                  <dd data-bn={k.vbn}>{k.v}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div class="sales-grid">
+              <div class="chart" data-trow>
+                <div class="ch-h"><b data-bn="দৈনিক বিক্রি">Daily sales</b><span class="ch-peak" data-bn="সর্বোচ্চ ৳৩,১০০">Peak ৳3,100</span></div>
+                <div class="bars">
+                  {week.map((w) => (
+                    <span class:list={['cb', w.now && 'now']}>
+                      <i style={`height:${Math.round((w.v / peak) * 100)}%`}><em>৳{w.v.toLocaleString('en-US')}</em></i>
+                      <small data-bn={w.d.bn}>{w.d.en}</small>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div class="split">
+                <div class="box" data-trow>
+                  <p class="bx-h"><Wallet size={15} {...ic} /><b data-bn="পেমেন্ট">Payments</b></p>
+                  <ul>
+                    {payLines.map((p) => (
+                      <li>
+                        <span class="bx-n">{p.k ? <Logo k={p.k} h="13px" label /> : <span data-bn={p.nbn}>{p.n}</span>}</span>
+                        <b>{p.v}</b>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="box" data-trow>
+                  <p class="bx-h"><Truck size={15} {...ic} /><b data-bn="ডেলিভারি">Deliveries</b></p>
+                  <ul>
+                    {shipLines.map((s) => (
+                      <li><span class="bx-n"><Logo k={s.k} h="13px" label /></span><b data-bn={s.v.bn}>{s.v.en}</b></li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .tools-sec { padding: var(--sec-y) 0; background: var(--color-paper); }
+
+  /* ===================== App shell ===================== */
+  .app {
+    display: grid; grid-template-columns: minmax(0, 1fr); margin-top: var(--head-gap);
+    border-radius: 18px; background: #fff; overflow: hidden;
+    box-shadow: 0 0 0 1px var(--color-rule), 0 40px 70px -44px rgb(7 11 36 / .45);
+    font-family: var(--font-ui);
+  }
+  @media (min-width: 1024px) { .app { grid-template-columns: 244px minmax(0, 1fr); } }
+
+  /* ---------- sidebar ---------- */
+  .side { min-width: 0; padding: 16px 14px; background: #FAFBFC; border-bottom: 1px solid #EEF0F4; }
+  @media (min-width: 1024px) { .side { border-bottom: 0; border-right: 1px solid #EEF0F4; } }
+  .side-store { display: flex; align-items: center; gap: 10px; padding: 4px 6px 14px; }
+  .side-store img { width: 26px; height: 26px; }
+  .side-store span { display: grid; min-width: 0; }
+  .side-store b { font-size: .92rem; font-weight: 700; letter-spacing: -.01em; }
+  .side-store small { font-size: .72rem; color: #8A91A0; overflow: hidden; text-overflow: ellipsis; }
+
+  .side-nav { display: grid; gap: 3px; padding-top: 10px; border-top: 1px solid #EEF0F4; }
+  .nv {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: 9px; text-align: left; cursor: pointer;
+    font-size: .88rem; font-weight: 550; color: var(--color-ink-2);
+    transition: background-color .2s, color .2s;
+  }
+  .nv:hover { background: #EFF1F5; color: var(--color-ink); }
+  .nv-ic { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: #EDEFF4; color: #6B7488; transition: background-color .2s, color .2s; }
+  .nv-go { color: #C3C9D4; opacity: 0; transition: opacity .2s; }
+  .nv[aria-selected="true"] { background: var(--color-blue); color: #fff; font-weight: 650; box-shadow: 0 10px 20px -12px rgb(42 93 168 / .9); }
+  .nv[aria-selected="true"] .nv-ic { background: rgb(255 255 255 / .18); color: #fff; }
+  .nv[aria-selected="true"] .nv-go { color: rgb(255 255 255 / .8); opacity: 1; }
+
+  .side-rest { margin-top: 16px; padding-top: 12px; border-top: 1px solid #EEF0F4; }
+  .side-lbl { font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #A4AAB6; padding: 0 10px 8px; }
+  .side-rest ul { display: grid; gap: 1px; }
+  .side-rest li { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; font-size: .84rem; color: #9AA1AF; }
+  .side-rest :global(svg) { flex: none; color: #BFC5D0; }
+  @media (max-width: 1023.98px) {
+    .side-rest { display: none; }
+    .side-nav { grid-auto-flow: column; grid-auto-columns: minmax(132px, 1fr); overflow-x: auto; scrollbar-width: none; }
+    .side-nav::-webkit-scrollbar { display: none; }
+    .nv-go { display: none; }
+    .nv { grid-template-columns: auto 1fr; }
+  }
+  @media (max-width: 639.98px) {
+    .side-nav { overflow-x: auto; scrollbar-width: none; }
+    .side-nav::-webkit-scrollbar { display: none; }
+  }
+
+  /* ---------- content ---------- */
+  .main { min-width: 0; display: flex; flex-direction: column; }
+  .bar { display: flex; align-items: center; gap: 12px; padding: 11px 18px; border-bottom: 1px solid #EEF0F4; }
+  .bar-search { display: flex; align-items: center; gap: 8px; flex: 1; max-width: 300px; height: 34px; padding: 0 12px; border-radius: 9px; background: #F3F5F8; color: #A0A6B4; }
+  .bar-search :global(svg) { width: 15px; height: 15px; flex: none; }
+  .bar-search em { font-style: normal; font-size: .82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-sample { margin-left: auto; padding: 3px 9px; border-radius: 99px; background: #FFF3DC; color: #8A5A00; font-size: .68rem; font-weight: 700; letter-spacing: .02em; white-space: nowrap; }
+  .bar-ic { position: relative; display: grid; color: #8A91A0; }
+  .bar-ic :global(svg) { width: 17px; height: 17px; }
+  .bar-ic i { position: absolute; top: -1px; right: -1px; width: 7px; height: 7px; border-radius: 50%; background: var(--color-mango); box-shadow: 0 0 0 2px #fff; }
+  .bar-av { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #E9EFF9; color: var(--color-blue); font-size: .78rem; font-weight: 700; }
+  @media (max-width: 479.98px) { .bar-search { display: none; } .bar-sample { margin-left: 0; } }
+
+  .panels { display: grid; flex: 1; }
+  .pnl { grid-area: 1 / 1; min-width: 0; padding: 20px clamp(16px, 2.2vw, 26px) 24px; }
+  .pnl[data-off] { visibility: hidden; pointer-events: none; }
+
+  .p-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .p-head h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 750; letter-spacing: -.022em; }
+  .p-head > div > p { margin-top: 3px; font-size: .86rem; color: var(--color-ink-2); max-width: 44ch; }
+  .p-act { display: inline-flex; align-items: center; gap: 7px; flex: none; height: 34px; padding: 0 13px; border-radius: 9px; background: var(--color-blue); color: #fff; font-size: .82rem; font-weight: 650; }
+  .p-range { flex: none; height: 30px; display: grid; place-items: center; padding: 0 11px; border-radius: 8px; background: #F3F5F8; color: var(--color-ink-2); font-size: .78rem; font-weight: 600; }
+
+  /* ---------- filter chips ---------- */
+  .chips { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 16px; }
+  .f-ic { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; color: #8A91A0; }
+  .fc { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 8px; background: #F3F5F8; font-size: .78rem; font-weight: 600; color: var(--color-ink-2); }
+  .fc i { font-style: normal; font-size: .7rem; font-weight: 700; color: #9AA1AF; }
+  .fc.on { background: var(--color-ink); color: #fff; }
+  .fc.on i { color: rgb(255 255 255 / .6); }
+
+  /* ---------- tables ---------- */
+  .tbl { margin-top: 14px; border-radius: 13px; box-shadow: 0 0 0 1px #EBEEF3; overflow: hidden; }
+  .th { display: grid; align-items: center; gap: 12px; padding: 10px 16px; background: #FAFBFC; border-bottom: 1px solid #EEF0F4; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #9AA1AF; }
+  :global(:lang(bn)) .th { text-transform: none; letter-spacing: 0; }
+  .tr { display: grid; align-items: center; gap: 12px; padding: 13px 16px; font-size: .88rem; transition: background-color .18s; }
+  .tr + .tr { border-top: 1px solid #F2F4F7; }
+  .tr:hover { background: #FBFCFD; }
+
+  .o-tbl .th, .o-tbl .tr { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr) minmax(0, 1fr) 84px 104px minmax(0, 1.1fr); }
+  .c-ord { display: grid; min-width: 0; }
+  .c-ord b { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .c-ord small { font-size: .78rem; color: var(--color-ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .c-who { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: .85rem; color: var(--color-ink-2); }
+  .c-who :global(.lg) { flex: none; }
+  .c-who > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .c-pay { display: grid; min-width: 0; }
+  .c-pay b { font-size: .84rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .c-pay small { font-size: .74rem; font-weight: 650; }
+  .c-pay .ok { color: #0F7A58; } .c-pay .wait { color: #8A5A00; }
+  .c-ship { display: flex; }
+  .st { justify-self: start; padding: 4px 10px; border-radius: 99px; font-size: .74rem; font-weight: 650; white-space: nowrap; }
+  .st-new { background: #E9EFF9; color: var(--color-blue); }
+  .st-packed { background: #FFF1D1; color: #8A5A00; }
+  .st-done { background: #E2F6EE; color: #0F7A58; }
+  .c-end { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+  .amt { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rowact { flex: none; height: 28px; display: grid; place-items: center; padding: 0 10px; border-radius: 8px; box-shadow: inset 0 0 0 1px #DEE2EA; font-size: .76rem; font-weight: 650; color: var(--color-ink-2); white-space: nowrap; }
+  .rowact.primary { background: var(--color-ink); color: #fff; box-shadow: none; }
+  .tfoot { display: flex; align-items: center; justify-content: space-between; padding: 11px 16px; border-top: 1px solid #EEF0F4; background: #FAFBFC; font-size: .82rem; color: var(--color-ink-2); }
+  .tfoot b { font-size: .96rem; color: var(--color-ink); font-variant-numeric: tabular-nums; }
+  @media (max-width: 899.98px) {
+    .o-tbl .th { display: none; }
+    .o-tbl .tr { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; }
+    .c-who { grid-column: 1; } .c-pay { grid-column: 1; } .c-ship { display: none; }
+    .st { grid-column: 2; grid-row: 1; justify-self: end; }
+    .c-end { grid-column: 2; grid-row: 2 / span 2; flex-direction: column; align-items: flex-end; justify-content: center; gap: 6px; }
+  }
+
+  /* ---------- products & stock ---------- */
+  .stock-wrap { display: grid; gap: 14px; }
+  @media (min-width: 1180px) { .stock-wrap { grid-template-columns: minmax(0, 1fr) 272px; align-items: start; } .stock-wrap .tbl { margin-top: 14px; } }
+  .s-tbl .th, .s-tbl .tr { grid-template-columns: minmax(0, 1.8fr) 108px 84px 136px; }
+  .c-prod { display: flex; align-items: center; gap: 11px; min-width: 0; }
+  .shot { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; background: #F7F8FA; box-shadow: inset 0 0 0 1px #EEF0F4; flex: none; }
+  .shot img { width: 32px; height: 32px; }
+  .c-prod span { display: grid; min-width: 0; }
+  .c-prod b { font-size: .9rem; font-weight: 650; }
+  .c-prod small { font-size: .76rem; color: #8A91A0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .c-cat span { display: inline-block; padding: 3px 9px; border-radius: 7px; background: #F0EBFC; color: #5B3FC4; font-size: .76rem; font-weight: 650; }
+  .c-price { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .c-stock { display: grid; gap: 6px; }
+  .sq { display: flex; align-items: center; gap: 7px; }
+  .sq b { font-size: .9rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .low { font-style: normal; padding: 2px 7px; border-radius: 6px; background: #FFECEC; color: #B4232A; font-size: .68rem; font-weight: 700; }
+  .meter { display: block; height: 5px; border-radius: 99px; background: #EDEFF4; overflow: hidden; }
+  .meter u { display: block; height: 100%; border-radius: 99px; background: var(--color-mint); }
+  .meter u.lowbar { background: #E8663C; }
+  @media (max-width: 899.98px) {
+    .s-tbl .th { display: none; }
+    .s-tbl .tr { grid-template-columns: minmax(0, 1fr) 120px; }
+    .c-cat { display: none; }
+    .c-price { grid-row: 1; grid-column: 2; justify-self: end; }
+    .c-stock { grid-column: 2; }
+  }
+  .aging { padding: 16px; border-radius: 13px; background: #FAF8FF; box-shadow: inset 0 0 0 1px #E7E0F7; }
+  .ag-h { display: flex; align-items: center; gap: 8px; font-size: .92rem; }
+  .ag-ic { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: #EDE6FC; color: #6B3FD4; }
+  .ag-h b { font-weight: 700; }
+  .ag-s { margin-top: 8px; font-size: .8rem; line-height: 1.45; color: var(--color-ink-2); }
+  .aging ul { margin-top: 12px; display: grid; gap: 1px; }
+  .aging li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid #E9E3F7; font-size: .82rem; color: var(--color-ink-2); }
+  .aging li b { color: var(--color-ink); font-variant-numeric: tabular-nums; }
+
+  /* ---------- sales overview ---------- */
+  .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 16px; border-radius: 13px; box-shadow: 0 0 0 1px #EBEEF3; overflow: hidden; }
+  .kpis > div { display: grid; gap: 2px; padding: 14px 16px; }
+  .kpis > div + div { border-left: 1px solid #EEF0F4; }
+  .kpis dt { font-size: .78rem; color: #8A91A0; }
+  .kpis dd { font-family: var(--font-display); font-size: clamp(1.4rem, 1.1rem + .9vw, 1.9rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  :global(:lang(bn)) .kpis dd { letter-spacing: 0; font-weight: 700; }
+
+  .sales-grid { display: grid; gap: 14px; margin-top: 14px; }
+  @media (min-width: 1100px) { .sales-grid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); } }
+  .chart { padding: 16px 16px 12px; border-radius: 13px; box-shadow: 0 0 0 1px #EBEEF3; }
+  .ch-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .ch-h b { font-size: .92rem; font-weight: 700; }
+  .ch-peak { font-size: .76rem; color: #8A91A0; font-variant-numeric: tabular-nums; }
+  .bars { display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; gap: 8px; height: 150px; margin-top: 14px; }
+  .cb { display: grid; grid-template-rows: 1fr auto; align-items: end; height: 100%; gap: 8px; text-align: center; }
+  .cb i { position: relative; display: block; align-self: end; border-radius: 7px 7px 3px 3px; background: #DCE4EF; transition: background-color .2s; }
+  .cb.now i { background: var(--color-blue); }
+  .cb:hover i { background: #B9C6DA; }
+  .cb.now:hover i { background: var(--color-blue-d); }
+  .cb em { position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% 0; padding: 3px 7px; border-radius: 6px; background: var(--color-ink); color: #fff; font-style: normal; font-size: .68rem; font-weight: 650; white-space: nowrap; opacity: 0; transition: opacity .18s; pointer-events: none; }
+  .cb:hover em { opacity: 1; }
+  .cb small { font-size: .7rem; color: #9AA1AF; }
+  .cb.now small { color: var(--color-ink); font-weight: 700; }
+
+  .split { display: grid; gap: 14px; align-content: start; }
+  @media (min-width: 560px) and (max-width: 1099.98px) { .split { grid-template-columns: 1fr 1fr; } }
+  .box { padding: 14px 16px; border-radius: 13px; box-shadow: 0 0 0 1px #EBEEF3; }
+  .bx-h { display: flex; align-items: center; gap: 8px; color: #8A91A0; }
+  .bx-h b { font-size: .88rem; font-weight: 700; color: var(--color-ink); }
+  .box ul { margin-top: 8px; display: grid; }
+  .box li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid #F2F4F7; font-size: .84rem; }
+  .bx-n { display: flex; align-items: center; gap: 8px; color: var(--color-ink-2); }
+  .box li b { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+</style>
+
+<script>
+  import { initToolTabs } from '../../scripts/tool-tabs';
+  initToolTabs();
+</script>

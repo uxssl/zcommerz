@@ -1,24 +1,39 @@
 ---
 /**
- * L · FAQ. Native <details> on hairlines, first one open, as in the product-team file.
- * Questions and answers verbatim.
+ * L · FAQ (landing). Redesigned 2026-11-10 at the user's request; /old keeps FaqV1.
+ * Left (sticky on desktop): heading, one line of lead, the trial action, so the column
+ * isn't an empty band under the heading.
+ * Right: native <details> sharing one name, so only one answer is open at a time (exclusive
+ * accordion). Closed questions are plain hairline rows; the open one sits on a soft white
+ * panel so the reader can see where they are. Height eases open where the browser supports
+ * ::details-content + interpolate-size; elsewhere it opens instantly. Questions and answers verbatim.
  */
-import { Plus } from '@lucide/astro';
+import { Plus, ArrowRight } from '@lucide/astro';
 import { faqHead, faqs } from '../../data/sections2';
+import { SIGNUP } from '../../data/sections';
+
+const lead = {
+  en: 'The short answers to what sellers ask before they start.',
+  bn: 'শুরুর আগে বিক্রেতারা যা জানতে চান, তার সংক্ষিপ্ত উত্তর।',
+};
+const cta = { en: 'Start free trial', bn: 'ফ্রি ট্রায়াল শুরু করুন' };
 ---
 <section id="faq" class="sec faq-sec" aria-labelledby="faq-title">
   <div class="page faq-grid">
     <div class="faq-head" data-sr>
       <h2 id="faq-title" data-bn={faqHead.bn}>{faqHead.en}</h2>
+      <p class="faq-lead" data-bn={lead.bn}>{lead.en}</p>
+      <a class="btn btn-primary" href={SIGNUP}><span data-bn={cta.bn}>{cta.en}</span><ArrowRight size={16} stroke-width={2} aria-hidden="true" /></a>
     </div>
+
     <div class="faq" data-sr>
       {faqs.map((f, i) => (
-        <details open={i === 0}>
+        <details name="faq" open={i === 0}>
           <summary>
-            <span data-bn={f.q.bn}>{f.q.en}</span>
-            <i aria-hidden="true"><Plus size={18} stroke-width={2} /></i>
+            <span class="q" data-bn={f.q.bn}>{f.q.en}</span>
+            <i aria-hidden="true"><Plus size={16} stroke-width={2.2} /></i>
           </summary>
-          <p data-bn={f.a.bn}>{f.a.en}</p>
+          <div class="a"><p data-bn={f.a.bn}>{f.a.en}</p></div>
         </details>
       ))}
     </div>
@@ -27,30 +42,64 @@ import { faqHead, faqs } from '../../data/sections2';
 
 <style>
   .faq-sec { padding: var(--sec-y) 0; background: var(--color-paper-2); }
-  /* heading beside the list rather than above it: the questions start at the top of the
-     section instead of after a band of empty paper */
+
   .faq-grid { display: grid; gap: var(--head-gap); }
   @media (min-width: 900px) {
     .faq-grid { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); column-gap: clamp(40px, 6vw, 96px); align-items: start; }
     .faq-head { position: sticky; top: 104px; }
   }
+
+  /* ---------- left: heading, lead, action ---------- */
+  .faq-head { display: grid; justify-items: start; }
   .faq-head h2 { font-size: var(--h2); font-weight: 800; line-height: 1.04; letter-spacing: -.035em; max-width: 12ch; }
   :global(:lang(bn)) .faq-head h2 { letter-spacing: 0; line-height: 1.22; font-weight: 700; }
-  .faq { border-top: 1px solid var(--color-ink); }
-  details { border-bottom: 1px solid var(--color-rule); }
+  .faq-lead { max-width: 30ch; margin-top: 18px; font-size: clamp(1rem, .96rem + .22vw, 1.1rem); line-height: 1.6; color: var(--color-ink-2); }
+  .faq-head .btn { margin-top: 22px; } /* same lead→action gap as SectionHead */
+
+  /* ---------- right: one open answer at a time ---------- */
+  .faq { display: grid; gap: 2px; }
+  details {
+    /* closed rows are flat hairlines (no rounded edges, so they don't read as cards) */
+    border-radius: 0; transition: background-color .3s, box-shadow .3s, border-radius .3s;
+    /* hairline between closed rows; the open panel drops it */
+    box-shadow: inset 0 -1px 0 var(--color-rule);
+  }
+  details[open] { border-radius: 16px; background: #fff; box-shadow: 0 1px 2px rgb(14 26 43 / .05), 0 0 0 1px rgb(14 26 43 / .04); }
+  /* the row above an open panel loses its hairline so the panel sits clean */
+  details:has(+ details[open]) { box-shadow: none; }
+
   summary {
     display: flex; align-items: center; justify-content: space-between; gap: 20px;
-    padding: 20px 0; cursor: pointer; list-style: none;
-    font-size: clamp(1rem, .95rem + .3vw, 1.14rem); font-weight: 650; line-height: 1.4; letter-spacing: -.012em;
+    padding: 18px 18px; cursor: pointer; list-style: none; border-radius: inherit;
+    font-size: clamp(1rem, .95rem + .3vw, 1.12rem); font-weight: 650; line-height: 1.4; letter-spacing: -.012em;
+    color: var(--color-ink); transition: color .2s;
   }
   :global(:lang(bn)) summary { letter-spacing: 0; line-height: 1.55; }
   summary::-webkit-details-marker { display: none; }
   summary:hover { color: var(--color-blue); }
-  summary i { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: var(--color-ink-2); box-shadow: inset 0 0 0 1px var(--color-rule); transition: transform .3s var(--ease-out-expo), background-color .2s, color .2s; }
-  details[open] summary i { transform: rotate(45deg); background: var(--color-ink); color: #fff; box-shadow: none; }
-  details p { max-width: 62ch; padding: 0 0 22px; font-size: .98rem; line-height: 1.6; color: var(--color-ink-2); }
-  @media (prefers-reduced-motion: no-preference) {
-    details[open] p { animation: faq-in .35s var(--ease-out-expo) both; }
+  summary:focus-visible { outline: 2px solid var(--color-blue); outline-offset: -2px; }
+
+  summary i {
+    flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+    background: #fff; color: var(--color-ink-2);
+    transition: transform .35s var(--ease-out-expo), background-color .25s, color .25s;
   }
-  @keyframes faq-in { from { opacity: 0; transform: translateY(-6px); } }
+  summary:hover i { color: var(--color-blue); }
+  details[open] summary i { transform: rotate(45deg); background: var(--color-blue); color: #fff; }
+
+  .a p { max-width: 62ch; padding: 0 18px 22px; font-size: .98rem; line-height: 1.65; color: var(--color-ink-2); }
+
+  /* smooth height where supported (Chromium); other browsers open instantly */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (interpolate-size: allow-keywords) {
+      .faq { interpolate-size: allow-keywords; }
+      details::details-content {
+        block-size: 0; overflow: clip;
+        transition: block-size .4s var(--ease-out-expo), content-visibility .4s allow-discrete;
+      }
+      details[open]::details-content { block-size: auto; }
+    }
+    details[open] .a p { animation: faq-in .4s var(--ease-out-expo) both; }
+  }
+  @keyframes faq-in { from { opacity: 0; transform: translateY(-4px); } }
 </style>

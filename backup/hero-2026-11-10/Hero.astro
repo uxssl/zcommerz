@@ -1,0 +1,278 @@
+---
+/**
+ * Hero — title block on top (title left, lead + CTAs right); a wide video frame below.
+ * Revised 2026-11-10: the phone + browser stage moved out (the Facebook scene lives in #video),
+ * so the hero no longer repeats the product mockups used further down. The frame shows a seller
+ * at work: a silent loop plays in place; clicking it (or "Watch the demo") opens the full video.
+ * Files are picked up automatically when present (prompts: docs/05-hero-video-prompts.md):
+ *   src/assets/videos/hero-loop.mp4 · src/assets/videos/hero-full.mp4 · poster public/images/hero-poster.jpg
+ * Without them the frame is the still poster and no play controls are shown.
+ * Proof (stats + partners) spans the full width below.
+ */
+import Logo from './ui/Logo.astro';
+import { ArrowRight, Play, Pause } from '@lucide/astro';
+import { heroHeadline } from '../data/hero';
+import { SIGNUP_URL } from '../data/logos';
+
+const h = heroHeadline.en;
+// Verified against the product-team file's stats block: 36+ channels, 20 tools (5+4+2+2+3+2+2), 7-day trial
+const stats = [
+  { n: '36+', nbn: '৩৬+', l: 'Payment channels', lbn: 'পেমেন্ট চ্যানেল' },
+  { n: '20', nbn: '২০', l: 'Dashboard tools', lbn: 'ড্যাশবোর্ড টুল' },
+  { n: '7 days', nbn: '৭ দিন', l: 'Free trial', lbn: 'ফ্রি ট্রায়াল' },
+];
+const icon = { 'stroke-width': 2, 'aria-hidden': 'true' } as const;
+
+// Hero media: use a video only if the file exists, so a missing video never shows a dead control.
+// The glob matches nothing (and imports nothing) until the files are added.
+const vids = import.meta.glob<string>('../assets/videos/*.mp4', { eager: true, query: '?url', import: 'default' });
+const media = {
+  poster: '/images/hero-poster.jpg',
+  loop: vids['../assets/videos/hero-loop.mp4'] ?? null,
+  full: vids['../assets/videos/hero-full.mp4'] ?? null,
+};
+---
+<section class="hero" aria-labelledby="hero-title" data-hero>
+  <div class="page hero-grid">
+    <!-- Promise -->
+    <div class="hero-copy">
+
+      <h1 id="hero-title" class="hero-title" data-h1 data-reveal data-h="title">
+        <span class="sr-only" data-h1-sr>{h.pre} {h.words.join(', ')}</span>
+        <span aria-hidden="true" data-h1-visual>{h.pre} <span class="rot"><span class="rot-words">{h.words.map((w) => <span class="rw">{w}</span>)}</span><svg class="rot-line" viewBox="0 0 300 18" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12.5C60 6 150 4 297 8.5" /></svg></span></span>
+      </h1>
+
+      <div class="hero-side">
+      <p class="hero-lead" data-reveal data-h="lead" data-bn="থিম বেছে নিন, পেমেন্ট নিন, পাঠাও বা ই-কুরিয়ারে ডেলিভারি দিন, আর দারাজ ও হোয়াটসঅ্যাপেও বিক্রি করুন, সবকিছু এক ড্যাশবোর্ড থেকে।">Pick a theme, take payments, ship with Pathao or eCourier, and sell on Daraz and WhatsApp, all from one dashboard.</p>
+
+      <div class="hero-cta" data-reveal data-h="cta">
+        <a class="btn btn-primary btn-xl" href={SIGNUP_URL}>
+          <span data-bn="৭ দিনের ফ্রি ট্রায়াল শুরু করুন">Start 7-day free trial</span>
+          <span class="arrow"><ArrowRight size={18} {...icon} /></span>
+        </a>
+        <a class="btn-quiet" href="#video" data-hm-open={media.full ? '' : undefined}>
+          <span class="play-dot"><Play size={12} {...icon} fill="currentColor" /></span>
+          <span class="lbl" data-bn="ডেমো দেখুন">Watch the demo</span>
+        </a>
+      </div>
+      </div>
+    </div>
+
+    <!-- Media: a seller at work. Silent loop in place; full video on click -->
+    <div class="hero-product">
+      <div class="hero-media" data-reveal data-h="visual" data-hero-media>
+        <img class="hm-poster" src={media.poster} width="1536" height="1024" fetchpriority="high" decoding="async"
+          alt="A seller packing an order at her home studio, laptop open beside her" data-bn-alt="ঘরের স্টুডিওতে একজন বিক্রেতা অর্ডার প্যাক করছেন, পাশে খোলা ল্যাপটপ" />
+        {media.loop && (
+          <video class="hm-loop" muted loop playsinline preload="metadata" poster={media.poster} aria-hidden="true" tabindex="-1" data-hm-loop>
+            <source src={media.loop} type="video/mp4" />
+          </video>
+        )}
+        {media.full && (
+          <Fragment>
+            <button type="button" class="hm-cover" data-hm-open aria-label="Play the full video" data-bn-aria-label="পুরো ভিডিও চালান"></button>
+            <span class="hm-play" aria-hidden="true">
+              <span class="hm-play-ic"><Play size={14} {...icon} fill="currentColor" /></span>
+              <span data-bn="পুরো ভিডিও দেখুন">Watch the full video</span>
+            </span>
+          </Fragment>
+        )}
+        {media.loop && (
+          <button type="button" class="hm-toggle" data-hm-toggle aria-label="Pause background video" data-bn-aria-label="ব্যাকগ্রাউন্ড ভিডিও থামান">
+            <span class="i-pause"><Pause size={13} {...icon} fill="currentColor" /></span>
+            <span class="i-play"><Play size={13} {...icon} fill="currentColor" /></span>
+          </button>
+        )}
+      </div>
+    </div>
+
+    <!-- Proof: full width under both columns -->
+    <div class="proof" data-reveal data-h="proof">
+      <dl class="stats">
+        {stats.map((s) => (
+          <div>
+            <dt data-bn={s.lbn}>{s.l}</dt>
+            <dd data-bn={s.nbn}>{s.n}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="works">
+        <p class="micro" data-bn="যেসব সার্ভিসের সঙ্গে কাজ করে">Works with</p>
+        <ul aria-label="Partners" data-bn-aria-label="পার্টনার">
+          <li class="txt">SSLCOMMERZ</li>
+          <li class="txt" data-bn="মোবাইল ওয়ালেট">Mobile wallets</li>
+          <li class="txt" data-bn="কার্ড">Cards</li>
+          <li class="txt">Bangla QR</li>
+          <li><Logo k="pathao" h="22px" label /></li>
+          <li><Logo k="ecourier" h="15px" label /></li>
+          <li><Logo k="daraz" h="19px" label /></li>
+          <li><Logo k="facebook" h="22px" label /></li>
+          <li><Logo k="messenger" h="22px" label /></li>
+          <li><Logo k="whatsapp" h="22px" label /></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{media.full && (
+  <dialog class="hm-dialog" data-hm-dialog aria-label="Zcommerz video" data-bn-aria-label="জিকমার্জ ভিডিও">
+    <button type="button" class="hm-close" data-hm-close aria-label="Close video" data-bn-aria-label="ভিডিও বন্ধ করুন">×</button>
+    <video class="hm-full" controls playsinline preload="none" poster={media.poster} data-hm-full>
+      <source src={media.full} type="video/mp4" />
+    </video>
+  </dialog>
+)}
+
+<style>
+  .hero {
+    --pad: 20px;
+    --bleed: max(var(--pad), calc((100vw - var(--container-page)) / 2 + var(--pad)));
+    position: relative;
+    overflow: clip;
+    padding: 24px 0 0;
+    background: var(--color-paper);
+  }
+  @media (min-width: 768px) { .hero { --pad: 32px; padding-top: 32px; } }
+
+  /* ---------- Grid ---------- */
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .hero-copy { display: grid; justify-items: start; }
+  .hero-product { margin-top: 32px; }
+  @media (min-width: 768px) { .hero-product { margin-top: 36px; } }
+
+  /* Title block (≥1024): title left; subtitle + buttons stacked right.
+     Subtitle top aligns with the title's top, buttons' bottom with the title's last line. */
+  @media (min-width: 1024px) {
+    .hero-copy {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      column-gap: clamp(40px, 6vw, 96px);
+      align-items: stretch;
+    }
+    .hero-copy .hero-title { margin-top: 0; max-width: 12.5em; }
+    .hero-side { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; padding: .55em 0 .2em; }
+    .hero-side .hero-lead, .hero-side .hero-cta { margin-top: 0; }
+  }
+  @media (min-width: 1024px) and (max-width: 1279.98px) {
+    .hero-copy { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 40px; } /* buttons stay on one row */
+  }
+
+  /* ---------- Media frame ---------- */
+  .hero-media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--color-paper-2);
+    box-shadow: 0 0 0 1px rgb(14 26 43 / .06), 0 30px 60px -36px rgb(7 11 36 / .35);
+    isolation: isolate;
+  }
+  @media (min-width: 768px) { .hero-media { aspect-ratio: 16 / 9; border-radius: 20px; } }
+  @media (min-width: 1024px) { .hero-media { aspect-ratio: 2.2 / 1; } }
+  .hm-poster, .hm-loop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+  .hm-loop { opacity: 0; transition: opacity .6s; }
+  .hm-loop.is-playing { opacity: 1; }
+
+  .hm-cover { position: absolute; inset: 0; z-index: 1; cursor: pointer; }
+  .hm-cover:focus-visible { outline: 3px solid var(--color-blue); outline-offset: -3px; border-radius: inherit; }
+  .hm-play {
+    position: absolute; left: 16px; bottom: 16px; z-index: 2; pointer-events: none;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 7px 16px 7px 7px; border-radius: 99px;
+    background: #fff; color: var(--color-ink); font-weight: 650; font-size: .95rem;
+    box-shadow: 0 10px 24px -14px rgb(7 11 36 / .5);
+    transition: transform .3s var(--ease-out-expo);
+  }
+  @media (min-width: 768px) { .hm-play { left: 24px; bottom: 24px; } }
+  .hm-play-ic { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--color-blue); color: #fff; }
+  .hm-play-ic :global(svg) { translate: 1px 0; }
+  .hm-cover:hover ~ .hm-play, .hm-cover:focus-visible ~ .hm-play { transform: translateY(-2px); }
+
+  .hm-toggle {
+    position: absolute; right: 14px; bottom: 14px; z-index: 2;
+    display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%;
+    background: rgb(255 255 255 / .85); color: var(--color-ink); cursor: pointer;
+    backdrop-filter: blur(6px);
+  }
+  @media (min-width: 768px) { .hm-toggle { right: 22px; bottom: 22px; } }
+  .hm-toggle .i-play { display: none; }
+  .hero-media.is-paused .hm-toggle .i-play { display: block; }
+  .hero-media.is-paused .hm-toggle .i-pause { display: none; }
+  .hm-toggle[hidden] { display: none; }
+
+  .hm-dialog {
+    width: min(1100px, calc(100vw - 32px), calc((100dvh - 120px) * 16 / 9)); max-width: none; margin: auto; /* the CSS reset zeroes dialog margins; auto re-centres it */
+    padding: 0; border: 0; border-radius: 16px;
+    background: #000; overflow: visible;
+  }
+  .hm-dialog::backdrop { background: rgb(7 11 36 / .78); }
+  .hm-full { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px; background: #000; }
+  .hm-close {
+    position: absolute; top: -46px; right: 0; width: 38px; height: 38px; border-radius: 50%;
+    background: #fff; color: var(--color-ink); font-size: 1.5rem; line-height: 1; cursor: pointer;
+  }
+
+  /* ---------- Copy ---------- */
+
+  .hero-title {
+    margin-top: 0;
+    font-size: clamp(2.35rem, 1.2rem + 4.6vw, 4rem);
+    font-weight: 800;
+    font-stretch: 100%; /* standard Bricolage Grotesque, as in the product-team file */
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    max-width: 13ch;
+  }
+  @media (min-width: 640px) and (max-width: 1023.98px) { .hero-title { max-width: 17ch; } }
+  :global(:lang(bn)) .hero-title { font-size: clamp(2.1rem, 1.1rem + 4vw, 3.5rem); font-weight: 700; font-stretch: 100%; line-height: 1.2; letter-spacing: 0; max-width: 15ch; }
+  .hero-title :global(.rot) { position: relative; display: inline-block; vertical-align: top; }
+  .hero-title :global(.rot-words) { display: inline-grid; overflow: hidden; padding: 0 .06em .16em 0; margin-bottom: -.16em; }
+  .hero-title :global(.rw) { grid-area: 1 / 1; color: var(--color-blue); white-space: nowrap; font-stretch: 100%; }
+  .hero-title :global(.rw + .rw) { visibility: hidden; }
+  :global(html.motion-ready) .hero-title :global(.rw + .rw) { visibility: visible; }
+  .hero-title :global(.rot-line) { position: absolute; left: 0; bottom: -.03em; width: calc(100% - .06em); height: .15em; overflow: visible; }
+  .hero-title :global(.rot-line path) { fill: none; stroke: var(--color-mango); stroke-width: 6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+
+  .hero-lead { margin-top: 22px; max-width: 31rem; font-size: clamp(1.05rem, 1rem + .3vw, 1.2rem); line-height: 1.55; color: var(--color-ink-2); }
+  :global(:lang(bn)) .hero-lead { line-height: 1.7; }
+
+  .hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin-top: 30px; }
+  .hero-cta > a { margin: 0; }
+  .btn-xl { min-height: 54px; padding: 0 1.5rem 0 1.6rem; font-size: 1.04rem; box-shadow: 0 10px 24px -14px rgb(42 93 168 / .8); }
+  .btn-xl .arrow { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #fff; color: var(--color-blue); transition: transform .3s var(--ease-out-expo); }
+  .btn-xl:hover .arrow { transform: translateX(3px); }
+  .btn-quiet { display: inline-flex; align-items: center; gap: 10px; min-height: 54px; line-height: 1; font-weight: 600; color: var(--color-ink); }
+  .btn-quiet .play-dot { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--color-ink); transition: background-color .25s, color .25s; }
+  .btn-quiet .play-dot :global(svg) { translate: 1px 0; }
+  .btn-quiet:hover .play-dot { background: var(--color-ink); color: #fff; }
+  .btn-quiet .lbl { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat; transition: background-size .35s var(--ease-out-expo); }
+  .btn-quiet:hover .lbl { background-size: 100% 1.5px; }
+  @media (max-width: 479.98px) { .hero-cta .btn-xl { flex: 1 1 100%; justify-content: space-between; } }
+
+  /* ---------- Proof band: stats row / hairline / one row of partners ---------- */
+  .proof { margin-top: 28px; padding-bottom: 32px; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stats > div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 4px; padding: 18px 12px 18px 0; }
+  .stats > div + div { padding-left: 16px; }
+  @media (min-width: 768px) { .stats > div { padding: 20px 24px 20px 0; } .stats > div + div { padding-left: 32px; } }
+  .stats dd { white-space: nowrap; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 1.1rem + 1.4vw, 2.2rem); letter-spacing: -.035em; line-height: 1; font-variant-numeric: tabular-nums; }
+  :global(:lang(bn)) .stats dd { letter-spacing: 0; font-weight: 700; }
+  .stats dt { color: var(--color-ink-2); font-size: .88rem; }
+
+  .works { display: grid; gap: 14px; padding-top: 18px; }
+  .works > p { color: #8A91A0; white-space: nowrap; }
+  @media (min-width: 1024px) { .works { grid-template-columns: auto 1fr; align-items: center; gap: 48px; } }
+  .works ul { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+  @media (min-width: 1024px) { .works ul { display: flex; justify-content: space-between; gap: 16px; } }
+  /* one quiet tone; brand colour returns on hover */
+  .works li { display: grid; place-items: center; height: 28px; filter: grayscale(1) brightness(.45); opacity: .55; transition: filter .25s, opacity .25s; }
+  .works li:hover { filter: none; opacity: 1; }
+  .works li.txt { font-family: var(--font-display); font-weight: 800; font-size: .92rem; letter-spacing: -.01em; color: var(--color-ink); white-space: nowrap; }
+</style>
+
+<script>
+  import { initHero } from '../scripts/hero';
+  import { initHeroMedia } from '../scripts/hero-media';
+  initHero();
+  initHeroMedia();
+</script>

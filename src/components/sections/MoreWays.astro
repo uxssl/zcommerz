@@ -5,13 +5,24 @@
  * set over the subject — the type has its own column.
  * Nothing is claimed about the person in the picture — no quote, no name, no metric.
  * Strings and destinations verbatim from the product-team file.
+ * Props (2026-11-10): `pick` shows a subset of rows, `still` drops the photo drift and shortens the
+ * photo. On / it sits between Management and Sell & chat as the page's still, human break.
  */
 import { ArrowUpRight } from '@lucide/astro';
 import { moreHead, moreRows } from '../../data/sections2';
+
+interface Props {
+  /** indexes into moreRows to show (default: all) */
+  pick?: number[];
+  /** no scroll drift on the photo, shorter photo: a still break between animated sections */
+  still?: boolean;
+}
+const { pick, still = false } = Astro.props;
+const rows = pick ? pick.map((i) => moreRows[i]) : moreRows;
 ---
-<section id="more" class="sec more-sec" aria-labelledby="more-title">
+<section id="more" class:list={['sec', 'more-sec', still && 'is-still']} aria-labelledby="more-title">
   <div class="page more">
-    <figure class="shot" data-more-shot>
+    <figure class="shot" data-more-shot data-still={still ? '' : undefined}>
       <img src="/images/merchant.jpg" width="1800" height="1200" loading="lazy" decoding="async"
         alt="A Bangladeshi entrepreneur at her desk, packing orders beside a rail of clothing"
         data-bn-alt="নিজের ডেস্কে বসে অর্ডার প্যাক করছেন একজন বাংলাদেশি উদ্যোক্তা"
@@ -21,7 +32,7 @@ import { moreHead, moreRows } from '../../data/sections2';
     <div class="body">
       <h2 id="more-title" data-sr data-bn={moreHead.bn}>{moreHead.en}</h2>
       <ol class="rows" data-sr data-sr-stagger>
-        {moreRows.map((r, i) => (
+        {rows.map((r, i) => (
           <li>
             <a href={r.href}>
               <span class="n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
@@ -52,6 +63,7 @@ import { moreHead, moreRows } from '../../data/sections2';
   }
   @media (min-width: 640px) { .shot { aspect-ratio: 16 / 10; } }
   @media (min-width: 1000px) { .shot { aspect-ratio: auto; min-height: clamp(420px, 44vw, 600px); } }
+  @media (min-width: 1000px) { .is-still .shot { min-height: clamp(340px, 30vw, 440px); } }
   .shot img {
     display: block; width: 100%; height: 100%; object-fit: cover;
     /* keeps her and the laptop in frame as the column narrows */
@@ -92,7 +104,7 @@ import { moreHead, moreRows } from '../../data/sections2';
   gsap.registerPlugin(ScrollTrigger);
   const shot = document.querySelector<HTMLElement>('[data-more-shot]');
   const img = document.querySelector<HTMLElement>('[data-more-img]');
-  if (shot && img) {
+  if (shot && img && !shot.hasAttribute('data-still')) {
     const mm = gsap.matchMedia();
     // a slow drift inside the frame: depth without moving the layout
     mm.add(`${MOTION_OK} and (min-width: 640px)`, () => {

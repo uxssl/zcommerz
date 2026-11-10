@@ -4,7 +4,8 @@
  * server-rendered text. Switching swaps text in place, updates <html lang>, and
  * emits `langchange` so scripted components can re-render their own strings.
  *
- * Additions over the original: `data-bn-aria-label` for translated accessible names.
+ * Additions over the original: `data-bn-aria-label` for translated accessible names,
+ * `data-bn-alt` for image alt text.
  */
 export type Lang = 'en' | 'bn';
 
@@ -22,6 +23,9 @@ export function captureEnglish(root: ParentNode = document) {
   $$('[data-bn-aria-label]', root).forEach((el) => {
     if (el.dataset.enAriaLabel === undefined) el.dataset.enAriaLabel = el.getAttribute('aria-label') ?? '';
   });
+  $$('[data-bn-alt]', root).forEach((el) => {
+    if (el.dataset.enAlt === undefined) el.dataset.enAlt = el.getAttribute('alt') ?? '';
+  });
 }
 
 export function applyLang(root: ParentNode = document) {
@@ -31,6 +35,10 @@ export function applyLang(root: ParentNode = document) {
   $$('[data-bn-aria-label]', root).forEach((el) => {
     const v = current === 'bn' ? el.dataset.bnAriaLabel : el.dataset.enAriaLabel;
     if (v) el.setAttribute('aria-label', v);
+  });
+  $$('[data-bn-alt]', root).forEach((el) => {
+    const v = current === 'bn' ? el.dataset.bnAlt : el.dataset.enAlt;
+    if (v) el.setAttribute('alt', v);
   });
 }
 

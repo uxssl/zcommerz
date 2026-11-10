@@ -14,19 +14,23 @@ import { Check, X, ArrowRight } from '@lucide/astro';
 import { priceHead as P, plans, planFeats, featGroups } from '../../data/sections2';
 import { SIGNUP } from '../../data/sections';
 
+/** `omit` (landing, 2026-11-10): feature groups to leave out; / drops the long Dashboard lines
+ *  at the user's request, /old shows everything. */
+const { omit = [], headAlign = 'end' } = Astro.props as { omit?: string[]; headAlign?: 'end' | 'center' };
+
 /** The groups this plan actually has lines for, keeping each group's order. */
 const groupsFor = (feats: string[]) => {
   // a plan lists a key as "k" or "!k" (not included); keep the clean key for lookups
   const has = (k: string) => (feats.some((f) => f.replace(/^!/, '') === k) ? k : undefined);
   return featGroups
     .map((g) => ({ ...g, items: g.keys.map(has).filter(Boolean) as string[] }))
-    .filter((g) => g.items.length);
+    .filter((g) => g.items.length && !omit.includes(g.id));
 };
 const isDash = (k: string) => k.startsWith('dash');
 ---
 <section id="pricing" class="sec price-sec" aria-labelledby="price-title">
   <div class="page">
-    <SectionHead id="price-title" h2={P.h2} lead={P.lead}>
+    <SectionHead id="price-title" h2={P.h2} lead={P.lead} align={headAlign}>
       <div class="bill" role="group" aria-label={P.billing.en} data-bn-aria-label={P.billing.bn} data-bill>
         <button type="button" data-v="m" aria-pressed="true" data-bn={P.monthly.bn}>{P.monthly.en}</button>
         <button type="button" data-v="y" aria-pressed="false"><span data-bn={P.yearly.bn}>{P.yearly.en}</span><em>−15%</em></button>

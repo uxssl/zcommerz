@@ -8,9 +8,13 @@
  *   0  phone = Facebook page   · window = store builds, then the finished store unmasks
  *   1  phone = store on mobile · window = same store, live (theme colours cycle)
  *   2  phone = order alerts    · window = merchant order list
- *   3  phone = Pathao tracking · window = checkout, paid with bKash
- * The resting/idle frame (no JS, reduced motion, before play) is the END of scene 0:
- * Facebook page, the seam button done, and a finished storefront.
+ *   3  phone = Pathao tracking · window = checkout, paid by mobile wallet, secured by SSLCOMMERZ
+ *      (the gateway row was added 2026-11-10 at the user's request; SSLCOMMERZ is named as the
+ *      gateway in every payment list, per the branding rule)
+ *   4  phone = Daraz shop      · window = same build as scene 0 (shared elements carry data-scene="0 4")
+ * `scenes` picks which of these a stage carries (hero: 1–3; Facebook section: 0).
+ * The resting/idle frame (no JS, reduced motion, before play) is the END of the first scene
+ * (scene 0: Facebook page, seam button done, finished storefront; scene 1: the live storefront).
  * Copy, products and prices are verbatim from the product-team file (sample data).
  */
 import Logo from '../ui/Logo.astro';
@@ -39,32 +43,43 @@ const track = [
   { en: 'Delivered', bn: 'পৌঁছে গেছে' },
 ];
 const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
+
+interface Props {
+  /** Which of the four scenes this stage carries (original indices). The first one is the resting frame. */
+  scenes?: number[];
+}
+const { scenes = [0, 1, 2, 3] } = Astro.props;
+const has = (n: number) => scenes.includes(n);
+// Scenes 0 (Facebook) and 4 (Daraz) are the same "build" story with a different phone screen:
+// the website skeleton, the seam button, the travelling photos and the cursor belong to both.
+const buildIds = [0, 4].filter(has).join(' ');
+const hasBuild = buildIds !== '';
 ---
-<div class="stage" data-tour-stage>
+<div class:list={['stage', !hasBuild && 'no-seam']} data-tour-stage data-scenes={scenes.join(',')} data-rest={scenes[0]}>
   <!-- ================= Browser window ================= -->
   <div class="win" data-a="win">
     <div class="win-bar">
       <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="nav-glyphs" aria-hidden="true"><ChevronLeft {...icon} /><ChevronRight {...icon} /></span>
       <span class="url-slot">
-        <span class="url" data-scene="0"><Lock {...icon} /><span>xyzstore.zcommerz.com</span></span>
-        <span class="url" data-scene="1"><Lock {...icon} /><span data-a="url">xyzstore.zcommerz.com</span></span>
-        <span class="url" data-scene="2"><Lock {...icon} /><span>merchant.zcommerz.com</span></span>
-        <span class="url" data-scene="3"><Lock {...icon} /><span>xyzstore.zcommerz.com</span></span>
+        {hasBuild && <span class="url" data-scene={buildIds}><Lock {...icon} /><span>xyzstore.zcommerz.com</span></span>}
+        {has(1) && <span class="url" data-scene="1"><Lock {...icon} /><span data-a="url">xyzstore.zcommerz.com</span></span>}
+        {has(2) && <span class="url" data-scene="2"><Lock {...icon} /><span>merchant.zcommerz.com</span></span>}
+        {has(3) && <span class="url" data-scene="3"><Lock {...icon} /><span>xyzstore.zcommerz.com</span></span>}
       </span>
       <span class="live-slot">
-        <span class="live" data-scene="1"><span data-a="live"><i></i><span data-bn="লাইভ">Live</span></span></span>
-        <span class="live" data-scene="3"><span><i></i><span data-bn="লাইভ">Live</span></span></span>
+        {has(1) && <span class="live" data-scene="1"><span data-a="live"><i></i><span data-bn="লাইভ">Live</span></span></span>}
+        {has(3) && <span class="live" data-scene="3"><span><i></i><span data-bn="লাইভ">Live</span></span></span>}
       </span>
     </div>
 
     <div class="win-body">
-      <!-- 0 · Store builds from the page; ends on the finished storefront -->
-      <div class="ws" data-scene="0">
+      {hasBuild && (<Fragment><!-- 0/4 · Store builds from the page; ends on the finished storefront -->
+      <div class="ws" data-scene={buildIds}>
         <div class="sf sf-skel">
           <div class="sf-head"><span class="sk sk-logo"></span><span class="sk-links"><span class="sk"></span><span class="sk"></span><span class="sk"></span></span><span class="sf-icons"><span class="sk sk-ic"></span><span class="sk sk-ic"></span></span></div>
           <div class="sf-ban sk-ban">
-            <span class="ghost-text" data-bn="স্টোর বানালে এখানে দেখা যাবে">Your store appears here</span>
+            <span class="ghost-text" data-bn="অনলাইন বিজনেস বানালে এখানে দেখা যাবে">Your online business appears here</span>
             <span class="sf-ban-art"><span class="sk sk-disc"></span></span>
           </div>
           <div class="sf-grid">
@@ -79,15 +94,15 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
           <div class="sf-pay"><span class="sk sk-chip"></span><span class="sk sk-chip"></span><span class="sk sk-chip"></span></div>
         </div>
         <div class="sf store built" data-a="built"><Storefront /></div>
-      </div>
+      </div></Fragment>)}
 
-      <!-- 1 · Live storefront -->
+      {has(1) && (<Fragment><!-- 1 · Live storefront -->
       <div class="ws sf store" data-scene="1" data-a="store">
         <Storefront animated />
         <div class="hint" data-a="hint"><span data-bn="থিম বদলাচ্ছে…">Switching themes…</span></div>
-      </div>
+      </div></Fragment>)}
 
-      <!-- 2 · Merchant orders -->
+      {has(2) && (<Fragment><!-- 2 · Merchant orders -->
       <div class="ws md" data-scene="2" data-enter="wipe">
         <nav class="md-side" aria-hidden="true">
           <img src="/assets/logos/leaf.svg" alt="" width="20" height="20" />
@@ -107,9 +122,9 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
           </div>
           <div class="total" data-a="total"><small data-bn="আজকের বিক্রি">Today's sales</small><b>৳2,820</b></div>
         </div>
-      </div>
+      </div></Fragment>)}
 
-      <!-- 3 · Checkout -->
+      {has(3) && (<Fragment><!-- 3 · Checkout -->
       <div class="ws sf store co-wrap" data-scene="3" data-enter="wipe">
         <div class="sf-head">
           <b class="sf-brand"><img src="/assets/logos/leaf.svg" alt="" width="20" height="20" />SSL Organic BD</b>
@@ -124,9 +139,10 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
             <div class="pc" data-a="pc" data-bn="কার্ড">Cards</div>
             <div class="pc" data-a="pc">Bangla QR</div>
           </div>
+          <div class="gw" data-a="gw"><Lock {...icon} /><span data-bn="নিরাপদ পেমেন্ট:">Secured by</span><b class="gw-ssl">SSLCOMMERZ</b></div>
           <div class="paid" data-a="paid"><Check {...icon} /><span data-bn="পেমেন্ট পাওয়া গেছে">Payment received</span></div>
         </div>
-      </div>
+      </div></Fragment>)}
     </div>
   </div>
 
@@ -135,7 +151,7 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
     <div class="screen">
       <span class="island" aria-hidden="true"></span>
 
-      <!-- 0 · Facebook page -->
+      {has(0) && (<Fragment><!-- 0 · Facebook page -->
       <div class="ps ps-fb" data-scene="0">
         <div class="fb-top"><Logo k="facebook" h="7.5cqw" label /><span class="fb-search"></span></div>
         <div class="fb-cover"></div>
@@ -153,9 +169,27 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
             </li>
           ))}
         </ul>
-      </div>
+      </div></Fragment>)}
 
-      <!-- 1 · Same store on mobile -->
+      {has(4) && (<Fragment><!-- 4 · Daraz shop (same products) -->
+      <div class="ps ps-dz" data-scene="4">
+        <div class="dz-top"><Logo k="daraz" h="5cqw" label /><span class="dz-search"></span></div>
+        <div class="dz-shop">
+          <span class="dz-av"><img src="/assets/logos/leaf.svg" alt="" width="40" height="40" /></span>
+          <span class="dz-name"><b>SSL Organic BD</b><small data-bn="দারাজ শপ">Daraz shop</small></span>
+        </div>
+        <ul class="dz-grid">
+          {products.map((p) => (
+            <li data-a="post">
+              <span class="th"><img src={`/assets/products/${p.img}.svg`} alt="" width="40" height="40" data-a="thumb" /></span>
+              <b>{p.fb}</b>
+              <small>{p.price}</small>
+            </li>
+          ))}
+        </ul>
+      </div></Fragment>)}
+
+      {has(1) && (<Fragment><!-- 1 · Same store on mobile -->
       <div class="ps ps-store store" data-scene="1" data-a="mstore">
         <div class="m-head"><b><img src="/assets/logos/leaf.svg" alt="" width="16" height="16" />SSL Organic BD</b><span aria-hidden="true"><ShoppingBag {...icon} /></span></div>
         <div class="m-ban" data-a="mban">
@@ -172,9 +206,9 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
             </div>
           ))}
         </div>
-      </div>
+      </div></Fragment>)}
 
-      <!-- 2 · Order notifications -->
+      {has(2) && (<Fragment><!-- 2 · Order notifications -->
       <div class="ps ps-notes" data-scene="2" data-enter="wipe">
         {notes.map((n) => (
           <div class="note" data-a="note">
@@ -182,9 +216,9 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
             <span class="n-txt"><b data-bn="নতুন অর্ডার">New order</b><small>{n.sub}</small></span>
           </div>
         ))}
-      </div>
+      </div></Fragment>)}
 
-      <!-- 3 · Delivery -->
+      {has(3) && (<Fragment><!-- 3 · Delivery -->
       <div class="ps ps-trk" data-scene="3" data-enter="wipe">
         <div class="ph"><b data-bn="ডেলিভারি">Delivery</b><Logo k="pathao" h="7.5cqw" label /></div>
         <div class="m-order" data-a="morder"><span>#1048 · Honey ×2</span><b>৳1,300</b></div>
@@ -194,26 +228,26 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
             {track.map((t) => <li data-a="tli"><i></i><span data-bn={t.bn}>{t.en}</span></li>)}
           </ol>
         </div>
-      </div>
+      </div></Fragment>)}
     </div>
   </div>
 
-  <!-- ================= The seam (scene 0): the product's core action between the two devices ================= -->
-  <span class="seam" data-scene="0">
+  {hasBuild && (<Fragment><!-- ================= The seam (scenes 0 and 4): the product's core action between the two devices ================= -->
+  <span class="seam" data-scene={buildIds}>
     <span class="thread" aria-hidden="true"><i data-a="thread"></i></span>
     <span class="seam-btn" data-a="btn">
       <span class="fill" data-a="fill" aria-hidden="true"></span>
-      <span class="lbl" data-bn="স্টোর বানান">Build my store</span>
+      <span class="lbl" data-bn="অনলাইন বিজনেস বানান">Build my online business</span>
       <span class="ok" data-a="ok" aria-hidden="true"><Check size={14} stroke-width={3} /></span>
     </span>
   </span>
 
   <!-- Scene 0 overlays: product photos travel across the seam; cursor presses the button -->
-  <span class="fly-layer" data-scene="0" aria-hidden="true">
+  <span class="fly-layer" data-scene={buildIds} aria-hidden="true">
     {products.map((p) => <img src={`/assets/products/${p.img}.svg`} alt="" width="64" height="64" data-a="fly" />)}
   </span>
-  <span class="rip" data-scene="0"><i data-a="rip"></i></span>
-  <svg class="cur" data-scene="0" viewBox="0 0 24 24" aria-hidden="true"><path data-a="cur" d="M5 3l14 7.5-6 1.8-2.4 6.2L5 3z" fill="#fff" stroke="#0E1A2B" stroke-width="1.4" stroke-linejoin="round"/></svg>
+  <span class="rip" data-scene={buildIds}><i data-a="rip"></i></span>
+  <svg class="cur" data-scene={buildIds} viewBox="0 0 24 24" aria-hidden="true"><path data-a="cur" d="M5 3l14 7.5-6 1.8-2.4 6.2L5 3z" fill="#fff" stroke="#0E1A2B" stroke-width="1.4" stroke-linejoin="round"/></svg></Fragment>)}
 </div>
 
 <style is:global>
@@ -280,7 +314,12 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
   .stage .island { position: absolute; top: 2.4%; left: 50%; width: 6.5%; aspect-ratio: 1; translate: -50% 0; border-radius: 50%; background: #0b0e16; box-shadow: inset 0 0 0 1.5px #1c2130; z-index: 5; } /* punch-hole camera */
 
   /* Scene groups. Before the player takes over (no JS, or first paint) scene 0 shows. */
-  .stage [data-scene]:not([data-scene="0"]) { visibility: hidden; }
+  /* Resting frame without JS = the stage's first scene (data-rest) */
+  .stage[data-rest="0"] [data-scene]:not([data-scene~="0"]),
+  .stage[data-rest="1"] [data-scene]:not([data-scene~="1"]),
+  .stage[data-rest="2"] [data-scene]:not([data-scene~="2"]),
+  .stage[data-rest="3"] [data-scene]:not([data-scene~="3"]),
+  .stage[data-rest="4"] [data-scene]:not([data-scene~="4"]) { visibility: hidden; }
   .stage.tour-ready [data-scene] { visibility: hidden; }
   .stage.tour-ready [data-scene].is-active, .stage.tour-ready [data-scene].is-leaving { visibility: visible; }
   .stage .ws, .stage .ps { position: absolute; inset: 0; }
@@ -458,7 +497,12 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
   .stage .pays { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4cqw; padding: 0 2.6cqw; }
   .stage .pc { display: flex; align-items: center; justify-content: center; gap: .8cqw; height: 6cqw; border-radius: 1cqw; border: .2cqw solid #E6E8EE; font-size: 1.55cqw; font-weight: 600; color: #4B5568; transition: background-color .3s, border-color .3s, color .3s; }
   .stage .pc[data-on="1"] { border-color: #E2136E; background: #FDF0F6; color: #B00F57; }
-  .stage .paid { display: flex; align-items: center; justify-content: center; gap: .8cqw; margin: 2.6cqw; padding: 1.5cqw; border-radius: 1cqw; background: #E2F6EE; color: #0F7A58; font-size: 1.65cqw; font-weight: 650; }
+  /* the gateway: SSLCOMMERZ named on every checkout */
+  .stage .gw { display: flex; align-items: center; justify-content: center; gap: .9cqw; margin: 2.2cqw 2.6cqw 0; padding: 1.2cqw; border-radius: 1cqw; background: #F4F6FA; color: #6B7488; font-size: 1.45cqw; font-weight: 600; transition: background-color .35s, box-shadow .35s; }
+  .stage .gw svg { width: 1.7cqw; height: 1.7cqw; color: #0F7A58; }
+  .stage .gw-ssl { padding: .45cqw 1.1cqw; border-radius: .7cqw; background: var(--color-navy); color: #fff; font-family: var(--font-display); font-size: 1.4cqw; font-weight: 800; letter-spacing: .04em; }
+  .stage .gw[data-on="1"] { background: #EEF3FC; box-shadow: inset 0 0 0 .2cqw rgb(42 93 168 / .35); }
+  .stage .paid { display: flex; align-items: center; justify-content: center; gap: .8cqw; margin: 1.6cqw 2.6cqw 2.6cqw; padding: 1.5cqw; border-radius: 1cqw; background: #E2F6EE; color: #0F7A58; font-size: 1.65cqw; font-weight: 650; }
   .stage .paid svg { width: 2cqw; height: 2cqw; }
   .stage .co-wrap { padding-left: 6cqw; }
 
@@ -485,6 +529,23 @@ const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
   .stage .fb-posts .th img { width: 15cqw; height: 15cqw; }
   .stage .fb-posts .meta { display: grid; }
   .stage .fb-posts b { font-size: 4.6cqw; font-weight: 600; line-height: 1.25; }
+
+  /* 4 · Daraz shop: same products, Daraz's own shop look */
+  .stage .ps-dz { background: #F5F5F5; }
+  .stage .dz-top { display: flex; align-items: center; gap: 3cqw; padding: 2cqw 4.5cqw 3cqw; background: #fff; }
+  .stage .dz-search { flex: 1; height: 7cqw; border-radius: 1.6cqw; background: #F5F5F5; box-shadow: inset 0 0 0 .45cqw #F85606; }
+  .stage .dz-shop { display: flex; align-items: center; gap: 3cqw; padding: 5cqw 4.5cqw; background: linear-gradient(120deg, #FFF1EA, #FFE1CF); }
+  .stage .dz-av { display: grid; place-items: center; width: 15cqw; height: 15cqw; flex: none; border-radius: 50%; background: #fff; padding: 1.2cqw; }
+  .stage .dz-av img { width: 100%; height: 100%; }
+  .stage .dz-name { display: grid; }
+  .stage .dz-name b { font-size: 5.6cqw; font-weight: 700; }
+  .stage .dz-name small { font-size: 3.9cqw; color: #6B7280; }
+  .stage .dz-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.6cqw; padding: 3cqw; }
+  .stage .dz-grid li { display: grid; gap: 1.2cqw; padding: 2.4cqw; border-radius: 2.4cqw; background: #fff; }
+  .stage .dz-grid .th { display: grid; place-items: center; aspect-ratio: 1.15; border-radius: 1.8cqw; background: #F7F2E6; }
+  .stage .dz-grid .th img { width: 15cqw; height: 15cqw; }
+  .stage .dz-grid b { font-size: 3.9cqw; font-weight: 600; line-height: 1.25; }
+  .stage .dz-grid small { font-size: 4.2cqw; font-weight: 700; color: #F85606; }
   .stage .fb-posts small { font-size: 4.2cqw; color: #1E8E4E; font-weight: 650; }
 
   /* 1 · Mobile store (same brand as the desktop store) */

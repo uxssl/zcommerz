@@ -6,8 +6,11 @@
 import { ArrowRight } from '@lucide/astro';
 import { ctaBand } from '../../data/sections2';
 import { SIGNUP } from '../../data/sections';
+
+/** lit navy ground (landing only, 2026-11-10); /old renders it flat */
+const { lit = false } = Astro.props as { lit?: boolean };
 ---
-<section class="sec cta-sec on-navy" aria-labelledby="cta-title">
+<section class:list={['sec', 'cta-sec', 'on-navy', lit && 'navy-lit is-center']} aria-labelledby="cta-title">
   <div class="page cta" data-sr>
     <h2 id="cta-title" data-bn={ctaBand.h2.bn}>{ctaBand.h2.en}</h2>
     <p data-bn={ctaBand.lead.bn}>{ctaBand.lead.en}</p>
@@ -19,7 +22,7 @@ import { SIGNUP } from '../../data/sections';
 </section>
 
 <style>
-  .cta-sec { padding: var(--sec-y-lg) 0; background: var(--color-navy); }
+  .cta-sec { padding: var(--sec-y-lg) 0; background-color: var(--color-navy); } /* lit ground: .navy-lit.is-center in global.css */
   .cta { display: grid; justify-items: center; text-align: center; }
   .cta h2 { max-width: 16ch; font-size: var(--h2); font-weight: 800; line-height: 1.04; letter-spacing: -.035em; color: #fff; text-wrap: balance; }
   :global(:lang(bn)) .cta h2 { letter-spacing: 0; line-height: 1.24; font-weight: 700; }

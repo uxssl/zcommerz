@@ -1,0 +1,246 @@
+---
+/**
+ * Homepage hero (/) — title block on top (title left, lead + CTAs right); the product tour below.
+ * Title: "One click to a website that sells / ships / grows" (built for you, 2026-11-10) — the earlier hero's
+ * rotating-word pattern, with the website first (user, 2026-11-10). Copy lives in src/data/hero-new.ts.
+ * The previous hero (Hero.astro) is kept on /old.
+ * Tour order (StoreStage scene ids): 1 live website → 0 build from a Facebook page → 2 orders →
+ * 3 paid + delivered → 4 build from a Daraz shop → 2 → 3 → loop. The phone shows Facebook one
+ * time and Daraz the next; the resting frame is the live website, so neither source is the opener.
+ * Proof (stats + partners) spans the full width below, open (no panel/pills); partners are grouped
+ * into Payments / Delivery / Sales channels (redesigned 2026-11-10 at the user's request).
+ */
+import Logo from './ui/Logo.astro';
+import StoreStage from './tour/StoreStage.astro';
+import { ArrowRight } from '@lucide/astro';
+import { heroCopy } from '../data/hero-new';
+import { SIGNUP_URL } from '../data/logos';
+
+const h = heroCopy.headline.en;
+// Verified against the product-team file's stats block: 36+ channels, 20 tools (5+4+2+2+3+2+2), 7-day trial
+const stats = [
+  { n: '36+', nbn: '৩৬+', l: 'Payment channels', lbn: 'পেমেন্ট চ্যানেল' },
+  { n: '20', nbn: '২০', l: 'Dashboard tools', lbn: 'ড্যাশবোর্ড টুল' },
+  { n: '7 days', nbn: '৭ দিন', l: 'Free trial', lbn: 'ফ্রি ট্রায়াল' },
+];
+const icon = { 'stroke-width': 2, 'aria-hidden': 'true' } as const;
+
+---
+<section class="hero" aria-labelledby="hero-title" data-hero>
+  <div class="page hero-grid">
+    <!-- Promise -->
+    <div class="hero-copy">
+
+      <h1 id="hero-title" class="hero-title" data-h1 data-reveal data-h="title">
+        <span class="sr-only" data-h1-sr>{h.pre} {h.words.join(', ')}</span>
+        <span aria-hidden="true" data-h1-visual>{h.pre} <span class="rot"><span class="rot-words">{h.words.map((w) => <span class="rw">{w}</span>)}</span><svg class="rot-line" viewBox="0 0 300 18" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12.5C60 6 150 4 297 8.5" /></svg></span></span>
+      </h1>
+
+      <div class="hero-side">
+      <p class="hero-lead" data-reveal data-h="lead" data-bn={heroCopy.lead.bn}>{heroCopy.lead.en}</p>
+
+      <div class="hero-cta" data-reveal data-h="cta">
+        <a class="btn btn-primary btn-xl" href={SIGNUP_URL}>
+          <span data-bn={heroCopy.primary.bn}>{heroCopy.primary.en}</span>
+          <span class="arrow"><ArrowRight size={18} {...icon} /></span>
+        </a>
+        <a class="btn btn-line btn-xl btn-explore" href={heroCopy.secondary.href}>
+          <span data-bn={heroCopy.secondary.bn}>{heroCopy.secondary.en}</span>
+        </a>
+      </div>
+      </div>
+    </div>
+
+    <!-- Product: animated tour -->
+    <div class="hero-product">
+      <div class="hero-visual" data-reveal data-h="visual" role="region" aria-label="Animated product tour" data-bn-aria-label="অ্যানিমেটেড প্রোডাক্ট ট্যুর">
+        <StoreStage scenes={[1, 0, 2, 3, 4, 2, 3]} />
+      </div>
+    </div>
+
+    <!-- Proof: full width under both columns -->
+    <div class="proof" data-reveal data-h="proof">
+      <dl class="stats">
+        {stats.map((s) => (
+          <div>
+            <dt data-bn={s.lbn}>{s.l}</dt>
+            <dd data-bn={s.nbn}>{s.n}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="works">
+        <p class="micro works-h" data-bn="যেসব সার্ভিসের সঙ্গে কাজ করে">Works with</p>
+        <div class="groups">
+          <div class="grp">
+            <p class="grp-h" data-bn="পেমেন্ট">Payments</p>
+            <ul aria-label="Payments" data-bn-aria-label="পেমেন্ট">
+              <li class="txt">SSLCOMMERZ</li>
+              <li class="txt" data-bn="মোবাইল ওয়ালেট">Mobile wallets</li>
+              <li class="txt" data-bn="কার্ড">Cards</li>
+              <li class="txt">Bangla QR</li>
+            </ul>
+          </div>
+          <div class="grp">
+            <p class="grp-h" data-bn="ডেলিভারি">Delivery</p>
+            <ul aria-label="Delivery" data-bn-aria-label="ডেলিভারি">
+              <li><Logo k="pathao" h="20px" label /></li>
+              <li><Logo k="ecourier" h="14px" label /></li>
+            </ul>
+          </div>
+          <div class="grp">
+            <p class="grp-h" data-bn="সেলস চ্যানেল">Sales channels</p>
+            <ul aria-label="Sales channels" data-bn-aria-label="সেলস চ্যানেল">
+              <li><Logo k="daraz" h="17px" label /></li>
+              <li><Logo k="facebook" h="20px" label /></li>
+              <li><Logo k="messenger" h="20px" label /></li>
+              <li><Logo k="whatsapp" h="20px" label /></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<style>
+  .hero {
+    --pad: 20px;
+    --bleed: max(var(--pad), calc((100vw - var(--container-page)) / 2 + var(--pad)));
+    position: relative;
+    overflow: clip;
+    padding: 24px 0 0;
+  }
+  @media (min-width: 768px) { .hero { --pad: 32px; } }
+
+  /* ---------- Grid ---------- */
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .hero-copy { display: grid; justify-items: start; }
+  .hero-product { margin-top: 32px; }
+  @media (min-width: 768px) { .hero-product { margin-top: 36px; } }
+
+  /* Hero ground (user, 2026-11-10): one background shared with the header. The hero runs up
+     behind the transparent sticky header (76px); once scrolled, the header turns into its usual
+     frosted white bar. Ground: white + a pale aurora (blue top-right, mango bottom-left) and a
+     soft light pool under the product. No background image, by the user's choice (a grid floor,
+     a delivery map and a glass ribbon were each tried and dropped). */
+  .hero {
+    isolation: isolate;
+    margin-top: -76px;
+    padding-top: calc(24px + 76px);
+    background-color: #fff;
+    background-image:
+      radial-gradient(ellipse 50% 55% at 92% 0%, rgb(42 93 168 / .12), transparent 70%),
+      radial-gradient(ellipse 36% 34% at 0% 62%, rgb(255 178 30 / .08), transparent 70%),
+      /* ends on pure white: no visible seam where the hero meets the white cards section */
+      linear-gradient(180deg, #F8FAFE 0%, #fff 45%, #fff 100%);
+  }
+  @media (min-width: 768px) { .hero { padding-top: calc(32px + 76px); } }
+  .hero-product { position: relative; }
+  .hero-product::before {
+    content: ""; position: absolute; z-index: -1; pointer-events: none;
+    left: 4%; right: 4%; top: 40%; height: 75%;
+    background: radial-gradient(ellipse 50% 45% at 50% 50%, rgb(255 255 255 / .9), transparent 72%);
+  }
+  @media (max-width: 767.98px) {
+    .hero-product::before { top: 28%; }
+  }
+
+  /* Title block (≥1024): title left; subtitle + buttons stacked right.
+     Subtitle top aligns with the title's top, buttons' bottom with the title's last line. */
+  @media (min-width: 1024px) {
+    .hero-copy {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      column-gap: clamp(40px, 5vw, 72px);
+      align-items: stretch;
+    }
+    .hero-copy .hero-title { margin-top: 0; }
+    .hero-side { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; padding: .5em 0 .35em; }
+    .hero-side .hero-lead, .hero-side .hero-cta { margin-top: 0; }
+  }
+  @media (min-width: 1024px) and (max-width: 1279.98px) {
+    .hero-copy { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 32px; } /* buttons stay on one row */
+  }
+
+  /* ---------- Copy ---------- */
+
+  /* Three short statements, one per line; the last in brand blue with the mango underline */
+  .hero-title {
+    margin-top: 0;
+    font-size: clamp(2.2rem, 1.15rem + 4.1vw, 3.7rem); /* Sora is wider than Bricolage: 3.7rem keeps three lines */
+    font-weight: 800;
+    font-stretch: 100%; /* title face: Sora (via --font-display) */
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+  }
+  :global(:lang(bn)) .hero-title { font-size: clamp(2.1rem, 1.1rem + 4vw, 3.5rem); font-weight: 700; line-height: 1.22; letter-spacing: 0; }
+  .hero-title { max-width: 15ch; }
+  @media (min-width: 640px) and (max-width: 1023.98px) { .hero-title { max-width: 17ch; } }
+  :global(:lang(bn)) .hero-title { max-width: 15ch; }
+  @media (min-width: 640px) { :global(:lang(bn)) .hero-title { max-width: 19ch; } }
+  .hero-title :global(.rot) { position: relative; display: inline-block; vertical-align: top; }
+  .hero-title :global(.rot-words) { display: inline-grid; overflow: hidden; padding: 0 .06em .16em 0; margin-bottom: -.16em; }
+  .hero-title :global(.rw) { grid-area: 1 / 1; color: var(--color-blue); white-space: nowrap; }
+  .hero-title :global(.rw + .rw) { visibility: hidden; }
+  :global(html.motion-ready) .hero-title :global(.rw + .rw) { visibility: visible; }
+  .hero-title :global(.rot-line) { position: absolute; left: 0; bottom: -.03em; width: calc(100% - .06em); height: .15em; overflow: visible; }
+  .hero-title :global(.rot-line path) { fill: none; stroke: var(--color-mango); stroke-width: 6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+
+  .hero-lead { margin-top: 22px; max-width: 31rem; font-size: clamp(1.05rem, 1rem + .3vw, 1.2rem); line-height: 1.55; color: var(--color-ink-2); }
+  :global(:lang(bn)) .hero-lead { line-height: 1.7; }
+
+  .hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 30px; }
+  .hero-cta > a { margin: 0; }
+  .btn-xl { min-height: 54px; padding: 0 1.5rem 0 1.6rem; font-size: 1.04rem; box-shadow: 0 10px 24px -14px rgb(42 93 168 / .8); }
+  .btn-xl .arrow { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #fff; color: var(--color-blue); transition: transform .3s var(--ease-out-expo); }
+  .btn-xl:hover .arrow { transform: translateX(3px); }
+  /* Secondary: outlined, same height as the primary; no shadow */
+  .btn-explore { box-shadow: none; border-width: 1.5px; padding: 0 1.4rem; }
+  @media (min-width: 1024px) and (max-width: 1279.98px) { .hero-cta .btn-xl { padding-inline: 1.15rem; font-size: .98rem; } }
+  @media (max-width: 479.98px) { .hero-cta .btn-xl { flex: 1 1 100%; justify-content: space-between; } }
+
+  /* ---------- Proof band: open, no panel, pills, borders or dividers (user: "too much box").
+     Row 1: stats (number beside label). Row 2: partners grouped by job, label inline. ≥1024 both rows share one subgrid so the columns line up. ---------- */
+  .proof { margin: 32px 0 40px; }
+  @media (min-width: 768px) { .proof { margin-top: 40px; } }
+
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .stats > div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 4px; }
+  .stats dd { white-space: nowrap; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.45rem, 1.1rem + 1vw, 1.9rem); letter-spacing: -.035em; line-height: 1; font-variant-numeric: tabular-nums; color: var(--color-ink); }
+  :global(:lang(bn)) .stats dd { letter-spacing: 0; font-weight: 700; }
+  .stats dt { color: var(--color-ink-2); font-size: .8rem; line-height: 1.25; }
+
+  .works { margin-top: 16px; }
+  .works-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } /* group captions say it; kept for screen readers */
+  .groups { display: grid; gap: 14px; }
+  .grp { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+  .grp-h { flex-basis: 100%; font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9aa1af; white-space: nowrap; }
+  :global(:lang(bn)) .grp-h { letter-spacing: 0; text-transform: none; font-size: .8rem; }
+  .grp ul { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; }
+
+  /* no boxes: plain type and logos in one quiet tone; brand colour returns on hover */
+  .works li { display: grid; place-items: center; height: 28px; }
+  .works li > :global(*) { filter: grayscale(1) brightness(.45); opacity: .6; transition: filter .25s, opacity .25s; }
+  .works li:hover > :global(*) { filter: none; opacity: 1; }
+  .works li.txt { font-family: var(--font-display); font-weight: 700; font-size: .88rem; letter-spacing: -.01em; color: #5d6474; white-space: nowrap; transition: color .25s; }
+  .works li.txt:hover { color: var(--color-ink); }
+
+  @media (min-width: 1024px) {
+    .proof { display: grid; grid-template-columns: auto auto auto; justify-content: space-between; column-gap: 32px; row-gap: 22px; }
+    .stats, .works, .groups { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; }
+    .stats { gap: 0; }
+    .stats > div { flex-direction: row-reverse; justify-content: flex-end; align-items: center; gap: 12px; }
+    .stats dt { max-width: 7.5em; }
+    .works, .groups { margin-top: 0; }
+    .grp { flex-wrap: nowrap; }
+    .grp-h { flex-basis: auto; }
+    .grp ul { flex-wrap: nowrap; }
+  }
+
+</style>
+
+<script>
+  import { initHero } from '../scripts/hero-new';
+  initHero();
+</script>

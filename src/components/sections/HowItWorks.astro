@@ -1,22 +1,81 @@
 ---
 /**
- * J · How it works. Four steps as a numbered rail: a hairline runs through the numbers so it
- * reads as one path, not four cards. Strings verbatim from the product-team file.
+ * J · How it works (landing). Redesigned 2026-11-10 at the user's request; /old keeps HowItWorksV1.
+ * Four steps, each with a small, still product snapshot of that step on a soft tile (no borders
+ * or shadows), so the path is shown, not only described:
+ *   01 a filled business-name field + "connect your Facebook page"
+ *   02 three theme swatches, Grocery selected
+ *   03 SSLCOMMERZ, Pathao, eCourier, Daraz, WhatsApp, each connected
+ *   04 the live store address
+ * The numbers all share one style on a light rail, so nothing reads as "you are on step 1".
+ * Static on purpose: the AI demo above is interactive. Step strings verbatim from the product-team file.
  */
 import SectionHead from './SectionHead.astro';
-import { ArrowRight } from '@lucide/astro';
+import Logo from '../ui/Logo.astro';
+import { ArrowRight, Check, Lock } from '@lucide/astro';
 import { howHead, howSteps } from '../../data/sections2';
 import { SIGNUP } from '../../data/sections';
+
+const themesMini = [
+  { n: { en: 'Grocery', bn: 'গ্রোসারি' }, c: '#2F6B45', on: true },
+  { n: { en: 'Fashion', bn: 'ফ্যাশন' }, c: '#9C2F5B' },
+  { n: { en: 'Electronics', bn: 'ইলেকট্রনিক্স' }, c: '#121A4A' },
+];
+const tools = [
+  { k: null, n: 'SSLCOMMERZ' },
+  { k: 'pathao' as const, h: '15px' },
+  { k: 'ecourier' as const, h: '11px' },
+  { k: 'daraz' as const, h: '13px' },
+  { k: 'whatsapp' as const, h: '17px' },
+];
 ---
 <section id="how" class="sec how-sec" aria-labelledby="how-title">
   <div class="page">
-    <SectionHead id="how-title" h2={howHead.h2} lead={howHead.lead}>
+    <SectionHead id="how-title" h2={howHead.h2} lead={howHead.lead} align="center">
       <a class="btn btn-primary" href={SIGNUP}><span data-bn="ফ্রি ট্রায়াল শুরু করুন">Start free trial</span><ArrowRight size={16} stroke-width={2} aria-hidden="true" /></a>
     </SectionHead>
 
     <ol class="steps" data-sr data-sr-stagger>
       {howSteps.map((s, i) => (
         <li>
+          <div class="snap" aria-hidden="true">
+            {i === 0 && (
+              <div class="s1">
+                <span class="s-lab" data-bn="অনলাইন বিজনেসের নাম">Online business name</span>
+                <span class="s-field"><img src="/assets/logos/leaf.svg" alt="" width="18" height="18" /><b>SSL Organic BD</b></span>
+                <span class="s-or" data-bn="অথবা">or</span>
+                <span class="s-fb"><Logo k="facebook" h="15px" /><span data-bn="ফেসবুক পেজ কানেক্ট করুন">Connect your Facebook page</span></span>
+              </div>
+            )}
+            {i === 1 && (
+              <div class="s2">
+                {themesMini.map((t) => (
+                  <span class:list={['th', t.on && 'on']} style={`--c:${t.c}`}>
+                    <i class="th-top"></i><i class="th-row"></i><i class="th-row short"></i>
+                    <small data-bn={t.n.bn}>{t.n.en}</small>
+                    {t.on && <em class="th-tick"><Check size={11} stroke-width={3.2} /></em>}
+                  </span>
+                ))}
+              </div>
+            )}
+            {i === 2 && (
+              <ul class="s3">
+                {tools.map((t) => (
+                  <li>
+                    <span class="tl">{t.k ? <Logo k={t.k} h={t.h} /> : <b class="ssl">{t.n}</b>}</span>
+                    <em class="ok"><Check size={11} stroke-width={3.2} /></em>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {i === 3 && (
+              <div class="s4">
+                <span class="url"><Lock size={13} stroke-width={2} /><span>xyzstore.zcommerz.com</span></span>
+                <span class="live"><i></i><span data-bn="লাইভ">Live</span></span>
+              </div>
+            )}
+          </div>
+
           <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <h3 data-bn={s.t.bn}>{s.t.en}</h3>
           <p data-bn={s.s.bn}>{s.s.en}</p>
@@ -28,33 +87,64 @@ import { SIGNUP } from '../../data/sections';
 
 <style>
   .how-sec { padding: var(--sec-y) 0; background: var(--color-paper-2); }
-  .steps { position: relative; display: grid; gap: 26px; margin-top: var(--head-gap); }
-  @media (min-width: 760px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px clamp(28px, 3.5vw, 56px); } }
-  @media (min-width: 1100px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(28px, 3.5vw, 56px); } }
+  .steps { position: relative; display: grid; gap: 34px; margin-top: var(--head-gap); }
+  @media (min-width: 760px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px clamp(24px, 3vw, 44px); } }
+  @media (min-width: 1100px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 2.4vw, 36px); } }
+  .steps > li { position: relative; display: flex; flex-direction: column; min-width: 0; }
 
-  /* one continuous rail running behind the numbers, so the four steps read as a single
-     path instead of four columns that each happen to start with a rule */
-  @media (min-width: 1100px) {
-    .steps::before {
-      content: ""; position: absolute; left: 0; right: 0; top: 19px; height: 1px;
-      background: linear-gradient(90deg, var(--color-ink) 0 18%, var(--color-rule) 34%, var(--color-rule) 100%);
-    }
-  }
-  .steps li { position: relative; }
+  /* ---------- the snapshot tile ---------- */
+  .snap { display: grid; place-items: center; height: 150px; padding: 16px; border-radius: 16px; background: #fff; overflow: hidden; }
+
+  /* 01 · business name, or the Facebook page */
+  .s1 { display: grid; gap: 6px; width: 100%; max-width: 230px; }
+  .s-lab { font-size: .66rem; font-weight: 650; color: #8A91A0; }
+  .s-field { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border-radius: 9px; background: var(--color-paper-2); box-shadow: inset 0 -1.5px 0 var(--color-blue); }
+  .s-field b { font-size: .84rem; font-weight: 700; color: var(--color-ink); }
+  .s-or { justify-self: center; font-size: .64rem; font-weight: 650; text-transform: uppercase; letter-spacing: .08em; color: #A4AAB6; }
+  :global(:lang(bn)) .s-or { text-transform: none; letter-spacing: 0; }
+  .s-fb { display: flex; align-items: center; justify-content: center; gap: 8px; height: 32px; border-radius: 9px; background: #EEF3FC; color: #1F4A89; font-size: .76rem; font-weight: 650; white-space: nowrap; }
+
+  /* 02 · three themes, one chosen */
+  .s2 { display: grid; grid-template-columns: repeat(3, 66px); gap: 10px; }
+  .th { position: relative; display: grid; gap: 5px; align-content: start; height: 92px; padding: 8px; border-radius: 10px; background: var(--color-paper-2); }
+  .th.on { box-shadow: 0 0 0 2px var(--color-blue); background: #fff; }
+  .th-top { height: 28px; border-radius: 5px; background: var(--c); }
+  .th-row { height: 6px; border-radius: 3px; background: #DCE1EA; }
+  .th-row.short { width: 60%; }
+  .th small { margin-top: auto; font-size: .6rem; font-weight: 650; color: var(--color-ink-2); }
+  .th-tick { position: absolute; top: -7px; right: -7px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--color-blue); color: #fff; }
+
+  /* 03 · tools, each connected */
+  .s3 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 8px; width: 100%; max-width: 240px; }
+  .s3 li { display: flex; align-items: center; justify-content: space-between; gap: 6px; height: 32px; padding: 0 8px 0 10px; border-radius: 9px; background: var(--color-paper-2); }
+  .s3 li:first-child { grid-column: 1 / -1; }
+  .tl { display: flex; align-items: center; min-width: 0; }
+  .ssl { font-family: var(--font-display); font-size: .74rem; font-weight: 800; letter-spacing: .02em; color: var(--color-ink); }
+  .ok { flex: none; display: grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; background: rgb(25 194 143 / .16); color: #0F8A65; }
+
+  /* 04 · the live address */
+  .s4 { display: grid; justify-items: center; gap: 12px; }
+  .url { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; border-radius: 99px; background: var(--color-paper-2); font-size: .8rem; font-weight: 600; color: var(--color-ink); white-space: nowrap; }
+  .url :global(svg) { color: #8A91A0; }
+  .live { display: inline-flex; align-items: center; gap: 7px; height: 28px; padding: 0 12px; border-radius: 99px; background: rgb(25 194 143 / .14); color: #0F7A58; font-size: .78rem; font-weight: 700; }
+  .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--color-mint); box-shadow: 0 0 0 3px rgb(25 194 143 / .22); }
+
+  /* ---------- number on one light rail ---------- */
   .num {
-    position: relative; display: grid; place-items: center; width: 38px; height: 38px; margin-bottom: 13px;
-    border-radius: 50%; background: var(--color-paper-2); box-shadow: inset 0 0 0 1.5px var(--color-rule);
-    font-family: var(--font-display); font-size: .84rem; font-weight: 800; color: var(--color-ink-2);
+    position: relative; z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; margin: 20px 0 12px;
+    border-radius: 50%; background: var(--color-paper-2); box-shadow: inset 0 0 0 1.5px #C9D3E6;
+    font-family: var(--font-display); font-size: .78rem; font-weight: 800; color: var(--color-blue);
     font-variant-numeric: tabular-nums;
   }
-  .steps li:first-child .num { background: var(--color-blue); color: #fff; box-shadow: none; }
-  /* below the rail breakpoint each step keeps its own hairline */
-  @media (max-width: 1099.98px) {
-    .steps li { padding-top: 20px; }
-    .steps li::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--color-rule); }
-    .steps li:first-child::before { background: var(--color-ink); }
+  @media (min-width: 1100px) {
+    /* a dashed rail from each number to the next step's number, through the gap */
+    .steps > li:not(:last-child)::after {
+      content: ""; position: absolute; top: calc(150px + 20px + 17px); left: 42px; right: calc(-1 * clamp(20px, 2.4vw, 36px) + 8px);
+      height: 1.5px; background: repeating-linear-gradient(90deg, #C9D3E6 0 6px, transparent 6px 11px);
+    }
   }
-  .steps h3 { font-size: 1.08rem; font-weight: 700; line-height: 1.35; letter-spacing: -.012em; }
+
+  .steps h3 { font-size: 1.06rem; font-weight: 700; line-height: 1.35; letter-spacing: -.012em; }
   :global(:lang(bn)) .steps h3 { letter-spacing: 0; line-height: 1.5; }
-  .steps p { margin-top: 7px; font-size: .92rem; line-height: 1.5; color: var(--color-ink-2); max-width: 30ch; }
+  .steps p { margin-top: 7px; font-size: .92rem; line-height: 1.5; color: var(--color-ink-2); max-width: 32ch; }
 </style>

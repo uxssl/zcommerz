@@ -7,6 +7,20 @@
 @import "@fontsource/hind-siliguri/bengali-600.css";
 @import "@fontsource/hind-siliguri/bengali-700.css";
 
+/* Title face: Sora 700, self-hosted (public/fonts, from @fontsource/sora). Declared for weights
+   600–900 so the existing 800-weight title rules render the 700 cut the user picked, without
+   faux bolding. ৳ and Bangla fall back to Hind Siliguri. */
+@font-face {
+  font-family: "Sora Display"; font-style: normal; font-weight: 600 900; font-display: swap;
+  src: url(/fonts/sora-latin-700-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: "Sora Display"; font-style: normal; font-weight: 600 900; font-display: swap;
+  src: url(/fonts/sora-latin-ext-700-normal.woff2) format("woff2");
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
 /* ---------- Design tokens (docs/03-phase01-art-direction.md) ---------- */
 @theme {
   /* Ground + text */
@@ -27,7 +41,7 @@
   --color-mango-h: #ffc34f;
   --color-mint: #19c28f;
 
-  --font-display: "Bricolage Grotesque Variable", "Hind Siliguri", system-ui, sans-serif;
+  --font-display: "Sora Display", "Hind Siliguri", system-ui, sans-serif; /* titles: Sora (user, 2026-11-10; was Bricolage Grotesque) */
   --font-sans: "Bricolage Grotesque Variable", "Hind Siliguri", system-ui, -apple-system, "Segoe UI", sans-serif;
   /* Product mocks: the merchant's store uses its own (system) type, not ours */
   --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Hind Siliguri", sans-serif;
@@ -49,7 +63,7 @@
 
 /* Bangla: Hind Siliguri carries all roles; looser leading, no negative tracking */
 :root:lang(bn) {
-  --font-display: "Hind Siliguri", "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --font-display: "Hind Siliguri", "Sora Display", system-ui, sans-serif;
   --font-sans: "Hind Siliguri", "Bricolage Grotesque Variable", system-ui, sans-serif;
   --font-ui: "Hind Siliguri", system-ui, sans-serif;
 }
@@ -163,4 +177,38 @@
    Without JS, with reduced motion, or if scripts fail (3s failsafe in Base.astro), content is visible. */
 @media (prefers-reduced-motion: no-preference) {
   html.js:not(.motion-ready) [data-reveal] { opacity: 0; }
+}
+
+/* ---------- Dark grounds: a lit navy instead of flat (user, 2026-11-10) ----------
+   Sections opt in with .navy-lit (alongside .on-navy) and set only background-color in their
+   own styles, so these layers come through: a pool of brand-blue light from the top corner, a faint mango warmth at
+   the opposite corner, and a fine dot grid that fades out downward. Text contrast is unchanged:
+   the lightest point stays darker than #1a2a5a. /old's sections don't carry .navy-lit, so they
+   stay flat. */
+@layer components {
+  .navy-lit {
+    position: relative; isolation: isolate;
+    background-image:
+      radial-gradient(ellipse 60% 70% at 8% -10%, rgb(42 93 168 / .42), transparent 62%),
+      radial-gradient(ellipse 45% 55% at 100% 110%, rgb(255 178 30 / .08), transparent 65%),
+      linear-gradient(180deg, var(--color-navy-2) 0%, var(--color-navy) 46%);
+  }
+  .navy-lit::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background-image: radial-gradient(rgb(255 255 255 / .07) 1px, transparent 1.3px);
+    background-size: 24px 24px;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / .45) 45%, transparent 85%);
+            mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / .45) 45%, transparent 85%);
+  }
+  /* centred variant (closing CTA): light behind the heading, warmth behind the button */
+  .navy-lit.is-center {
+    background-image:
+      radial-gradient(ellipse 55% 75% at 50% -15%, rgb(42 93 168 / .5), transparent 65%),
+      radial-gradient(ellipse 30% 40% at 50% 105%, rgb(255 178 30 / .12), transparent 70%),
+      linear-gradient(180deg, var(--color-navy-2) 0%, var(--color-navy) 60%);
+  }
+  .navy-lit.is-center::before {
+    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 30%, #000 0%, transparent 75%);
+            mask-image: radial-gradient(ellipse 70% 80% at 50% 30%, #000 0%, transparent 75%);
+  }
 }

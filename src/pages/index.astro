@@ -1,41 +1,50 @@
 ---
+/**
+ * Homepage (/): the Phase 1 positioning hero ("Your Business. Your Website. Your Way.").
+ * The hero is followed directly by Pillars ("Your products" / ProductSources was removed on 2026-11-10 at the user's request; the component is kept, unused).
+ * Insights was folded into Management (lead line) on 2026-11-10; /old keeps it.
+ * More ways sits between Management and Sell & chat (3 rows, still photo): a static break between
+ * two animated demos (user, 2026-11-10).
+ * Channels was merged into ChatToOrder ("Sell where your customers already are") on 2026-11-10; /old keeps both.
+ * StoreBuilder ("Launch your online business within minutes") was removed from / on 2026-11-10 at the user's request; /old still uses it.
+ * The previous homepage is kept as a backup at /old (src/pages/old.astro), with its own hero and FbToSite;
+ * the other sections are shared.
+ */
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import Hero from '../components/Hero.astro';
-import FbToSite from '../components/sections/FbToSite.astro';
+import HeroNew from '../components/HeroNew.astro';
+import { heroCopy } from '../data/hero-new';
 import Pillars from '../components/sections/Pillars.astro';
-import StoreBuilder from '../components/sections/StoreBuilder.astro';
 import Management from '../components/sections/Management.astro';
 import ChatToOrder from '../components/sections/ChatToOrder.astro';
 import AiWriter from '../components/sections/AiWriter.astro';
-import Channels from '../components/sections/Channels.astro';
-import Insights from '../components/sections/Insights.astro';
 import MoreWays from '../components/sections/MoreWays.astro';
 import HowItWorks from '../components/sections/HowItWorks.astro';
 import Pricing from '../components/sections/Pricing.astro';
 import Faq from '../components/sections/Faq.astro';
 import CtaBand from '../components/sections/CtaBand.astro';
 ---
-<Base>
+<Base title={heroCopy.meta.title} description={heroCopy.meta.description}>
   <Header />
   <main id="main">
-    <Hero />
-    <FbToSite />
+    <HeroNew />
     <Pillars />
-    <StoreBuilder />
     <Management />
+    <MoreWays pick={[2, 3, 4]} still />
     <ChatToOrder />
     <AiWriter />
-    <Channels />
-    <Insights />
-    <MoreWays />
     <HowItWorks />
-    <Pricing />
+    <Pricing omit={["dash"]} headAlign="center" />
     <Faq />
-    <CtaBand />
+    <CtaBand lit />
   </main>
   <Footer />
+  <!-- one section rhythm on the landing (2026-11-10): Pricing and the closing CTA used the larger
+       --sec-y-lg; on / every section uses --sec-y. /old keeps the larger values. -->
+  <style is:global>
+    main#main .price-sec, main#main .cta-sec { padding-block: var(--sec-y); }
+  </style>
   <script>
     import { initReveals } from '../scripts/reveal';
     initReveals();

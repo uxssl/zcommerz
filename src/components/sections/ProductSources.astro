@@ -1,0 +1,274 @@
+---
+/**
+ * Phase 2 · "Your products. Your own online business." (homepage only; replaces the
+ * Facebook → website section there. /old keeps FbToSite.)
+ *
+ * One journey read left to right (top to bottom on small screens):
+ *   sources  — Facebook page, Daraz, your own products: each a small real UI fragment
+ *              with its product-team capability line (src/data/product-sources.ts)
+ *   catalog  — one "Products" list where every item keeps a quiet source tag
+ *   website  — the same products on the live site
+ * Mango threads join the stages (desktop). On scroll the journey plays once: each source
+ * lights in turn and its product photo travels into the catalog, then the site fills in.
+ * The resting / reduced-motion / no-JS state is the finished journey.
+ */
+import SectionHead from './SectionHead.astro';
+import Logo from '../ui/Logo.astro';
+import { ArrowRight, Check, RefreshCw, Plus, ImagePlus, Lock, ShoppingBag, RotateCcw } from '@lucide/astro';
+import { sourcesHead, sources, catalog, labels as L } from '../../data/product-sources';
+import { SIGNUP } from '../../data/sections';
+
+const ic = { 'stroke-width': 1.9, 'aria-hidden': 'true' } as const;
+const fromIdx = (k: string) => catalog.map((p, i) => (p.from === k ? i : -1)).filter((i) => i >= 0);
+---
+<section id="products" class="sec ps-sec" aria-labelledby="ps-title" data-ps>
+  <div class="page">
+    <SectionHead id="ps-title" h2={sourcesHead.h2} lead={sourcesHead.lead}>
+      <a class="btn btn-primary" href={SIGNUP}><span data-bn="ফ্রি ট্রায়াল শুরু করুন">Start free trial</span><ArrowRight size={16} stroke-width={2} aria-hidden="true" /></a>
+    </SectionHead>
+
+    <div class="journey" data-journey>
+      <svg class="threads" aria-hidden="true" data-threads></svg>
+
+      <!-- 1 · Sources -->
+      <ol class="srcs" aria-label="Where products come from" data-bn-aria-label="পণ্য কোথা থেকে আসে">
+        {sources.map((s, si) => (
+          <li class="src" data-src={si}>
+            <p class="src-h">
+              <span class="src-ic">
+                {s.key === 'facebook' && <Logo k="facebook" h="18px" />}
+                {s.key === 'daraz' && <Logo k="daraz" h="12px" />}
+                {s.key === 'own' && <Plus size={16} {...ic} />}
+              </span>
+              <b data-bn={s.name.bn}>{s.name.en}</b>
+            </p>
+            <p class="src-l" data-bn={s.line.bn}>{s.line.en}</p>
+
+            <div class="frag" data-frag={si}>
+              {s.key === 'facebook' && (
+                <div class="f-fb">
+                  <span class="f-page">
+                    <span class="av"><img src="/assets/logos/leaf.svg" alt="" width="18" height="18" /></span>
+                    <b>SSL Organic BD</b>
+                    <span class="ok"><Check size={11} stroke-width={3} aria-hidden="true" /><span data-bn={L.connected.bn}>{L.connected.en}</span></span>
+                  </span>
+                  <span class="f-posts">
+                    {fromIdx('facebook').map((i) => <span class="pt"><img src={`/assets/products/${catalog[i].img}.svg`} alt="" width="40" height="40" data-from={i} /></span>)}
+                    <span class="pt more" aria-hidden="true">+10</span>
+                  </span>
+                </div>
+              )}
+              {s.key === 'daraz' && (
+                <div class="f-dz">
+                  {fromIdx('daraz').map((i) => (
+                    <span class="f-item">
+                      <span class="pt"><img src={`/assets/products/${catalog[i].img}.svg`} alt="" width="40" height="40" data-from={i} /></span>
+                      <span class="nm"><b data-bn={catalog[i].name.bn}>{catalog[i].name.en}</b><small>{catalog[i].price}</small></span>
+                      <span class="sync"><RefreshCw size={11} {...ic} /><span data-bn={L.synced.bn}>{L.synced.en}</span></span>
+                    </span>
+                  ))}
+                </div>
+              )}
+              {s.key === 'own' && (
+                <div class="f-own">
+                  {fromIdx('own').map((i) => (
+                    <Fragment>
+                      <span class="pt drop"><img src={`/assets/products/${catalog[i].img}.svg`} alt="" width="40" height="40" data-from={i} /><i aria-hidden="true"><ImagePlus size={10} {...ic} /></i></span>
+                      <span class="fields">
+                        <span class="fld"><small data-bn={L.productName.bn}>{L.productName.en}</small><b data-type data-bn={catalog[i].name.bn}>{catalog[i].name.en}</b></span>
+                        <span class="fld short"><small data-bn={L.price.bn}>{L.price.en}</small><b data-type-price>{catalog[i].price}</b></span>
+                      </span>
+                      <span class="addbtn" data-addbtn data-bn={L.addProduct.bn}>{L.addProduct.en}</span>
+                    </Fragment>
+                  ))}
+                </div>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <span class="link" aria-hidden="true"></span>
+
+      <!-- 2 · One catalog -->
+      <div class="cat" data-cat>
+        <div class="cat-h">
+          <b data-bn={L.products.bn}>{L.products.en}</b>
+          <span class="cnt" data-count>{catalog.length}</span>
+        </div>
+        <div class="cat-cols" aria-hidden="true">
+          <span data-bn={L.products.bn}>{L.products.en}</span><span data-bn={L.source.bn}>{L.source.en}</span><span data-bn={L.price.bn}>{L.price.en}</span>
+        </div>
+        <ul class="rows">
+          {catalog.map((p, i) => (
+            <li class="row" data-row={i}>
+              <span class="pt"><img src={`/assets/products/${p.img}.svg`} alt="" width="40" height="40" data-to={i} /></span>
+              <b class="nm" data-bn={p.name.bn}>{p.name.en}</b>
+              <span class="tag">
+                {p.from === 'facebook' && <Logo k="facebook" h="14px" label />}
+                {p.from === 'daraz' && <Logo k="daraz" h="9px" label />}
+                {p.from === 'own' && <span class="own" data-bn={L.own.bn}>{L.own.en}</span>}
+              </span>
+              <span class="pr">{p.price}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <span class="link" aria-hidden="true"></span>
+
+      <!-- 3 · The website -->
+      <div class="site" data-site>
+        <div class="site-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="url"><Lock size={11} {...ic} />sslorganic.zcommerz.com</span>
+          <span class="live" data-live><i></i><span data-bn={L.live.bn}>{L.live.en}</span></span>
+        </div>
+        <div class="site-body">
+          <p class="site-h"><b><img src="/assets/logos/leaf.svg" alt="" width="16" height="16" />SSL Organic BD</b><ShoppingBag size={15} {...ic} /></p>
+          <ul class="tiles">
+            {catalog.map((p, i) => (
+              <li class="tile" data-tile={i}>
+                <span class="tth"><img src={`/assets/products/${p.img}.svg`} alt="" width="56" height="56" /></span>
+                <b data-bn={p.name.bn}>{p.name.en}</b>
+                <span class="trow"><small>{p.price}</small><span class="add" data-bn={L.add.bn}>{L.add.en}</span></span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <!-- product photos that travel from their source into the catalog -->
+      {catalog.map((p, i) => <img class="fly" src={`/assets/products/${p.img}.svg`} alt="" width="40" height="40" aria-hidden="true" data-fly={i} />)}
+    </div>
+
+    <div class="foot">
+      <p class="sample" data-bn={L.sample.bn}>{L.sample.en}</p>
+      <button type="button" class="replay" data-ps-replay hidden><RotateCcw size={13} {...ic} /><span data-bn={L.replay.bn}>{L.replay.en}</span></button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ps-sec { padding: var(--sec-y) 0; background: var(--color-paper-2); }
+
+  /* ---------- Journey layout ---------- */
+  .journey { position: relative; display: grid; gap: 28px; margin-top: var(--head-gap); }
+  @media (min-width: 768px) and (max-width: 1199.98px) {
+    .journey { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); column-gap: 28px; align-items: start; }
+    .cat-cols, .row { grid-template-columns: 36px minmax(0, 1fr) 78px 46px; column-gap: 10px; padding-inline: 14px; }
+    .row .pt { width: 36px; height: 36px; }
+    .srcs { grid-column: 1 / -1; }
+    .journey > .link:first-of-type { grid-column: 1 / -1; }
+    .journey > .link:last-of-type { display: none; }
+  }
+  @media (min-width: 1200px) {
+    .journey { grid-template-columns: minmax(0, .92fr) minmax(0, 1.3fr) minmax(0, .95fr); column-gap: clamp(44px, 5vw, 80px); align-items: center; }
+    .journey > .link { display: none; }
+  }
+
+  .threads { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; display: none; }
+  @media (min-width: 1200px) { .threads { display: block; } }
+  .threads :global(.base) { fill: none; stroke: #D5DAE4; stroke-width: 1.5; }
+  .threads :global(.run) { fill: none; stroke: var(--color-mango); stroke-width: 2; stroke-linecap: round; }
+  .threads :global(.end) { fill: var(--color-mango); stroke: var(--color-paper-2); stroke-width: 3; }
+
+  /* small screens: a short mango drop between the stages */
+  .link { justify-self: center; width: 2px; height: 26px; margin: -8px 0; border-radius: 2px; background: linear-gradient(var(--color-mango), rgb(255 178 30 / .2)); }
+
+  /* ---------- 1 · Sources: rows on hairlines, not cards ---------- */
+  .srcs { display: grid; border-top: 1px solid var(--color-ink); }
+  @media (min-width: 640px) and (max-width: 1199.98px) { .srcs { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 20px; } }
+  .src { position: relative; display: grid; gap: 6px; padding: 16px 0 18px; border-bottom: 1px solid var(--color-rule); }
+  .src-h { display: flex; align-items: center; gap: 10px; }
+  .src-ic { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px var(--color-rule); color: var(--color-ink); transition: box-shadow .3s, background-color .3s; }
+  .src-h b { font-size: 1rem; font-weight: 700; letter-spacing: -.012em; }
+  .src-l { font-size: .86rem; color: var(--color-ink-2); }
+  .src.is-on .src-ic { box-shadow: inset 0 0 0 1.5px var(--color-blue), 0 0 0 4px rgb(42 93 168 / .12); }
+
+  .frag { margin-top: 6px; font-family: var(--font-ui); }
+  .pt { display: grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: 9px; background: #F7F2E6; }
+  .pt img { width: 76%; height: 76%; }
+
+  .f-fb, .f-dz .f-item, .f-own { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px rgb(14 26 43 / .06), 0 10px 22px -18px rgb(7 11 36 / .35); }
+  .f-fb { justify-content: space-between; flex-wrap: wrap; }
+  .f-page { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: .84rem; }
+  .f-page .av { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--color-paper-2); }
+  .ok { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 99px; background: #E2F6EE; color: #0F7A58; font-size: .68rem; font-weight: 700; }
+  .f-posts { display: flex; gap: 6px; }
+  .f-posts .pt { width: 34px; height: 34px; border-radius: 8px; }
+  .pt.more { background: var(--color-paper-2); color: var(--color-ink-2); font-size: .7rem; font-weight: 700; }
+
+  .f-dz .nm, .row .nm { min-width: 0; }
+  .f-dz .nm { display: grid; flex: 1; font-size: .84rem; }
+  .f-dz .nm small { color: var(--color-ink-2); font-size: .76rem; }
+  .sync { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 99px; background: #EEF3FB; color: var(--color-blue); font-size: .68rem; font-weight: 700; white-space: nowrap; }
+
+  /* image | name across the top · price + Add product below */
+  .f-own { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; grid-template-areas: "img name name" "img price btn"; gap: 6px 10px; align-items: center; }
+  .f-own .fields { display: contents; }
+  .f-own .fld:first-child { grid-area: name; }
+  .f-own .fld.short { grid-area: price; }
+  .f-own .addbtn { grid-area: btn; }
+  .pt.drop { grid-area: img; position: relative; box-shadow: inset 0 0 0 1.5px #D5DAE4; background: #FBFAF6; }
+  .pt.drop i { position: absolute; right: -4px; bottom: -4px; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: var(--color-blue); color: #fff; }
+  .fields { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; flex: 1; min-width: 0; }
+  .fld { display: grid; gap: 1px; padding: 4px 8px; border-radius: 7px; box-shadow: inset 0 0 0 1px var(--color-rule); min-width: 0; }
+  .fld small { font-size: .62rem; color: #8A91A0; }
+  .fld b { font-size: .8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 1.2em; }
+  .addbtn { align-self: center; padding: 7px 10px; border-radius: 8px; background: var(--color-blue); color: #fff; font-size: .74rem; font-weight: 700; white-space: nowrap; }
+
+  /* ---------- 2 · Catalog: the one product list ---------- */
+  .cat, .site { border-radius: 16px; background: #fff; box-shadow: 0 0 0 1px rgb(14 26 43 / .07), 0 30px 60px -36px rgb(7 11 36 / .35); overflow: hidden; font-family: var(--font-ui); }
+  .cat-h { display: flex; align-items: center; gap: 8px; padding: 14px 18px 10px; }
+  .cat-h b { font-size: 1rem; font-weight: 700; }
+  .cnt { display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: var(--color-ink); color: #fff; font-size: .72rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .cat-cols, .row { display: grid; grid-template-columns: 40px minmax(0, 1fr) 84px 52px; align-items: center; column-gap: 12px; padding: 0 18px; }
+  .cat-cols { padding-top: 6px; padding-bottom: 6px; border-block: 1px solid var(--color-rule); font-size: .66rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #8A91A0; }
+  .cat-cols span:first-child { grid-column: 1 / 3; }
+  .cat-cols span:last-child, .row .pr { text-align: right; }
+  .rows { padding: 4px 0 8px; }
+  .row { padding-top: 9px; padding-bottom: 9px; }
+  .row + .row { border-top: 1px solid #F0F2F6; }
+  .row .nm { font-size: .88rem; font-weight: 600; line-height: 1.25; }
+  .row .pr { font-size: .88rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .tag { display: flex; align-items: center; }
+  .tag :global(.lg) { opacity: .85; }
+  .own { padding: 2px 7px; border-radius: 99px; background: #FFF4D6; color: #8A5A00; font-size: .66rem; font-weight: 700; white-space: nowrap; }
+  .row.is-new { background: linear-gradient(90deg, rgb(255 178 30 / .14), transparent 70%); }
+  @media (max-width: 420px) { .cat-cols, .row { grid-template-columns: 36px minmax(0, 1fr) 76px 48px; column-gap: 8px; padding-inline: 12px; } .row .pt { width: 36px; height: 36px; } }
+
+  /* ---------- 3 · The website ---------- */
+  .site-bar { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #F2F3F6; border-bottom: 1px solid var(--color-rule); }
+  .site-bar .dots { display: flex; gap: 4px; }
+  .site-bar .dots i { width: 7px; height: 7px; border-radius: 50%; background: #D7DAE2; }
+  .url { display: inline-flex; align-items: center; gap: 5px; flex: 1; min-width: 0; padding: 3px 9px; border-radius: 7px; background: #fff; font-size: .72rem; color: var(--color-ink-2); white-space: nowrap; overflow: hidden; }
+  .url :global(svg) { flex: none; color: #8A91A0; }
+  .live { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 99px; background: #E2F6EE; color: #0F7A58; font-size: .68rem; font-weight: 700; }
+  .live i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-mint); }
+  .site-body { padding: 12px 14px 14px; background: #F6F3EA; }
+  .site-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .site-h b { display: inline-flex; align-items: center; gap: 6px; font-family: Georgia, "Times New Roman", serif; font-size: .98rem; }
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .tile { display: grid; gap: 5px; padding: 7px; border-radius: 11px; background: #fff; box-shadow: 0 0 0 1px rgb(14 26 43 / .06); }
+  .tth { display: grid; place-items: center; aspect-ratio: 1.6; border-radius: 8px; background: #ECE6D6; }
+  .tth img { width: 42%; height: auto; }
+  .tile b { font-size: .76rem; font-weight: 650; line-height: 1.25; }
+  .trow { display: flex; align-items: center; justify-content: space-between; }
+  .trow small { font-size: .74rem; font-weight: 700; }
+  .add { padding: 2px 8px; border-radius: 99px; background: #1E6B43; color: #fff; font-size: .64rem; font-weight: 700; }
+
+  /* ---------- travelling photos ---------- */
+  .fly { position: absolute; left: 0; top: 0; z-index: 5; width: 30px; height: 30px; pointer-events: none; visibility: hidden; filter: drop-shadow(0 8px 10px rgb(7 11 36 / .22)); }
+
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 22px; }
+  .sample { font-size: .78rem; color: #8A91A0; }
+  .replay { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 99px; font-size: .8rem; font-weight: 600; color: var(--color-ink-2); cursor: pointer; transition: background-color .2s, color .2s; }
+  .replay:hover { background: #fff; color: var(--color-ink); }
+  .replay[hidden] { display: none; }
+</style>
+
+<script>
+  import { initProductSources } from '../../scripts/product-sources';
+  initProductSources();
+</script>

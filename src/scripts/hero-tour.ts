@@ -121,11 +121,15 @@ const payAndDeliver: SceneBuilder = ({ q }) => {
     .from(q('amt'), { autoAlpha: 0, y: 8, duration: 0.45 }, 0.2)
     .from(q('morder'), { autoAlpha: 0, y: 8, duration: 0.45 }, 0.25)
     .from(q('pc'), { autoAlpha: 0, y: 8, stagger: 0.06, duration: 0.4 }, 0.35)
+    .from(q('gw'), { autoAlpha: 0, y: 6, duration: 0.4 }, 0.6)
     .set(bk, { attr: { 'data-on': '1' } }, 1.1)
+    // SSLCOMMERZ processes the payment: the gateway row lights up just before "Payment received"
+    .set(q('gw'), { attr: { 'data-on': '1' } }, 1.35)
     .from(q('paid'), { autoAlpha: 0, scale: 0.94, duration: 0.45, ease: 'back.out(2)' }, 1.6)
     .fromTo(q('tline'), { scaleY: 0 }, { scaleY: 1, duration: 1.8, ease: 'none' }, 2.1);
   q('tli').forEach((li, i) => tl.set(li, { attr: { 'data-on': '1' } }, 2.1 + i * 0.6));
   return tl;
 };
 
-export const heroScenes = [buildFromPage, storeLive, ordersArrive, payAndDeliver];
+// Indexed by scene id: 4 is the Daraz version of the build (same choreography, Daraz shop on the phone)
+export const heroScenes = [buildFromPage, storeLive, ordersArrive, payAndDeliver, buildFromPage];
