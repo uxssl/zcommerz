@@ -1,0 +1,365 @@
+---
+/**
+ * B · Online store builder (Phase 02 benchmark).
+ * Left: copy column (sticky on desktop). Right: the ZCOMMERZ theme editor: a toolbar with the
+ * four theme options + the live store address, above a full-bleed storefront.
+ * Each theme is its own shop with its own staging of the product-team illustrations:
+ *   Grocery     farm-shop serif, products on a wooden shelf, round price stickers
+ *   Fashion     boutique: arched window, pieces hung on a clothes rail, spaced wordmark
+ *   Electronics launch page: dark, products on glowing pedestals with floor reflections
+ *   Beauty      spa counter: lavender, products on podiums of different heights
+ * Copy, products and prices verbatim from the product-team file (sample preview).
+ */
+import { Search, ShoppingBag, Lock, Check, Zap, Sparkles, Menu, Heart, ArrowRight, CreditCard, Wallet } from '@lucide/astro';
+import { storeHead, storeUi, themes, SIGNUP } from '../../data/sections';
+
+const ic = { 'stroke-width': 1.7, 'aria-hidden': 'true' } as const;
+const [grocery, fashion, electronics, beauty] = themes;
+const nav = storeUi.nav;
+const img = (k: string) => `/assets/products/${k}.svg`;
+---
+<section id="features" class="sec store-sec" aria-labelledby="store-title">
+  <div class="page sb">
+    <!-- Copy column -->
+    <div class="sb-copy" data-sr>
+      <p class="tag micro"><i aria-hidden="true"></i><span data-bn={storeHead.tag.bn}>{storeHead.tag.en}</span></p>
+      <h2 id="store-title" data-bn={storeHead.h2.bn}>{storeHead.h2.en}</h2>
+      <ul class="bul">
+        {storeHead.bullets.map((b) => (
+          <li><Check size={16} stroke-width={2.4} aria-hidden="true" /><span data-bn={b.bn}>{b.en}</span></li>
+        ))}
+      </ul>
+      <div class="acts">
+        <a class="btn btn-primary" href={SIGNUP}><span data-bn={storeHead.cta.bn}>{storeHead.cta.en}</span><ArrowRight size={16} stroke-width={2} aria-hidden="true" /></a>
+        <a class="ulink txt-link" href="#how" data-bn={storeHead.link.bn}>{storeHead.link.en}</a>
+      </div>
+      <div class="pay">
+        <p class="micro" data-bn={storeHead.payWith.bn}>{storeHead.payWith.en}</p>
+        <div class="chips">
+          <span class="chip"><Wallet size={14} stroke-width={1.9} aria-hidden="true" /><span data-bn="মোবাইল ওয়ালেট">Mobile wallets</span></span>
+          <span class="chip"><CreditCard size={14} stroke-width={1.9} aria-hidden="true" /><span data-bn="কার্ড">Cards</span></span>
+          <span class="chip chip-gw">SSLCOMMERZ</span>
+          <span class="chip">Bangla QR</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme editor -->
+    <div class="editor" data-sr data-store>
+      <div class="ed-bar">
+        <div class="tabs" role="tablist" aria-label="Themes" data-bn-aria-label="থিম">
+          {themes.map((t, i) => (
+            <button class="tab" type="button" role="tab" id={`tab-${t.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`theme-${t.id}`}
+              tabindex={i === 0 ? 0 : -1} data-theme={t.id}>
+              <i class={`sw sw-${t.id}`} aria-hidden="true"></i><span data-bn={t.tab.bn}>{t.tab.en}</span>
+            </button>
+          ))}
+        </div>
+        <span class="addr" aria-hidden="true"><Lock {...ic} />xyzstore.zcommerz.com<span class="live"><i></i><span data-bn="লাইভ">Live</span></span></span>
+      </div>
+
+      <div class="shop" data-panels>
+        <!-- ================= Grocery: farm shop ================= -->
+        <div class="th th-grocery" role="tabpanel" id="theme-grocery" aria-labelledby="tab-grocery" data-panel="grocery">
+          <header class="g-head">
+            <b class="g-logo"><img src="/assets/logos/leaf.svg" alt="" width="24" height="24" />{grocery.name}</b>
+            <nav class="g-nav">{nav.en.map((n, k) => <span data-bn={nav.bn[k]}>{n}</span>)}</nav>
+            <span class="icons"><Search {...ic} /><ShoppingBag {...ic} /></span>
+          </header>
+          <div class="g-hero" data-pi>
+            <div class="g-copy">
+              <b data-bn={grocery.banner.bn}>{grocery.banner.en}</b>
+              <span class="g-btn" data-bn={storeUi.shopNow.bn}>{storeUi.shopNow.en}</span>
+            </div>
+            <div class="g-still" aria-hidden="true">
+              <img class="s-rice" src={img('rice')} alt="" width="160" height="160" />
+              <img class="s-honey" src={img('honey')} alt="" width="160" height="160" />
+              <img class="s-ghee" src={img('ghee')} alt="" width="160" height="160" />
+              <span class="plank"></span>
+            </div>
+          </div>
+          <div class="g-grid">
+            {grocery.items.map((p) => (
+              <article class="g-card" data-pi>
+                <div class="g-shot"><img src={img(p.img)} alt="" width="120" height="120" /><span class="sticker">{p.price}</span></div>
+                <b data-bn={p.name.bn}>{p.name.en}</b>
+                <span class="g-add" data-bn={storeUi.add.bn}>{storeUi.add.en}</span>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <!-- ================= Fashion: boutique ================= -->
+        <div class="th th-fashion" role="tabpanel" id="theme-fashion" aria-labelledby="tab-fashion" data-panel="fashion" data-off inert aria-hidden="true">
+          <header class="f-head">
+            <nav class="f-nav">{nav.en.slice(0, 2).map((n, k) => <span data-bn={nav.bn[k]}>{n}</span>)}</nav>
+            <b class="f-logo">{fashion.name}</b>
+            <span class="icons"><Heart {...ic} /><ShoppingBag {...ic} /></span>
+          </header>
+          <div class="f-hero">
+            <div class="f-arch" data-pi aria-hidden="true">
+              <span class="hook"></span>
+              <img src={img('kurti')} alt="" width="200" height="200" />
+            </div>
+            <div class="f-copy" data-pi>
+              <b data-bn={fashion.banner.bn}>{fashion.banner.en}</b>
+              <span class="f-btn" data-bn={storeUi.shopNow.bn}>{storeUi.shopNow.en}</span>
+            </div>
+          </div>
+          <div class="f-rail">
+            <span class="rail" aria-hidden="true"></span>
+            {fashion.items.map((p) => (
+              <article class="f-item" data-pi>
+                <div class="f-shot"><span class="hanger" aria-hidden="true"></span><img src={img(p.img)} alt="" width="120" height="120" /></div>
+                <div class="f-meta"><b data-bn={p.name.bn}>{p.name.en}</b><span>{p.price}</span></div>
+                <span class="f-add" data-bn={storeUi.add.bn}>{storeUi.add.en}</span>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <!-- ================= Electronics: launch page ================= -->
+        <div class="th th-electronics" role="tabpanel" id="theme-electronics" aria-labelledby="tab-electronics" data-panel="electronics" data-off inert aria-hidden="true">
+          <header class="e-head">
+            <b class="e-logo"><span class="e-mark"><Zap size={14} stroke-width={2.4} aria-hidden="true" /></span>{electronics.name}</b>
+            <nav class="e-nav">{nav.en.map((n, k) => <span data-bn={nav.bn[k]}>{n}</span>)}</nav>
+            <span class="icons"><Search {...ic} /><ShoppingBag {...ic} /></span>
+          </header>
+          <div class="e-hero" data-pi>
+            <div class="e-copy">
+              <b data-bn={electronics.banner.bn}>{electronics.banner.en}</b>
+              <span class="e-btn" data-bn={storeUi.shopNow.bn}>{storeUi.shopNow.en}</span>
+            </div>
+            <div class="e-stage" aria-hidden="true">
+              <span class="halo"></span>
+              <img class="hero-p" src={img('buds')} alt="" width="200" height="200" />
+              <img class="refl" src={img('buds')} alt="" width="200" height="200" />
+              <span class="ped"></span>
+            </div>
+          </div>
+          <div class="e-grid">
+            {electronics.items.map((p) => (
+              <article class="e-card" data-pi>
+                <div class="e-shot"><img src={img(p.img)} alt="" width="120" height="120" /><span class="ped" aria-hidden="true"></span></div>
+                <b data-bn={p.name.bn}>{p.name.en}</b>
+                <div class="e-row"><span class="e-price">{p.price}</span><span class="e-add" data-bn={storeUi.add.bn}>{storeUi.add.en}</span></div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <!-- ================= Beauty: spa counter ================= -->
+        <div class="th th-beauty" role="tabpanel" id="theme-beauty" aria-labelledby="tab-beauty" data-panel="beauty" data-off inert aria-hidden="true">
+          <header class="b-head">
+            <span class="icons"><Menu {...ic} /></span>
+            <b class="b-logo"><Sparkles size={14} stroke-width={1.8} aria-hidden="true" />{beauty.name}</b>
+            <span class="icons"><ShoppingBag {...ic} /></span>
+          </header>
+          <div class="b-hero" data-pi>
+            <b data-bn={beauty.banner.bn}>{beauty.banner.en}</b>
+            <span class="b-btn" data-bn={storeUi.shopNow.bn}>{storeUi.shopNow.en}</span>
+          </div>
+          <div class="b-counter">
+            {beauty.items.map((p, i) => (
+              <article class={`b-item h${i}`} data-pi>
+                <div class="b-stand"><img src={img(p.img)} alt="" width="120" height="120" /><span class="pod" aria-hidden="true"></span></div>
+                <b data-bn={p.name.bn}>{p.name.en}</b>
+                <span class="b-price">{p.price}</span>
+                <span class="b-add" data-bn={storeUi.add.bn}>{storeUi.add.en}</span>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+      <p class="note" data-bn={storeHead.note.bn}>{storeHead.note.en}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .store-sec { padding: var(--sec-y) 0; background: var(--color-paper-2); }
+
+  /* ---------- Layout: copy column + editor ---------- */
+  .sb { display: grid; gap: 40px; }
+  @media (min-width: 1100px) {
+    .sb { grid-template-columns: minmax(0, 3.6fr) minmax(0, 8.4fr); gap: clamp(40px, 4vw, 64px); align-items: start; }
+    .sb-copy { position: sticky; top: 96px; }
+  }
+  .tag { display: inline-flex; align-items: center; gap: 8px; color: var(--color-blue); }
+  .tag i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-mango); }
+  .sb-copy h2 { margin-top: 14px; font-size: var(--h2); font-weight: 800; line-height: 1.04; letter-spacing: -.035em; }
+  :global(:lang(bn)) .sb-copy h2 { letter-spacing: 0; line-height: 1.22; font-weight: 700; }
+  .bul { display: grid; gap: 10px; margin-top: 24px; }
+  .bul li { display: flex; gap: 10px; align-items: flex-start; font-size: .98rem; line-height: 1.45; color: var(--color-ink); }
+  .bul :global(svg) { flex: none; margin-top: 3px; color: var(--color-blue); }
+  .acts { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 28px; }
+  .txt-link { font-weight: 600; padding: 8px 0; }
+  .pay { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--color-rule); }
+  .pay .micro { color: var(--color-ink-2); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 8px; background: #fff; box-shadow: 0 0 0 1px var(--color-rule); font-size: .82rem; font-weight: 600; color: var(--color-ink-2); }
+  .chip :global(svg) { color: #8A91A0; }
+  /* the gateway behind all of them */
+  .chip-gw { background: var(--color-ink); color: #fff; font-weight: 700; box-shadow: none; letter-spacing: .01em; }
+
+  /* ---------- Editor toolbar (the ZCOMMERZ part) ---------- */
+  .editor { min-width: 0; }
+  .ed-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 8px; border-radius: 14px 14px 0 0; background: #fff; box-shadow: 0 0 0 1px var(--color-rule); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tab { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 14px; border-radius: 9px; font-size: .9rem; font-weight: 600; color: var(--color-ink-2); cursor: pointer; transition: background-color .2s, color .2s; }
+  .tab:hover { color: var(--color-ink); background: var(--color-paper-2); }
+  .tab[aria-selected="true"] { background: var(--color-blue); color: #fff; }
+  .sw { width: 10px; height: 10px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .12); }
+  .sw-grocery { background: #2F6B3F; } .sw-fashion { background: #B4325A; } .sw-electronics { background: #0A7EA4; } .sw-beauty { background: #7A4DD8; }
+  .tab[aria-selected="true"] .sw { box-shadow: 0 0 0 2px rgb(255 255 255 / .9); }
+  .addr { display: inline-flex; align-items: center; gap: 6px; padding: 0 6px 0 12px; font-family: var(--font-ui); font-size: .8rem; color: var(--color-ink-2); }
+  .addr :global(svg) { width: 12px; height: 12px; color: #8A91A0; }
+  .live { display: inline-flex; align-items: center; gap: 5px; margin-left: 8px; padding: 3px 9px; border-radius: 99px; background: #E2F6EE; color: #0F7A58; font-size: .72rem; font-weight: 650; }
+  .live i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-mint); }
+  @media (max-width: 639.98px) {
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+    .tab { justify-content: center; }
+    .addr { width: 100%; justify-content: center; padding: 2px 0 4px; }
+  }
+  .note { margin-top: 12px; font-size: .8rem; color: #8A91A0; }
+
+  /* ---------- Storefront canvas (u = 1% of its width) ---------- */
+  .shop { position: relative; display: grid; container-type: inline-size; border-radius: 0 0 14px 14px; overflow: hidden; box-shadow: 0 0 0 1px var(--color-rule), 0 30px 60px -36px rgb(7 11 36 / .35); font-family: var(--font-ui); }
+  .th { --u: 1cqw; grid-area: 1 / 1; min-width: 0; padding: calc(var(--u) * 2.4) calc(var(--u) * 3.4) calc(var(--u) * 3.6); }
+  @container (max-width: 560px) { .th { --u: 1.8cqw; } }
+  /* inactive themes stay in the shared grid cell (so the shop keeps one height) but are invisible and inert */
+  .th { display: flex; flex-direction: column; }
+  .th[data-off] { visibility: hidden; pointer-events: none; }
+  /* the hero absorbs any spare height, so shorter shops get a bigger banner instead of a gap */
+  .g-hero, .f-hero, .e-hero, .b-hero { flex: 1 0 auto; }
+  .b-hero { align-content: center; }
+  .th img { display: block; max-width: none; }
+  .icons { display: flex; gap: calc(var(--u) * 1.6); }
+  .icons :global(svg) { width: calc(var(--u) * 2.1); height: calc(var(--u) * 2.1); }
+  /* studio floor shadow under any staged product */
+  .shot-shadow { filter: drop-shadow(0 calc(var(--u) * 1.4) calc(var(--u) * 1.2) rgb(40 25 10 / .22)); }
+
+  /* ===================== GROCERY · farm shop ===================== */
+  .th-grocery { background: #F7F2E6; color: #1F2A1E; --serif: Georgia, "Times New Roman", serif; --green: #2F6B3F; }
+  .g-head { display: flex; align-items: center; gap: calc(var(--u) * 3); }
+  .g-logo { display: flex; align-items: center; gap: calc(var(--u) * .9); font-family: var(--serif); font-size: calc(var(--u) * 2.3); }
+  .g-logo img { width: calc(var(--u) * 2.8); height: calc(var(--u) * 2.8); }
+  .g-nav { margin-left: auto; display: flex; gap: calc(var(--u) * 2.4); font-size: calc(var(--u) * 1.4); color: #4D5A47; }
+  .g-hero { position: relative; display: grid; grid-template-columns: 1fr 1.1fr; align-items: end; margin-top: calc(var(--u) * 2.4); min-height: calc(var(--u) * 26); padding: calc(var(--u) * 3.4) calc(var(--u) * 3) 0 calc(var(--u) * 4); border-radius: calc(var(--u) * 1.6); background: radial-gradient(120% 90% at 85% 100%, #3D7D4D 0%, var(--green) 60%); color: #FFF8E8; overflow: hidden; }
+  .g-copy { align-self: center; display: grid; justify-items: start; gap: calc(var(--u) * 2.2); padding-bottom: calc(var(--u) * 3); }
+  .g-copy b { font-family: var(--serif); font-weight: 400; font-size: calc(var(--u) * 5); line-height: .98; max-width: 9ch; }
+  .g-btn { padding: calc(var(--u) * 1) calc(var(--u) * 2.4); border-radius: 99px; background: #FFF8E8; color: var(--green); font-size: calc(var(--u) * 1.4); font-weight: 700; }
+  /* still life on a wooden shelf */
+  .g-still { position: relative; height: calc(var(--u) * 22); }
+  .g-still img { position: absolute; bottom: calc(var(--u) * 2.2); filter: drop-shadow(0 calc(var(--u) * 1) calc(var(--u) * .8) rgb(20 30 10 / .45)); }
+  .s-rice { left: 4%; width: calc(var(--u) * 15); height: calc(var(--u) * 15); }
+  .s-honey { left: 33%; width: calc(var(--u) * 19); height: calc(var(--u) * 19); z-index: 2; }
+  .s-ghee { left: 66%; width: calc(var(--u) * 14); height: calc(var(--u) * 14); }
+  .plank { position: absolute; left: -200%; right: -20%; bottom: 0; /* spans the whole banner (clipped by it) */ height: calc(var(--u) * 3); border-radius: calc(var(--u) * .4) calc(var(--u) * .4) 0 0; background: repeating-linear-gradient(90deg, rgb(0 0 0 / .05) 0 2px, transparent 2px 22px), linear-gradient(#B8854F, #8E5F33); box-shadow: inset 0 calc(var(--u) * .35) 0 rgb(255 255 255 / .18); }
+  .g-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--u) * 2); margin-top: calc(var(--u) * 2.4); }
+  .g-card { display: grid; gap: calc(var(--u) * 1); }
+  .g-shot { position: relative; display: grid; place-items: center; aspect-ratio: 1.25; border-radius: calc(var(--u) * 1.2); background: radial-gradient(80% 70% at 50% 40%, #FFFDF6, #EFE6D2); box-shadow: inset 0 0 0 1px rgb(80 60 20 / .07); }
+  .g-shot img { width: 52%; height: auto; aspect-ratio: 1; filter: drop-shadow(0 calc(var(--u) * 1.3) calc(var(--u) * 1) rgb(60 40 10 / .25)); }
+  .sticker { position: absolute; top: calc(var(--u) * 1.2); right: calc(var(--u) * 1.2); display: grid; place-items: center; width: calc(var(--u) * 7.4); aspect-ratio: 1; border-radius: 50%; background: #F2B33D; color: #2B1D05; font-size: calc(var(--u) * 1.45); font-weight: 800; transform: rotate(-10deg); box-shadow: 0 calc(var(--u) * .4) calc(var(--u) * .8) rgb(80 50 0 / .25); }
+  .g-card b { font-family: var(--serif); font-weight: 400; font-size: calc(var(--u) * 1.9); }
+  .g-add { display: grid; place-items: center; height: calc(var(--u) * 4); border-radius: calc(var(--u) * .8); box-shadow: inset 0 0 0 1.5px var(--green); color: var(--green); font-size: calc(var(--u) * 1.35); font-weight: 700; }
+
+  /* ===================== FASHION · boutique ===================== */
+  .th-fashion { background: #FAF4F0; color: #2A1620; --serif: "Didot", "Bodoni 72", "Playfair Display", Georgia, serif; --rose: #B4325A; }
+  .f-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding-bottom: calc(var(--u) * 1.8); border-bottom: 1px solid rgb(42 22 32 / .14); }
+  .f-nav { display: flex; gap: calc(var(--u) * 2.4); font-size: calc(var(--u) * 1.2); letter-spacing: .14em; text-transform: uppercase; }
+  :global(:lang(bn)) .f-nav { text-transform: none; letter-spacing: 0; }
+  .f-logo { font-family: var(--serif); font-weight: 400; font-size: calc(var(--u) * 2.6); letter-spacing: .3em; text-transform: uppercase; }
+  .th-fashion .icons { justify-self: end; }
+  .f-hero { display: grid; grid-template-columns: .9fr 1.1fr; gap: calc(var(--u) * 4); align-items: center; margin-top: calc(var(--u) * 2.6); }
+  .f-arch { position: relative; display: grid; place-items: center; height: calc(var(--u) * 30); border-radius: 50% 50% calc(var(--u) * .6) calc(var(--u) * .6) / 34% 34% calc(var(--u) * .6) calc(var(--u) * .6); background: radial-gradient(90% 60% at 50% 35%, #F7E3DE, #E7C3BF); }
+  .f-arch img { width: calc(var(--u) * 20); height: calc(var(--u) * 20); margin-top: calc(var(--u) * 3); filter: drop-shadow(0 calc(var(--u) * 1.6) calc(var(--u) * 1.4) rgb(90 20 50 / .28)); }
+  .f-arch .hook { position: absolute; top: calc(var(--u) * 5.6); left: 50%; width: calc(var(--u) * 7); height: calc(var(--u) * 3); translate: -50% 0; border: calc(var(--u) * .3) solid #8B6A5A; border-bottom: 0; border-radius: 50% 50% 0 0; }
+  .f-arch .hook::before { content: ""; position: absolute; left: 50%; bottom: 100%; width: calc(var(--u) * 1.6); height: calc(var(--u) * 1.8); translate: -50% 0; border: calc(var(--u) * .3) solid #8B6A5A; border-bottom: 0; border-right: 0; border-radius: 50% 0 0 0; }
+  .f-copy { display: grid; justify-items: start; gap: calc(var(--u) * 2.6); }
+  .f-copy b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: calc(var(--u) * 5.8); line-height: .98; text-wrap: balance; }
+  .f-btn { padding-bottom: calc(var(--u) * .4); border-bottom: 2px solid var(--rose); color: var(--rose); font-size: calc(var(--u) * 1.3); font-weight: 650; letter-spacing: .16em; text-transform: uppercase; }
+  :global(:lang(bn)) .f-btn { letter-spacing: 0; }
+  /* clothes rail */
+  .f-rail { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--u) * 2.4); margin-top: calc(var(--u) * 3.4); padding-top: calc(var(--u) * 1.2); }
+  .f-rail .rail { position: absolute; left: 0; right: 0; top: 0; height: calc(var(--u) * .5); border-radius: 99px; background: linear-gradient(#C9A98E, #8B6A5A); }
+  .f-shot { position: relative; display: grid; place-items: center; aspect-ratio: .95; background: linear-gradient(#F3E6E0, #EAD6CF); }
+  .f-shot img { width: 62%; height: auto; aspect-ratio: 1; margin-top: calc(var(--u) * 2); filter: drop-shadow(0 calc(var(--u) * 1.2) calc(var(--u) * 1.2) rgb(90 20 50 / .22)); }
+  .hanger { position: absolute; top: calc(var(--u) * -1.2); left: 50%; width: calc(var(--u) * .3); height: calc(var(--u) * 3); translate: -50% 0; background: #8B6A5A; }
+  .f-meta { display: flex; justify-content: space-between; gap: calc(var(--u) * 1); margin-top: calc(var(--u) * 1.2); font-size: calc(var(--u) * 1.45); }
+  .f-meta b { font-weight: 500; }
+  .f-meta span { font-weight: 700; }
+  .f-add { display: inline-block; margin-top: calc(var(--u) * .5); font-size: calc(var(--u) * 1.15); font-weight: 650; color: var(--rose); letter-spacing: .14em; text-transform: uppercase; }
+  :global(:lang(bn)) .f-add { letter-spacing: 0; }
+
+  /* ===================== ELECTRONICS · launch page ===================== */
+  .th-electronics { background: radial-gradient(80% 60% at 75% 25%, #13233F, #0B1220 70%); color: #E8F0FA; --cyan: #22B8E6; }
+  .e-head { display: flex; align-items: center; gap: calc(var(--u) * 3); }
+  .e-logo { display: flex; align-items: center; gap: calc(var(--u) * .9); font-size: calc(var(--u) * 2.1); font-weight: 800; letter-spacing: -.02em; }
+  .e-mark { display: grid; place-items: center; width: calc(var(--u) * 2.8); height: calc(var(--u) * 2.8); border-radius: calc(var(--u) * .7); background: var(--cyan); color: #06131F; }
+  .e-mark :global(svg) { width: 60%; height: 60%; }
+  .e-nav { margin-left: auto; display: flex; gap: calc(var(--u) * 2.4); font-size: calc(var(--u) * 1.4); color: #9FB0C8; }
+  .e-hero { display: grid; grid-template-columns: 1fr 1fr; align-items: center; margin-top: calc(var(--u) * 2.4); min-height: calc(var(--u) * 28); }
+  .e-copy { display: grid; justify-items: start; gap: calc(var(--u) * 2.4); padding-left: calc(var(--u) * 1); }
+  .e-copy b { font-size: calc(var(--u) * 5); font-weight: 800; line-height: 1; letter-spacing: -.035em; max-width: 11ch; }
+  .e-btn { padding: calc(var(--u) * 1.1) calc(var(--u) * 2.6); border-radius: calc(var(--u) * .7); background: var(--cyan); color: #06131F; font-size: calc(var(--u) * 1.4); font-weight: 800; }
+  /* pedestal + halo + floor reflection */
+  .e-stage { position: relative; height: calc(var(--u) * 28); }
+  .halo { position: absolute; left: 50%; top: 44%; width: calc(var(--u) * 22); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgb(34 184 230 / .45), transparent 65%); }
+  .e-stage .hero-p { position: absolute; left: 50%; top: calc(var(--u) * 2); width: calc(var(--u) * 17); height: calc(var(--u) * 17); translate: -50% 0; z-index: 2; filter: drop-shadow(0 calc(var(--u) * 1.4) calc(var(--u) * 1.6) rgb(0 0 0 / .55)); }
+  .e-stage .refl { position: absolute; left: 50%; top: calc(var(--u) * 21.6); width: calc(var(--u) * 17); height: calc(var(--u) * 17); translate: -50% 0; transform: scaleY(-1); opacity: .16; -webkit-mask: linear-gradient(to top, #000, transparent 45%); mask: linear-gradient(to top, #000, transparent 45%); }
+  .e-stage .ped { position: absolute; left: 50%; top: calc(var(--u) * 19.4); width: calc(var(--u) * 20); height: calc(var(--u) * 3.2); translate: -50% 0; border-radius: 50%; background: radial-gradient(60% 60% at 50% 40%, #1F3557, #0E1A30); box-shadow: 0 0 0 1px rgb(34 184 230 / .35), 0 0 calc(var(--u) * 3) rgb(34 184 230 / .35); }
+  .e-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--u) * 1.8); margin-top: calc(var(--u) * 1); }
+  .e-card { padding: calc(var(--u) * 1.4); border-radius: calc(var(--u) * 1.4); background: rgb(255 255 255 / .04); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .07); }
+  .e-shot { position: relative; display: grid; place-items: center; aspect-ratio: 1.45; }
+  .e-shot img { position: relative; z-index: 2; width: 46%; height: auto; aspect-ratio: 1; margin-bottom: calc(var(--u) * 1.6); filter: drop-shadow(0 calc(var(--u) * 1.2) calc(var(--u) * 1.2) rgb(0 0 0 / .5)); }
+  .e-shot .ped { position: absolute; left: 50%; bottom: calc(var(--u) * 1.2); width: 62%; height: calc(var(--u) * 2.2); translate: -50% 0; border-radius: 50%; background: #16263F; box-shadow: 0 0 0 1px rgb(34 184 230 / .25), 0 0 calc(var(--u) * 2) rgb(34 184 230 / .2); }
+  .e-card b { display: block; margin-top: calc(var(--u) * 1); font-size: calc(var(--u) * 1.55); font-weight: 600; }
+  .e-row { display: flex; justify-content: space-between; align-items: center; margin-top: calc(var(--u) * .7); }
+  .e-price { font-size: calc(var(--u) * 1.9); font-weight: 800; color: var(--cyan); font-variant-numeric: tabular-nums; }
+  .e-add { padding: calc(var(--u) * .5) calc(var(--u) * 1.4); border-radius: calc(var(--u) * .6); box-shadow: inset 0 0 0 1px var(--cyan); color: var(--cyan); font-size: calc(var(--u) * 1.2); font-weight: 700; }
+
+  /* ===================== BEAUTY · spa counter ===================== */
+  .th-beauty { background: linear-gradient(#F7F3FF, #EFE7FF); color: #241A3D; --serif: Georgia, "Times New Roman", serif; --violet: #7A4DD8; }
+  .b-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+  .b-head .icons:last-child { justify-self: end; }
+  .b-logo { display: flex; align-items: center; gap: calc(var(--u) * .7); font-family: var(--serif); font-weight: 400; font-size: calc(var(--u) * 2.5); color: #4A2E91; }
+  .b-logo :global(svg) { width: calc(var(--u) * 1.8); height: calc(var(--u) * 1.8); color: var(--violet); }
+  .b-hero { display: grid; justify-items: center; gap: calc(var(--u) * 2.2); margin-top: calc(var(--u) * 4.4); text-align: center; }
+  .b-hero b { font-family: var(--serif); font-weight: 400; font-size: calc(var(--u) * 6.2); line-height: 1.04; max-width: 20ch; text-wrap: balance; }
+  .b-btn { padding: calc(var(--u) * 1.1) calc(var(--u) * 3); border-radius: 99px; background: var(--violet); color: #fff; font-size: calc(var(--u) * 1.4); font-weight: 700; }
+  /* products on podiums of different heights, sharing one counter top */
+  .b-counter { display: grid; grid-template-columns: repeat(3, 1fr); align-items: end; gap: calc(var(--u) * 3); margin-top: calc(var(--u) * 3.4); padding: 0 calc(var(--u) * 3); text-align: center; }
+  .b-item { display: grid; justify-items: center; gap: calc(var(--u) * .6); }
+  .b-stand { position: relative; display: grid; justify-items: center; width: 100%; }
+  .b-stand img { position: relative; z-index: 2; width: calc(var(--u) * 16); height: calc(var(--u) * 16); margin-bottom: calc(var(--u) * -1.6); filter: drop-shadow(0 calc(var(--u) * 1) calc(var(--u) * 1) rgb(60 30 120 / .25)); }
+  .pod { width: 78%; border-radius: 50% 50% calc(var(--u) * .8) calc(var(--u) * .8) / calc(var(--u) * 2.2) calc(var(--u) * 2.2) calc(var(--u) * .8) calc(var(--u) * .8); background: linear-gradient(90deg, #E2D6FA, #F6F1FF 45%, #DACBF8); box-shadow: inset 0 calc(var(--u) * 1.2) 0 rgb(255 255 255 / .7); }
+  .h0 .pod { height: calc(var(--u) * 10); }
+  .h1 .pod { height: calc(var(--u) * 16); }
+  .h2 .pod { height: calc(var(--u) * 7); }
+  .b-item b { margin-top: calc(var(--u) * 1.4); font-size: calc(var(--u) * 1.8); font-weight: 600; }
+  .b-price { font-size: calc(var(--u) * 1.5); font-weight: 700; color: #4A2E91; }
+  .b-add { margin-top: calc(var(--u) * .4); padding: calc(var(--u) * .5) calc(var(--u) * 2); border-radius: 99px; box-shadow: inset 0 0 0 1px var(--violet); color: var(--violet); font-size: calc(var(--u) * 1.2); font-weight: 700; }
+
+  /* ---------- Narrow storefront (phones): simpler grids ---------- */
+  @container (max-width: 560px) {
+    .g-nav, .e-nav, .f-nav { display: none; }
+    .g-hero { grid-template-columns: 1fr; padding-right: calc(var(--u) * 2); }
+    .g-copy { padding-bottom: 0; }
+    .g-still { height: calc(var(--u) * 18); }
+    .g-grid, .e-grid, .f-rail { grid-template-columns: repeat(2, 1fr); }
+    .g-card:nth-child(3), .e-card:nth-child(3), .f-item:nth-of-type(3) { display: none; }
+    .f-hero { grid-template-columns: 1fr; }
+    .f-logo { white-space: nowrap; letter-spacing: .18em; font-size: calc(var(--u) * 2.2); }
+    .f-arch { height: calc(var(--u) * 24); }
+    .e-hero { grid-template-columns: 1fr; }
+    .b-counter { gap: calc(var(--u) * 1.4); padding: 0; }
+    .b-item b { font-size: calc(var(--u) * 1.4); }
+  }
+</style>
+
+<script>
+  import { initStoreThemes } from '../../scripts/store-themes';
+  initStoreThemes();
+</script>

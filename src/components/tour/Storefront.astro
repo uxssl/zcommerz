@@ -1,0 +1,54 @@
+---
+/**
+ * The sample merchant storefront (SSL Organic BD) as it appears in the browser.
+ * Used twice: the finished layer at the end of scene 1 and the live store in scene 2,
+ * so both are pixel-identical and the hand-off between them is seamless.
+ * The store has its own brand type (serif wordmark + banner), not ZCOMMERZ's,
+ * so it reads as the merchant's website. Copy + prices verbatim from the product-team file.
+ */
+import { Search, ShoppingBag } from '@lucide/astro';
+
+interface Props {
+  /** data-a prefix-free attributes are only wanted on the animated (scene 2) copy */
+  animated?: boolean;
+}
+const { animated = false } = Astro.props;
+const a = (k: string) => (animated ? { 'data-a': k } : {});
+
+const products = [
+  { img: 'honey', name: 'Mustard honey', price: '৳650' },
+  { img: 'ghee', name: 'Pure ghee', price: '৳980' },
+  { img: 'rice', name: 'Red rice 5kg', price: '৳540' },
+];
+const icon = { 'stroke-width': 1.7, 'aria-hidden': 'true' } as const;
+---
+<div class="sf-head" {...a('shead')}>
+  <b class="sf-brand"><img src="/assets/logos/leaf.svg" alt="" width="20" height="20" />SSL Organic BD</b>
+  <span class="sf-nav" data-bn="দোকান · অফার · কার্ট">Shop · Offers · Cart</span>
+  <span class="sf-icons" aria-hidden="true"><Search {...icon} /><ShoppingBag {...icon} /></span>
+</div>
+<div class="sf-ban" {...a('ban')}>
+  <span class="sf-ban-copy">
+    <b data-bn="খামার থেকে সরাসরি">Fresh from the farm</b>
+    <span class="shop" data-bn="এখনই কিনুন">Shop now</span>
+  </span>
+  <span class="sf-ban-art" aria-hidden="true">
+    <span class="disc"></span>
+    <img class="b2" src="/assets/products/ghee.svg" alt="" width="120" height="120" />
+    <img class="b1" src="/assets/products/honey.svg" alt="" width="120" height="120" />
+  </span>
+</div>
+<div class="sf-grid">
+  {products.map((p) => (
+    <div class="sf-card" {...a('item')}>
+      <div class="sf-th"><img src={`/assets/products/${p.img}.svg`} alt="" width="64" height="64" /></div>
+      <b>{p.name}</b>
+      <span class="sf-row"><small>{p.price}</small><span class="add" data-bn="যোগ করুন">Add</span></span>
+    </div>
+  ))}
+</div>
+<div class="sf-pay" {...a('pay')}>
+  <span class="mc" data-bn="মোবাইল ওয়ালেট">Mobile wallets</span>
+  <span class="mc" data-bn="কার্ড">Cards</span>
+  <span class="mc">Bangla QR</span>
+</div>

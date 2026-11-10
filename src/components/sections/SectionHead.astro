@@ -1,0 +1,52 @@
+---
+/**
+ * Section heading, same composition as the approved hero title block:
+ * heading left, supporting copy (+ optional actions slot) right, bottoms aligned.
+ * Stacks below 1024px.
+ */
+interface T { en: string; bn: string }
+interface Props {
+  id: string;
+  tag?: T;
+  h2: T;
+  lead?: T;
+  tone?: 'light' | 'dark';
+}
+const { id, tag, h2, lead, tone = 'light' } = Astro.props;
+const hasSide = !!lead || Astro.slots.has('default');
+---
+<header class:list={['sh', tone === 'dark' && 'is-dark', !hasSide && 'solo']}>
+  <div class="sh-main" data-sr>
+    {tag && <p class="sh-tag micro"><i aria-hidden="true"></i><span data-bn={tag.bn}>{tag.en}</span></p>}
+    <h2 id={id} data-bn={h2.bn}>{h2.en}</h2>
+  </div>
+  {hasSide && (
+    <div class="sh-side" data-sr>
+      {lead && <p class="sh-lead" data-bn={lead.bn}>{lead.en}</p>}
+      <slot />
+    </div>
+  )}
+</header>
+
+<style>
+  .sh { display: grid; gap: 20px; }
+  @media (min-width: 1024px) {
+    .sh:not(.solo) { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 96px); align-items: end; }
+  }
+  .sh-tag { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; color: var(--color-blue); }
+  .sh-tag i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-mango); }
+  .sh h2 {
+    font-size: var(--h2);
+    font-weight: 800;
+    line-height: 1.03;
+    letter-spacing: -0.035em;
+    max-width: 16ch;
+  }
+  :global(:lang(bn)) .sh h2 { letter-spacing: 0; line-height: 1.22; font-weight: 700; }
+  .sh-side { display: grid; gap: 22px; justify-items: start; padding-bottom: .2em; }
+  .sh-lead { max-width: 32rem; font-size: clamp(1.02rem, .98rem + .25vw, 1.15rem); line-height: 1.6; color: var(--color-ink-2); }
+
+  .is-dark h2 { color: #fff; }
+  .is-dark .sh-tag { color: var(--color-mango); }
+  .is-dark .sh-lead { color: var(--color-mist); }
+</style>

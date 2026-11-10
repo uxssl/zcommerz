@@ -1,0 +1,24 @@
+---
+import { logos, type LogoKey } from '../../data/logos';
+interface Props {
+  k: LogoKey;
+  /** CSS height, e.g. "20px" or "2cqw" */
+  h?: string;
+  /** Give the logo an accessible name (when no visible text names the brand) */
+  label?: boolean;
+  class?: string;
+}
+const { k, h = '20px', label = false, class: cls } = Astro.props;
+const l = logos[k];
+const px = 40;
+---
+<img
+  class:list={['lg', cls]}
+  src={l.src}
+  alt={label ? l.name : ''}
+  width={Math.round(px * l.ar)}
+  height={px}
+  loading="lazy"
+  decoding="async"
+  style={`height:${h};width:calc(${h} * ${l.ar})`}
+/>

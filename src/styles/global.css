@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/* Brand typography (product-team file): Bricolage Grotesque + Hind Siliguri. Self-hosted. */
+@import "@fontsource-variable/bricolage-grotesque/standard.css"; /* wght 200–800, wdth 75–100, opsz 12–96 */
+@import "@fontsource/hind-siliguri/bengali-400.css";
+@import "@fontsource/hind-siliguri/bengali-500.css";
+@import "@fontsource/hind-siliguri/bengali-600.css";
+@import "@fontsource/hind-siliguri/bengali-700.css";
+
+/* ---------- Design tokens (docs/03-phase01-art-direction.md) ---------- */
+@theme {
+  /* Ground + text */
+  --color-paper: #ffffff;
+  --color-paper-2: #f4f5f8;
+  --color-ink: #0e1a2b;
+  --color-ink-2: #4b5568;
+  --color-rule: #e3e6ee;
+  /* Product plinth */
+  --color-navy: #070b24;
+  --color-navy-2: #0e1546;
+  --color-navy-rule: rgb(255 255 255 / 0.12);
+  --color-mist: #a9b3d6;
+  /* Brand accents */
+  --color-blue: #2a5da8;
+  --color-blue-d: #1f4a89;
+  --color-mango: #ffb21e;
+  --color-mango-h: #ffc34f;
+  --color-mint: #19c28f;
+
+  --font-display: "Bricolage Grotesque Variable", "Hind Siliguri", system-ui, sans-serif;
+  --font-sans: "Bricolage Grotesque Variable", "Hind Siliguri", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Product mocks: the merchant's store uses its own (system) type, not ours */
+  --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Hind Siliguri", sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --container-page: 1240px;
+
+  /* Vertical rhythm. One scale for the whole page so section breaks are felt, not
+     guessed: --sec-y is the normal break, --sec-y-lg opens a new chapter
+     (first product section, pricing, the closing band). */
+  --sec-y: clamp(58px, 6.4vw, 88px);
+  --sec-y-lg: clamp(76px, 8.6vw, 116px);
+
+  /* One heading scale for every section h2 (they had drifted apart). */
+  --h2: clamp(2rem, 1.2rem + 2.9vw, 3.1rem);
+  /* Section heading to the thing it introduces. */
+  --head-gap: clamp(28px, 3.6vw, 46px);
+}
+
+/* Bangla: Hind Siliguri carries all roles; looser leading, no negative tracking */
+:root:lang(bn) {
+  --font-display: "Hind Siliguri", "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --font-sans: "Hind Siliguri", "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --font-ui: "Hind Siliguri", system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 88px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  :lang(bn) body { line-height: 1.7; }
+  body { font-optical-sizing: auto; }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+  :lang(bn) :is(h1, h2, h3) { letter-spacing: 0; line-height: 1.2; font-weight: 700; }
+  p { text-wrap: pretty; }
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .on-navy :focus-visible { outline-color: var(--color-mango); }
+  ::selection { background: var(--color-mango); color: var(--color-ink); }
+}
+
+@layer components {
+  .page { width: 100%; max-width: var(--container-page); margin-inline: auto; padding-inline: 20px; }
+  @media (min-width: 768px) { .page { padding-inline: 32px; } }
+
+  /* Micro label: chapter numbers, eyebrows */
+  .micro {
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  :lang(bn) .micro { letter-spacing: 0; font-size: .85rem; text-transform: none; }
+
+  /* Buttons */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .55rem;
+    min-height: 48px;
+    padding: 0 1.4rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    /* no transform transition: GSAP animates transforms on buttons, a CSS transition would fight it */
+    transition: background-color .2s, color .2s, border-color .2s, box-shadow .2s;
+  }
+  .btn:active { box-shadow: inset 0 2px 0 rgb(0 0 0 / .08); }
+  /* Primary action = brand blue. Mango is an accent only (underline, progress), not a button colour. */
+  .btn-primary { background: var(--color-blue); color: #fff; }
+  .btn-primary:hover { background: var(--color-blue-d); }
+  .btn-mango { background: var(--color-mango); color: var(--color-ink); }
+  .btn-mango:hover { background: var(--color-mango-h); }
+  .btn-ink { background: var(--color-navy); color: #fff; }
+  .btn-ink:hover { background: var(--color-navy-2); }
+  .btn-line { border: 1px solid var(--color-ink); color: var(--color-ink); }
+  .btn-line:hover { background: var(--color-ink); color: var(--color-paper); }
+  .btn .arrow { transition: transform .3s var(--ease-out-expo); }
+  .btn:hover .arrow { transform: translateX(3px); }
+
+  /* Text link with drawn underline */
+  .ulink {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size .35s var(--ease-out-expo);
+    text-decoration: none;
+  }
+  .ulink:hover, .ulink[aria-current="true"] { background-size: 100% 1px; }
+
+  /* Logos (extracted from the product-team file) */
+  .logo-mark {
+    display: block;
+    width: 138px;
+    aspect-ratio: 400 / 72;
+    background: currentColor;
+    -webkit-mask: url(/assets/logos/zcommerz.png) center / contain no-repeat;
+    mask: url(/assets/logos/zcommerz.png) center / contain no-repeat;
+  }
+
+  .sr-only-focusable:not(:focus) {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+}
+
+/* JS-only initial states: hidden only between first paint and the entrance script taking over.
+   Without JS, with reduced motion, or if scripts fail (3s failsafe in Base.astro), content is visible. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.motion-ready) [data-reveal] { opacity: 0; }
+}

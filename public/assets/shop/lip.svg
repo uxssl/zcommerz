@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img">
+  <defs>
+    <filter id="lsh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+    <linearGradient id="ltube" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7A1535"/><stop offset=".12" stop-color="#B62B55"/>
+      <stop offset=".38" stop-color="#E9537C"/><stop offset=".6" stop-color="#C33560"/>
+      <stop offset=".88" stop-color="#85183A"/><stop offset="1" stop-color="#5E0E27"/>
+    </linearGradient>
+    <linearGradient id="lcap" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8E6A1E"/><stop offset=".22" stop-color="#D9B757"/>
+      <stop offset=".5" stop-color="#F3DC96"/><stop offset=".78" stop-color="#C19F3E"/><stop offset="1" stop-color="#7E5E18"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="160" cy="288" rx="52" ry="10" fill="#3A0A1E" opacity=".22" filter="url(#lsh)"/>
+  <!-- cap -->
+  <rect x="118" y="36" width="84" height="92" rx="18" fill="url(#lcap)"/>
+  <rect x="118" y="36" width="84" height="12" rx="6" fill="#FFF6D2" opacity=".55"/>
+  <rect x="118" y="116" width="84" height="12" rx="6" fill="#5A4210" opacity=".3"/>
+  <!-- collar -->
+  <rect x="112" y="126" width="96" height="16" rx="5" fill="#B8923A"/>
+  <rect x="112" y="126" width="96" height="5" rx="2.5" fill="#FFF1C4" opacity=".6"/>
+  <!-- tube body -->
+  <path d="M114 140h92v114c0 14-11 25-25 25h-42c-14 0-25-11-25-25z" fill="url(#ltube)"/>
+  <!-- label -->
+  <rect x="124" y="178" width="72" height="68" rx="9" fill="#FFF3F6" opacity=".95"/>
+  <path d="M160 196c9-9 23-4 23 6 0 8-11 16-23 25-12-9-23-17-23-25 0-10 14-15 23-6z" fill="#C33560"/>
+  <rect x="140" y="232" width="40" height="5" rx="2.5" fill="#A2294F"/>
+  <!-- gloss -->
+  <rect x="122" y="150" width="11" height="116" rx="5.5" fill="#FFE1EA" opacity=".42"/>
+  <rect x="192" y="158" width="6" height="100" rx="3" fill="#FFE1EA" opacity=".18"/>
+  <rect x="126" y="48" width="11" height="70" rx="5.5" fill="#FFF8DC" opacity=".45"/>
+  <path d="M135 272h50c-5 5-13 7-25 7s-20-2-25-7z" fill="#5E0E27" opacity=".35"/>
+</svg>

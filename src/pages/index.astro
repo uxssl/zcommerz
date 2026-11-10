@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import FbToSite from '../components/sections/FbToSite.astro';
+import Pillars from '../components/sections/Pillars.astro';
+import StoreBuilder from '../components/sections/StoreBuilder.astro';
+import Management from '../components/sections/Management.astro';
+import ChatToOrder from '../components/sections/ChatToOrder.astro';
+import AiWriter from '../components/sections/AiWriter.astro';
+import Channels from '../components/sections/Channels.astro';
+import Insights from '../components/sections/Insights.astro';
+import MoreWays from '../components/sections/MoreWays.astro';
+import HowItWorks from '../components/sections/HowItWorks.astro';
+import Pricing from '../components/sections/Pricing.astro';
+import Faq from '../components/sections/Faq.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
+---
+<Base>
+  <Header />
+  <main id="main">
+    <Hero />
+    <FbToSite />
+    <Pillars />
+    <StoreBuilder />
+    <Management />
+    <ChatToOrder />
+    <AiWriter />
+    <Channels />
+    <Insights />
+    <MoreWays />
+    <HowItWorks />
+    <Pricing />
+    <Faq />
+    <CtaBand />
+  </main>
+  <Footer />
+  <script>
+    import { initReveals } from '../scripts/reveal';
+    initReveals();
+  </script>
+</Base>

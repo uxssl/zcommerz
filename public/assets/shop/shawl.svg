@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img">
+  <defs>
+    <filter id="ssh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+    <linearGradient id="sw1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2E4A6B"/><stop offset=".18" stop-color="#4C7098"/>
+      <stop offset=".5" stop-color="#6C92BB"/><stop offset=".82" stop-color="#436689"/><stop offset="1" stop-color="#28405C"/>
+    </linearGradient>
+    <linearGradient id="sw2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8A5B2E"/><stop offset=".3" stop-color="#C08A4E"/>
+      <stop offset=".65" stop-color="#A3703A"/><stop offset="1" stop-color="#7A4E26"/>
+    </linearGradient>
+    <linearGradient id="sw3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#B9B0A0"/><stop offset=".35" stop-color="#E7E0D2"/>
+      <stop offset=".7" stop-color="#CFC6B5"/><stop offset="1" stop-color="#A89E8C"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="160" cy="276" rx="92" ry="12" fill="#1A1A2A" opacity=".2" filter="url(#ssh)"/>
+  <!-- bottom folded shawl -->
+  <path d="M66 214c0-9 7-15 16-15h156c9 0 16 6 16 15v26c0 9-7 15-16 15H82c-9 0-16-6-16-15z" fill="url(#sw3)"/>
+  <path d="M66 226h188" stroke="#8E8474" stroke-width="2" opacity=".45"/>
+  <g stroke="#8E8474" stroke-width="3" opacity=".35"><path d="M66 240h188"/></g>
+  <!-- middle -->
+  <path d="M74 160c0-9 7-15 16-15h140c9 0 16 6 16 15v30c0 9-7 15-16 15H90c-9 0-16-6-16-15z" fill="url(#sw2)"/>
+  <g stroke="#5E3A17" stroke-width="2.6" opacity=".4"><path d="M74 170h172"/><path d="M74 188h172"/></g>
+  <!-- top shawl with fringe -->
+  <path d="M84 102c0-10 8-17 18-17h116c10 0 18 7 18 17v28c0 10-8 17-18 17H102c-10 0-18-7-18-17z" fill="url(#sw1)"/>
+  <g stroke="#1F3550" stroke-width="2.6" opacity=".45"><path d="M84 112h152"/><path d="M84 132h152"/></g>
+  <g fill="#C7B07A" opacity=".85">
+    <path d="M112 118l5 7-5 7-5-7z"/><path d="M144 118l5 7-5 7-5-7z"/>
+    <path d="M176 118l5 7-5 7-5-7z"/><path d="M208 118l5 7-5 7-5-7z"/>
+  </g>
+  <!-- fringe -->
+  <g stroke="#2E4A6B" stroke-width="3" stroke-linecap="round" opacity=".9">
+    <path d="M94 147v16"/><path d="M106 147v18"/><path d="M118 147v15"/><path d="M130 147v18"/>
+    <path d="M142 147v16"/><path d="M154 147v18"/><path d="M166 147v15"/><path d="M178 147v18"/>
+    <path d="M190 147v16"/><path d="M202 147v17"/><path d="M214 147v15"/><path d="M226 147v17"/>
+  </g>
+  <!-- edge lights -->
+  <path d="M84 102c0-10 8-17 18-17h14v62h-14c-10 0-18-7-18-17z" fill="#CFE2F5" opacity=".2"/>
+  <path d="M74 160c0-9 7-15 16-15h12v60H90c-9 0-16-6-16-15z" fill="#FFE9C8" opacity=".2"/>
+  <path d="M66 214c0-9 7-15 16-15h12v56H82c-9 0-16-6-16-15z" fill="#FFFFFF" opacity=".28"/>
+</svg>

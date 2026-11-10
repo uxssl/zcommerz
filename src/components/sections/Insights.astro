@@ -1,0 +1,93 @@
+---
+/**
+ * H · Reports and insights. Copy left, the dashboard's reporting screen right:
+ * four counters on a hairline rail above a week of orders, today's bar in mango.
+ * Numbers are the product-team's sample figures (1.2k / 4.8k / 850 / ৳12k and the
+ * chart's bar heights), labelled "Sample data" as in the source.
+ */
+import { Check } from '@lucide/astro';
+import { insHead, insBullets, insStats, insBars } from '../../data/sections2';
+import { SIGNUP } from '../../data/sections';
+
+const peak = Math.max(...insBars.map((b) => b.v));
+---
+<section id="insights" class="sec ins-sec" aria-labelledby="ins-title">
+  <div class="page ins">
+    <div class="ins-copy" data-sr>
+      <p class="tag micro"><i aria-hidden="true"></i><span data-bn={insHead.tag.bn}>{insHead.tag.en}</span></p>
+      <h2 id="ins-title" data-bn={insHead.h2.bn}>{insHead.h2.en}</h2>
+      <ul class="bul">
+        {insBullets.map((b) => (
+          <li><Check size={16} stroke-width={2.4} aria-hidden="true" /><span data-bn={b.bn}>{b.en}</span></li>
+        ))}
+      </ul>
+      <a class="btn btn-primary" href={SIGNUP} data-bn={insHead.cta.bn}>{insHead.cta.en}</a>
+    </div>
+
+    <div class="ins-vis" data-sr>
+      <dl class="counts">
+        {insStats.map((s) => (
+          <div>
+            <dt data-bn={s.l.bn}>{s.l.en}</dt>
+            <dd data-bn={s.vbn}>{s.v}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="chart">
+        <header><b data-bn={insHead.chart.bn}>{insHead.chart.en}</b><span data-bn={insHead.sample.bn}>{insHead.sample.en}</span></header>
+        <div class="plot">
+        <div class="bars">
+          {insBars.map((b) => (
+            <span class:list={['cb', b.now && 'now']}>
+              <i style={`height:${Math.round((b.v / peak) * 100)}%`}></i>
+              <small data-bn={b.d.bn}>{b.d.en}</small>
+            </span>
+          ))}
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ins-sec { padding: var(--sec-y) 0; background: var(--color-paper-2); }
+  .ins { display: grid; gap: 26px; align-items: center; }
+  @media (min-width: 1000px) { .ins { grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); gap: clamp(36px, 4.5vw, 72px); } }
+
+  .tag { display: inline-flex; align-items: center; gap: 8px; color: var(--color-blue); }
+  .tag i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-mango); }
+  .ins-copy h2 { margin-top: 14px; font-size: var(--h2); font-weight: 800; line-height: 1.04; letter-spacing: -.035em; }
+  :global(:lang(bn)) .ins-copy h2 { letter-spacing: 0; line-height: 1.22; font-weight: 700; }
+  .bul { display: grid; gap: 9px; margin: 20px 0 24px; }
+  .bul li { display: flex; gap: 10px; align-items: flex-start; font-size: .98rem; line-height: 1.45; }
+  .bul :global(svg) { flex: none; margin-top: 3px; color: var(--color-blue); }
+
+  .ins-vis { min-width: 0; border-radius: 18px; background: #fff; padding: clamp(16px, 2vw, 24px); box-shadow: 0 0 0 1px var(--color-rule), 0 36px 64px -44px rgb(7 11 36 / .45); font-family: var(--font-ui); }
+  .counts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .counts > div { display: grid; gap: 2px; padding: 2px 12px 14px 0; }
+  .counts > div + div { padding-left: 16px; border-left: 1px solid var(--color-rule); }
+  .counts dt { font-size: .78rem; color: #8A91A0; }
+  .counts dd { font-family: var(--font-display); font-size: clamp(1.4rem, 1.1rem + 1vw, 2rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  :global(:lang(bn)) .counts dd { letter-spacing: 0; font-weight: 700; }
+
+  .chart { padding-top: 16px; border-top: 1px solid var(--color-rule); }
+  /* a faint baseline grid so the bars read as a chart, not decoration */
+  .plot { position: relative; margin-top: 14px; }
+  .plot::before {
+    content: ""; position: absolute; inset: 0 0 20px; pointer-events: none;
+    background: repeating-linear-gradient(to top, var(--color-rule) 0 1px, transparent 1px 25%);
+  }
+  .chart header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .chart b { font-size: .92rem; font-weight: 700; }
+  .chart header span { font-size: .74rem; color: #8A91A0; }
+  .bars { position: relative; display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; gap: clamp(6px, 1vw, 14px); height: clamp(118px, 14vw, 158px); }
+  .cb { display: grid; grid-template-rows: 1fr auto; align-items: end; height: 100%; gap: 8px; text-align: center; }
+  .cb i { display: block; align-self: end; border-radius: 7px 7px 3px 3px; background: #DCE4EF; transition: background-color .2s; }
+  .cb small { position: relative; }
+  .cb.now i { background: var(--color-mango); }
+  .cb:hover i { background: #C3CEDE; }
+  .cb.now:hover i { background: var(--color-mango-h); }
+  .cb small { font-size: .72rem; color: #9AA1AF; }
+  .cb.now small { color: var(--color-ink); font-weight: 700; }
+</style>

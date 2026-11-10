@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img">
+  <defs>
+    <filter id="ksh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+    <linearGradient id="kcloth" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9C3A5C"/><stop offset=".12" stop-color="#C85C7E"/>
+      <stop offset=".42" stop-color="#E3869F"/><stop offset=".68" stop-color="#C75C7D"/>
+      <stop offset="1" stop-color="#8E2F50"/>
+    </linearGradient>
+    <linearGradient id="ksleeve" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8B2E4F"/><stop offset=".5" stop-color="#C45A7A"/><stop offset="1" stop-color="#7C2744"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="160" cy="300" rx="64" ry="9" fill="#3A0F22" opacity=".16" filter="url(#ksh)"/>
+  <!-- sleeves (three-quarter) -->
+  <path d="M116 44c-16 6-27 17-31 33l-14 60c-1.6 7 2 13 9 14l15 3c7 1.4 12-2 13-9l13-60z" fill="url(#ksleeve)"/>
+  <path d="M204 44c16 6 27 17 31 33l14 60c1.6 7-2 13-9 14l-15 3c-7 1.4-12-2-13-9l-13-60z" fill="url(#ksleeve)"/>
+  <path d="M71 137l-4 16c-1.4 6 2 11 8 12l16 3c6 1.2 11-2 12-8l3-14z" fill="#73203F"/>
+  <path d="M249 137l4 16c1.4 6-2 11-8 12l-16 3c-6 1.2-11-2-12-8l-3-14z" fill="#73203F"/>
+  <!-- body: A-line kurti -->
+  <path d="M118 40c11 9 23 13 42 13s31-4 42-13c14 6 21 16 23 32l-6 84 9 118c.5 9-5 14-14 14H106c-9 0-14.5-5-14-14l9-118-6-84c2-16 9-26 23-32z" fill="url(#kcloth)"/>
+  <!-- side seams -->
+  <g fill="#6E1F3C" opacity=".2">
+    <path d="M122 72l-6 94 7 122h-5l-7-122 6-94z"/><path d="M198 72l6 94-7 122h5l7-122-6-94z"/>
+  </g>
+  <!-- neckline -->
+  <path d="M133 42c8 20 17 30 27 30s19-10 27-30c-8 7-17 11-27 11s-19-4-27-11z" fill="#6E1F3C"/>
+  <path d="M135 44c7 17 15 26 25 26s18-9 25-26" fill="none" stroke="#F3D9A8" stroke-width="3"/>
+  <!-- embroidered placket -->
+  <path d="M160 72v66" stroke="#F3D9A8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="#F3D9A8">
+    <circle cx="160" cy="86" r="3.6"/><circle cx="160" cy="104" r="3.2"/><circle cx="160" cy="122" r="2.8"/>
+  </g>
+  <!-- block-print motifs -->
+  <g fill="#F7E4C0" opacity=".46">
+    <path d="M128 156l5 9-5 9-5-9z"/><path d="M192 156l5 9-5 9-5-9z"/>
+    <path d="M142 192l5 9-5 9-5-9z"/><path d="M178 192l5 9-5 9-5-9z"/>
+    <path d="M160 174l5 9-5 9-5-9z"/><path d="M160 210l5 9-5 9-5-9z"/>
+    <path d="M124 228l5 9-5 9-5-9z"/><path d="M196 228l5 9-5 9-5-9z"/>
+  </g>
+  <!-- hem band -->
+  <path d="M103 256h114l1 18H102z" fill="#F3D9A8" opacity=".9"/>
+  <path d="M103 264h114" stroke="#B5486A" stroke-width="2"/>
+  <!-- fold shading + key light -->
+  <path d="M141 70l-4 100 3 118h-6l-3-118 4-100z" fill="#6E1F3C" opacity=".16"/>
+  <path d="M179 70l4 100-3 118h6l3-118-4-100z" fill="#6E1F3C" opacity=".16"/>
+  <path d="M112 54l-5 96 7 124h-9l-7-124 5-92z" fill="#FFD9E4" opacity=".26"/>
+</svg>

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img">
+  <defs>
+    <filter id="rsh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+    <linearGradient id="rsack" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9A713F"/><stop offset=".14" stop-color="#CBA167"/>
+      <stop offset=".42" stop-color="#E6C796"/><stop offset=".7" stop-color="#C79B60"/>
+      <stop offset="1" stop-color="#8A6334"/>
+    </linearGradient>
+    <linearGradient id="rfold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8A6334"/><stop offset=".35" stop-color="#D2A972"/>
+      <stop offset=".7" stop-color="#B98B52"/><stop offset="1" stop-color="#7A552B"/>
+    </linearGradient>
+    <linearGradient id="rwin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6E2F22"/><stop offset="1" stop-color="#8E4330"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="160" cy="288" rx="88" ry="13" fill="#2A1A06" opacity=".22" filter="url(#rsh)"/>
+  <!-- sack body -->
+  <path d="M78 110c0-8 6-12 14-12h136c8 0 14 4 14 12l8 150c.6 11-6 18-17 18H87c-11 0-17.6-7-17-18z" fill="url(#rsack)"/>
+  <!-- folded top -->
+  <path d="M86 70c0-7 5-11 12-11h124c7 0 12 4 12 11v30c0 6-5 10-12 10H98c-7 0-12-4-12-10z" fill="url(#rfold)"/>
+  <path d="M86 86h148v6H86z" fill="#5E4120" opacity=".3"/>
+  <g fill="#5E4120" opacity=".22">
+    <rect x="104" y="64" width="3" height="42" rx="1.5"/><rect x="128" y="64" width="3" height="42" rx="1.5"/>
+    <rect x="152" y="64" width="3" height="42" rx="1.5"/><rect x="176" y="64" width="3" height="42" rx="1.5"/>
+    <rect x="200" y="64" width="3" height="42" rx="1.5"/>
+  </g>
+  <!-- paper grain creases -->
+  <g fill="#6B4A23" opacity=".13">
+    <path d="M96 112l6 158h-5l-6-158z"/><path d="M224 112l-6 158h5l6-158z"/>
+    <path d="M160 112v158h-3V112z"/>
+  </g>
+  <!-- window with red rice -->
+  <rect x="104" y="146" width="112" height="78" rx="6" fill="#53251B"/>
+  <rect x="108" y="150" width="104" height="70" rx="4" fill="url(#rwin)"/>
+  <g fill="#C97A5A" opacity=".85">
+    <ellipse cx="124" cy="166" rx="7" ry="3" transform="rotate(-18 124 166)"/>
+    <ellipse cx="146" cy="176" rx="7" ry="3" transform="rotate(14 146 176)"/>
+    <ellipse cx="170" cy="163" rx="7" ry="3" transform="rotate(-8 170 163)"/>
+    <ellipse cx="193" cy="175" rx="7" ry="3" transform="rotate(22 193 175)"/>
+    <ellipse cx="131" cy="192" rx="7" ry="3" transform="rotate(8 131 192)"/>
+    <ellipse cx="157" cy="200" rx="7" ry="3" transform="rotate(-22 157 200)"/>
+    <ellipse cx="184" cy="196" rx="7" ry="3" transform="rotate(10 184 196)"/>
+    <ellipse cx="203" cy="206" rx="7" ry="3" transform="rotate(-14 203 206)"/>
+    <ellipse cx="121" cy="209" rx="7" ry="3" transform="rotate(26 121 209)"/>
+    <ellipse cx="148" cy="212" rx="7" ry="3" transform="rotate(-4 148 212)"/>
+    <ellipse cx="174" cy="211" rx="7" ry="3" transform="rotate(18 174 211)"/>
+  </g>
+  <!-- stamp -->
+  <rect x="104" y="238" width="112" height="22" rx="4" fill="#2F6B3F"/>
+  <rect x="116" y="246" width="60" height="5" rx="2.5" fill="#E8F0DC"/>
+  <rect x="182" y="246" width="22" height="5" rx="2.5" fill="#E8F0DC" opacity=".6"/>
+  <!-- light -->
+  <path d="M92 110h22l5 168H99z" fill="#FFF4DE" opacity=".3"/>
+  <path d="M230 112l-6 166h-10l6-166z" fill="#4A3418" opacity=".18"/>
+</svg>

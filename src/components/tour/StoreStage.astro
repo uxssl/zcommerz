@@ -1,0 +1,529 @@
+---
+/**
+ * Hero product stage: a phone and a browser separated by a seam.
+ * The seam carries the product's core action, "Build my store", on a mango thread:
+ * read as a still frame it says Facebook page → Build my store → storefront.
+ *
+ * Scenes (`data-scene="i"` groups, swapped inside both devices):
+ *   0  phone = Facebook page   · window = store builds, then the finished store unmasks
+ *   1  phone = store on mobile · window = same store, live (theme colours cycle)
+ *   2  phone = order alerts    · window = merchant order list
+ *   3  phone = Pathao tracking · window = checkout, paid with bKash
+ * The resting/idle frame (no JS, reduced motion, before play) is the END of scene 0:
+ * Facebook page, the seam button done, and a finished storefront.
+ * Copy, products and prices are verbatim from the product-team file (sample data).
+ */
+import Logo from '../ui/Logo.astro';
+import Storefront from './Storefront.astro';
+import { Search, ShoppingBag, LayoutGrid, Package, ShoppingCart, Users, Lock, ChevronLeft, ChevronRight, Check } from '@lucide/astro';
+
+const products = [
+  { img: 'honey', fb: 'Mustard honey 500g', store: 'Mustard honey', price: '৳650' },
+  { img: 'ghee', fb: 'Ghee 500g', store: 'Pure ghee', price: '৳980' },
+  { img: 'rice', fb: 'Red rice 5kg', store: 'Red rice 5kg', price: '৳540' },
+];
+const orders = [
+  { ch: 'facebook', label: 'Facebook', line: '#1048 · Honey ×2', amt: '৳1,300' },
+  { ch: 'daraz', label: '', line: '#1049 · Ghee 500g', amt: '৳980' },
+  { ch: 'whatsapp', label: 'WhatsApp', line: '#1050 · Red rice 5kg', amt: '৳540' },
+] as const;
+const notes = [
+  { ch: 'facebook', sub: 'Facebook · ৳1,300' },
+  { ch: 'daraz', sub: 'Daraz · ৳980' },
+  { ch: 'whatsapp', sub: 'WhatsApp · ৳540' },
+] as const;
+const track = [
+  { en: 'Packed', bn: 'প্যাক হয়েছে' },
+  { en: 'Picked up', bn: 'পিকআপ হয়েছে' },
+  { en: 'On the way', bn: 'পথে আছে' },
+  { en: 'Delivered', bn: 'পৌঁছে গেছে' },
+];
+const icon = { 'stroke-width': 1.8, 'aria-hidden': 'true' } as const;
+---
+<div class="stage" data-tour-stage>
+  <!-- ================= Browser window ================= -->
+  <div class="win" data-a="win">
+    <div class="win-bar">
+      <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="nav-glyphs" aria-hidden="true"><ChevronLeft {...icon} /><ChevronRight {...icon} /></span>
+      <span class="url-slot">
+        <span class="url" data-scene="0"><Lock {...icon} /><span>xyzstore.zcommerz.com</span></span>
+        <span class="url" data-scene="1"><Lock {...icon} /><span data-a="url">xyzstore.zcommerz.com</span></span>
+        <span class="url" data-scene="2"><Lock {...icon} /><span>merchant.zcommerz.com</span></span>
+        <span class="url" data-scene="3"><Lock {...icon} /><span>xyzstore.zcommerz.com</span></span>
+      </span>
+      <span class="live-slot">
+        <span class="live" data-scene="1"><span data-a="live"><i></i><span data-bn="লাইভ">Live</span></span></span>
+        <span class="live" data-scene="3"><span><i></i><span data-bn="লাইভ">Live</span></span></span>
+      </span>
+    </div>
+
+    <div class="win-body">
+      <!-- 0 · Store builds from the page; ends on the finished storefront -->
+      <div class="ws" data-scene="0">
+        <div class="sf sf-skel">
+          <div class="sf-head"><span class="sk sk-logo"></span><span class="sk-links"><span class="sk"></span><span class="sk"></span><span class="sk"></span></span><span class="sf-icons"><span class="sk sk-ic"></span><span class="sk sk-ic"></span></span></div>
+          <div class="sf-ban sk-ban">
+            <span class="ghost-text" data-bn="স্টোর বানালে এখানে দেখা যাবে">Your store appears here</span>
+            <span class="sf-ban-art"><span class="sk sk-disc"></span></span>
+          </div>
+          <div class="sf-grid">
+            {products.map((p) => (
+              <div class="sf-card sk-card">
+                <div class="sf-th"><img src={`/assets/products/${p.img}.svg`} alt="" width="64" height="64" data-a="tile" /></div>
+                <span class="sk sk-line"></span>
+                <span class="sf-row"><span class="sk sk-line short"></span><span class="sk sk-add"></span></span>
+              </div>
+            ))}
+          </div>
+          <div class="sf-pay"><span class="sk sk-chip"></span><span class="sk sk-chip"></span><span class="sk sk-chip"></span></div>
+        </div>
+        <div class="sf store built" data-a="built"><Storefront /></div>
+      </div>
+
+      <!-- 1 · Live storefront -->
+      <div class="ws sf store" data-scene="1" data-a="store">
+        <Storefront animated />
+        <div class="hint" data-a="hint"><span data-bn="থিম বদলাচ্ছে…">Switching themes…</span></div>
+      </div>
+
+      <!-- 2 · Merchant orders -->
+      <div class="ws md" data-scene="2" data-enter="wipe">
+        <nav class="md-side" aria-hidden="true">
+          <img src="/assets/logos/leaf.svg" alt="" width="20" height="20" />
+          <span><LayoutGrid {...icon} /></span><span class="on"><ShoppingCart {...icon} /></span><span><Package {...icon} /></span><span><Users {...icon} /></span>
+        </nav>
+        <div class="md-main">
+          <div class="ord" data-a="card">
+            <div class="ph"><b data-bn="অর্ডার">Orders</b><span class="cnt" data-bn="৩টি নতুন">3 new</span></div>
+            {orders.map((o) => (
+              <div class="orow" data-a="orow">
+                <span class="ch"><Logo k={o.ch} h="2.2cqw" label={!o.label} />{o.label}</span>
+                <span class="line">{o.line}</span>
+                <b>{o.amt}</b>
+                <em data-bn="নতুন">New</em>
+              </div>
+            ))}
+          </div>
+          <div class="total" data-a="total"><small data-bn="আজকের বিক্রি">Today's sales</small><b>৳2,820</b></div>
+        </div>
+      </div>
+
+      <!-- 3 · Checkout -->
+      <div class="ws sf store co-wrap" data-scene="3" data-enter="wipe">
+        <div class="sf-head">
+          <b class="sf-brand"><img src="/assets/logos/leaf.svg" alt="" width="20" height="20" />SSL Organic BD</b>
+          <span class="sf-nav" data-bn="দোকান · অফার · কার্ট">Shop · Offers · Cart</span>
+          <span class="sf-icons" aria-hidden="true"><Search {...icon} /><ShoppingBag {...icon} /></span>
+        </div>
+        <div class="co" data-a="card">
+          <div class="ph"><b data-bn="চেকআউট">Checkout</b><span>#1048</span></div>
+          <div class="amt" data-a="amt">৳1,300</div>
+          <div class="pays">
+            <div class="pc" data-a="pc" data-pc="bk" data-bn="মোবাইল ওয়ালেট">Mobile wallets</div>
+            <div class="pc" data-a="pc" data-bn="কার্ড">Cards</div>
+            <div class="pc" data-a="pc">Bangla QR</div>
+          </div>
+          <div class="paid" data-a="paid"><Check {...icon} /><span data-bn="পেমেন্ট পাওয়া গেছে">Payment received</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= Phone ================= -->
+  <div class="phone" data-a="phone">
+    <div class="screen">
+      <span class="island" aria-hidden="true"></span>
+
+      <!-- 0 · Facebook page -->
+      <div class="ps ps-fb" data-scene="0">
+        <div class="fb-top"><Logo k="facebook" h="7.5cqw" label /><span class="fb-search"></span></div>
+        <div class="fb-cover"></div>
+        <div class="fb-id">
+          <span class="fb-av"><img src="/assets/logos/leaf.svg" alt="" width="40" height="40" /></span>
+          <b>SSL Organic BD</b>
+          <small data-bn="গ্রোসারি ও অর্গানিক ফুড">Grocery &amp; organic food</small>
+          <span class="fb-acts" aria-hidden="true"><i></i><i></i><i></i></span>
+        </div>
+        <ul class="fb-posts">
+          {products.map((p) => (
+            <li data-a="post">
+              <span class="th"><img src={`/assets/products/${p.img}.svg`} alt="" width="40" height="40" data-a="thumb" /></span>
+              <span class="meta"><b>{p.fb}</b><small>{p.price}</small></span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- 1 · Same store on mobile -->
+      <div class="ps ps-store store" data-scene="1" data-a="mstore">
+        <div class="m-head"><b><img src="/assets/logos/leaf.svg" alt="" width="16" height="16" />SSL Organic BD</b><span aria-hidden="true"><ShoppingBag {...icon} /></span></div>
+        <div class="m-ban" data-a="mban">
+          <b data-bn="খামার থেকে সরাসরি">Fresh from the farm</b>
+          <span class="shop" data-bn="এখনই কিনুন">Shop now</span>
+          <img src="/assets/products/honey.svg" alt="" width="80" height="80" />
+        </div>
+        <div class="m-grid">
+          {products.map((p) => (
+            <div class="sf-card" data-a="mitem">
+              <div class="sf-th"><img src={`/assets/products/${p.img}.svg`} alt="" width="48" height="48" /></div>
+              <b>{p.store}</b>
+              <span class="sf-row"><small>{p.price}</small><span class="add" data-bn="যোগ করুন">Add</span></span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- 2 · Order notifications -->
+      <div class="ps ps-notes" data-scene="2" data-enter="wipe">
+        {notes.map((n) => (
+          <div class="note" data-a="note">
+            <span class="n-ic"><Logo k={n.ch} h={n.ch === 'daraz' ? '3.6cqw' : '7cqw'} label={n.ch === 'daraz'} /></span>
+            <span class="n-txt"><b data-bn="নতুন অর্ডার">New order</b><small>{n.sub}</small></span>
+          </div>
+        ))}
+      </div>
+
+      <!-- 3 · Delivery -->
+      <div class="ps ps-trk" data-scene="3" data-enter="wipe">
+        <div class="ph"><b data-bn="ডেলিভারি">Delivery</b><Logo k="pathao" h="7.5cqw" label /></div>
+        <div class="m-order" data-a="morder"><span>#1048 · Honey ×2</span><b>৳1,300</b></div>
+        <div class="tl-wrap">
+          <span class="tl-line" aria-hidden="true"><i data-a="tline"></i></span>
+          <ol class="tl">
+            {track.map((t) => <li data-a="tli"><i></i><span data-bn={t.bn}>{t.en}</span></li>)}
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= The seam (scene 0): the product's core action between the two devices ================= -->
+  <span class="seam" data-scene="0">
+    <span class="thread" aria-hidden="true"><i data-a="thread"></i></span>
+    <span class="seam-btn" data-a="btn">
+      <span class="fill" data-a="fill" aria-hidden="true"></span>
+      <span class="lbl" data-bn="স্টোর বানান">Build my store</span>
+      <span class="ok" data-a="ok" aria-hidden="true"><Check size={14} stroke-width={3} /></span>
+    </span>
+  </span>
+
+  <!-- Scene 0 overlays: product photos travel across the seam; cursor presses the button -->
+  <span class="fly-layer" data-scene="0" aria-hidden="true">
+    {products.map((p) => <img src={`/assets/products/${p.img}.svg`} alt="" width="64" height="64" data-a="fly" />)}
+  </span>
+  <span class="rip" data-scene="0"><i data-a="rip"></i></span>
+  <svg class="cur" data-scene="0" viewBox="0 0 24 24" aria-hidden="true"><path data-a="cur" d="M5 3l14 7.5-6 1.8-2.4 6.2L5 3z" fill="#fff" stroke="#0E1A2B" stroke-width="1.4" stroke-linejoin="round"/></svg>
+</div>
+
+<style is:global>
+  /* ======================= Stage geometry =======================
+     ≥768: phone | seam | browser side by side, both exactly the stage height.
+           Widths in units of that height H: phone .46875H (9:19.2), gap .15H, browser 1.62H → stage 2.23875H.
+     <768: browser full width on top (nothing covers the store), phone below overlapping its bottom-left edge,
+           seam button in the free space right of the phone. */
+  .stage {
+    --phone-w: 20.94%;   /* .46875 / 2.23875 */
+    --phone-top: 0%;
+    --win-left: 27.64%;  /* (.46875 + .15) / 2.23875 */
+    --seam-x: 24.29%;    /* centre of the gap */
+    --seam-y: 33%;       /* banner height: the browser edge there is a solid colour block, the phone shows its cover */
+    position: relative;
+    aspect-ratio: 2.23875 / 1;
+    isolation: isolate;
+  }
+  @media (max-width: 767.98px) {
+    .stage { --phone-w: 44%; --phone-top: 38.7%; --win-left: 0%; --seam-y: 70.2%; --thread-l: -42%; --thread-w: 138%; --phone-left: 0%; aspect-ratio: 1 / 1.531; }
+  }
+  .stage .win {
+    position: absolute;
+    top: 0;
+    left: var(--win-left);
+    right: 0;
+    aspect-ratio: 1.62; /* with the stage ratio above, height = stage height = phone height */
+    container: win / inline-size;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow:
+      0 0 0 1px rgb(14 26 43 / .08),
+      0 2px 4px rgb(14 26 43 / .04),
+      0 24px 48px -28px rgb(7 11 36 / .28);
+    overflow: hidden;
+    z-index: 1;
+  }
+  @media (max-width: 767.98px) { .stage .win { border-radius: 12px; } .stage .sf { padding-left: 4cqw; } }
+  .stage .phone {
+    position: absolute;
+    left: var(--phone-left, 0);
+    top: var(--phone-top);
+    width: var(--phone-w);
+    aspect-ratio: 9 / 19.2;
+    /* bezel ≈ 3.6% of the phone's own width (padding % resolves against the stage, so scale by --phone-w) */
+    padding: calc(var(--phone-w) * .036);
+    border-radius: 14% / 6.6%;
+    background: linear-gradient(150deg, #33394a, #0b0e16 45%);
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / .16),
+      0 24px 44px -24px rgb(7 11 36 / .45);
+    z-index: 2;
+  }
+  .stage .screen {
+    position: relative;
+    height: 100%;
+    container: phone / inline-size;
+    border-radius: 11.5% / 5.4%;
+    overflow: hidden;
+    background: #fff;
+  }
+  .stage .island { position: absolute; top: 2.4%; left: 50%; width: 6.5%; aspect-ratio: 1; translate: -50% 0; border-radius: 50%; background: #0b0e16; box-shadow: inset 0 0 0 1.5px #1c2130; z-index: 5; } /* punch-hole camera */
+
+  /* Scene groups. Before the player takes over (no JS, or first paint) scene 0 shows. */
+  .stage [data-scene]:not([data-scene="0"]) { visibility: hidden; }
+  .stage.tour-ready [data-scene] { visibility: hidden; }
+  .stage.tour-ready [data-scene].is-active, .stage.tour-ready [data-scene].is-leaving { visibility: visible; }
+  .stage .ws, .stage .ps { position: absolute; inset: 0; }
+  .stage img { display: block; max-width: none; }
+  .stage .lg { display: inline-block; flex: none; }
+  .stage svg.lucide { flex: none; }
+
+  /* ======================= The seam ======================= */
+  .stage .seam { position: absolute; left: var(--seam-x); top: var(--seam-y); z-index: 4; translate: -50% -50%; display: grid; place-items: center; }
+  /* mobile: edges align with the page: phone on the left edge, button on the right edge */
+  @media (max-width: 767.98px) { .stage .seam { left: auto; right: 0; translate: 0 -50%; } }
+  .stage .thread { position: absolute; left: var(--thread-l, -55%); top: 50%; width: var(--thread-w, 162%); height: 2px; translate: 0 -50%; pointer-events: none; } /* long on the page side, stops just past the button on the store side */
+  .stage .thread::before, .stage .thread::after { content: ""; position: absolute; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: var(--color-mango); box-shadow: 0 0 0 3px #fff; }
+  .stage .thread::before { left: -3px; }
+  .stage .thread::after { right: -3px; }
+  .stage .thread i { display: block; height: 100%; background: var(--color-mango); transform-origin: left; }
+  .stage .seam-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px 11px 18px;
+    border-radius: 99px;
+    background: var(--color-mango);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: clamp(.78rem, .55rem + .45vw, .95rem);
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    isolation: isolate;
+    box-shadow: 0 0 0 4px #fff, 0 14px 26px -12px rgb(201 129 0 / .8);
+  }
+  @media (min-width: 768px) and (max-width: 1023.98px) { .stage .seam-btn { padding: 8px 11px 8px 13px; gap: 6px; } .stage .seam-btn .ok { width: 17px; height: 17px; } }
+  .stage .seam-btn .fill { position: absolute; inset: 0; z-index: -1; background: var(--color-mint); transform-origin: left; }
+  .stage .seam-btn .ok { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--color-ink); color: var(--color-mint); }
+
+  /* ======================= Browser chrome ======================= */
+  .stage .win-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2cqw;
+    height: 6cqw;
+    padding: 0 2.4cqw;
+    background: #F4F5F8;
+    border-bottom: 1px solid #E6E8EE;
+    flex: none;
+    font-family: var(--font-ui);
+  }
+  .stage .win-bar .dots { display: flex; gap: .9cqw; }
+  .stage .win-bar .dots i { width: 1.2cqw; height: 1.2cqw; border-radius: 50%; background: #D7DAE2; }
+  .stage .nav-glyphs { display: flex; gap: .4cqw; color: #A0A6B4; }
+  .stage .nav-glyphs svg { width: 2.2cqw; height: 2.2cqw; }
+  .stage .url-slot { position: relative; flex: 1; max-width: 44cqw; height: 3.8cqw; margin-inline: auto; }
+  .stage .url {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center; gap: .8cqw;
+    border-radius: .9cqw;
+    background: #fff;
+    box-shadow: 0 0 0 1px #E3E6EE;
+    font-size: 1.65cqw;
+    color: #2B3445;
+    white-space: nowrap;
+  }
+  .stage .url svg { width: 1.5cqw; height: 1.5cqw; color: #8A91A0; }
+  .stage .live-slot { position: relative; width: 9cqw; height: 3cqw; }
+  .stage .live { position: absolute; inset: 0; display: flex; justify-content: flex-end; align-items: center; }
+  .stage .live > span { display: inline-flex; align-items: center; gap: .7cqw; padding: .45cqw 1.2cqw; border-radius: 99px; background: #E2F6EE; color: #0F7A58; font-size: 1.45cqw; font-weight: 650; }
+  .stage .live i { width: .9cqw; height: .9cqw; border-radius: 50%; background: var(--color-mint); box-shadow: 0 0 0 .5cqw rgb(25 194 143 / .2); }
+
+  .stage .win-body {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    font-family: var(--font-ui);
+    font-size: 1.8cqw;
+    line-height: 1.35;
+    color: var(--color-ink);
+    letter-spacing: 0;
+  }
+
+  /* ---------- Storefront: the merchant's own brand (serif wordmark + banner type) ---------- */
+  .stage .store { --ta: #1E6B43; --tb: #F6F3EA; --tt: #ECE6D6; --serif: Georgia, "Times New Roman", serif; }
+  .stage .sf { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 1.8cqw; padding: 2.4cqw 4cqw 2.8cqw 10cqw; background: var(--tb, #FAFBFC); }
+  .stage .sf-head { display: flex; align-items: center; gap: 3cqw; height: 3.6cqw; }
+  .stage .sf-brand { display: flex; align-items: center; gap: 1cqw; font-family: var(--serif, inherit); font-size: 2.3cqw; font-weight: 700; color: var(--color-ink); white-space: nowrap; }
+  .stage .sf-brand img { width: 3cqw; height: 3cqw; }
+  .stage .sf-nav { margin-left: auto; font-size: 1.55cqw; color: #4B5568; white-space: nowrap; }
+  .stage .sf-icons { display: flex; gap: 1.8cqw; color: var(--color-ink); }
+  .stage .sf-icons svg { width: 2.3cqw; height: 2.3cqw; }
+  .stage .sf-ban {
+    position: relative;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 14cqw;
+    padding: 0 0 0 3.6cqw;
+    border-radius: 1.4cqw;
+    background: var(--ta);
+    color: #fff;
+    overflow: hidden;
+  }
+  .stage .sf-ban-copy { position: relative; z-index: 1; display: grid; justify-items: start; gap: 1.3cqw; }
+  .stage .sf-ban-copy b { font-family: var(--serif, inherit); font-size: 3.4cqw; font-weight: 400; letter-spacing: -.01em; line-height: 1.02; max-width: 20cqw; }
+  .stage .shop { padding: 1.1cqw 2.2cqw; border-radius: 99px; background: #fff; color: var(--ta); font-size: 1.55cqw; font-weight: 650; white-space: nowrap; }
+  .stage .sf-ban-art { position: relative; width: 34cqw; height: 100%; }
+  .stage .sf-ban-art .disc { position: absolute; right: 4cqw; top: 50%; width: 18cqw; height: 18cqw; translate: 0 -50%; border-radius: 50%; background: rgb(255 255 255 / .14); }
+  .stage .sf-ban-art img { position: absolute; filter: drop-shadow(0 1.6cqw 1.4cqw rgb(0 0 0 / .28)); }
+  .stage .sf-ban-art .b1 { right: 9.5cqw; bottom: 1.2cqw; width: 12cqw; height: 12cqw; }
+  .stage .sf-ban-art .b2 { right: 3cqw; bottom: 2cqw; width: 9cqw; height: 9cqw; opacity: .95; }
+  .stage .sf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqw; }
+  .stage .sf-card { display: flex; flex-direction: column; gap: .8cqw; padding: 1.2cqw; border-radius: 1.3cqw; background: #fff; box-shadow: 0 0 0 1px rgb(14 26 43 / .06), 0 .6cqw 1.6cqw -1cqw rgb(14 26 43 / .15); transition: transform .3s var(--ease-out-expo), box-shadow .3s; }
+  .stage .sf-th { display: grid; place-items: center; aspect-ratio: 1.7; border-radius: .9cqw; background: var(--tt, #F1F3F6); }
+  .stage .sf-th img { width: 44%; height: auto; aspect-ratio: 1; }
+  .stage .sf-card b { font-size: 1.7cqw; font-weight: 600; }
+  .stage .sf-row { display: flex; align-items: center; justify-content: space-between; gap: 1cqw; }
+  .stage .sf-row small { font-size: 1.65cqw; font-weight: 700; color: var(--color-ink); font-variant-numeric: tabular-nums; }
+  .stage .add { padding: .55cqw 1.5cqw; border-radius: 99px; background: var(--ta); color: #fff; font-size: 1.35cqw; font-weight: 650; }
+  .stage .sf-pay { display: flex; gap: 1.2cqw; flex-wrap: wrap; margin-top: auto; }
+  .stage .mc { display: inline-flex; align-items: center; gap: .7cqw; height: 3.6cqw; padding: 0 1.4cqw; border-radius: .8cqw; background: #fff; box-shadow: 0 0 0 1px rgb(14 26 43 / .07); font-size: 1.45cqw; font-weight: 600; color: #4B5568; }
+  .stage .hint { position: absolute; right: 4cqw; bottom: 2.6cqw; padding: 1cqw 2.2cqw; border-radius: 99px; background: var(--color-navy); color: #fff; font-size: 1.5cqw; font-weight: 600; white-space: nowrap; }
+  @media (hover: hover) {
+    .stage .store .sf-card:hover { transform: translateY(-.5cqw); box-shadow: 0 0 0 1px rgb(14 26 43 / .08), 0 1.6cqw 3cqw -1.6cqw rgb(14 26 43 / .3); }
+  }
+
+  /* Skeleton (scene 0, under the finished store) */
+  .stage .sf-skel { --tb: #FAFBFC; --serif: inherit; }
+  .stage .sk { display: block; border-radius: .7cqw; background: #ECEEF3; }
+  .stage .sk-logo { width: 18cqw; height: 2.4cqw; }
+  .stage .sk-links { display: flex; gap: 1.6cqw; margin-left: auto; }
+  .stage .sk-links .sk { width: 6cqw; height: 1.4cqw; }
+  .stage .sk-ic { width: 2.4cqw; height: 2.4cqw; border-radius: 50%; }
+  .stage .sk-ban { background: #EEF0F4; color: #8A91A0; }
+  .stage .ghost-text { font-size: 2cqw; font-weight: 550; }
+  .stage .sk-disc { position: absolute; right: 6cqw; top: 50%; translate: 0 -50%; width: 12cqw; height: 12cqw; border-radius: 50%; background: #E4E7ED; }
+  .stage .sk-card { box-shadow: 0 0 0 1px #E8EBF0; }
+  .stage .sk-card .sf-th { background: #F2F4F7; }
+  .stage .sk-line { height: 1.5cqw; width: 75%; margin: .2cqw 0; }
+  .stage .sk-line.short { width: 32%; margin: 0; }
+  .stage .sk-add { width: 6.4cqw; height: 2.8cqw; border-radius: 99px; }
+  .stage .sk-chip { width: 10cqw; height: 3.6cqw; }
+
+  .stage .fly-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+  .stage .fly-layer img { position: absolute; left: 0; top: 0; opacity: 0; filter: drop-shadow(0 10px 12px rgb(7 11 36 / .28)); }
+  .stage .cur { position: absolute; left: 0; top: 0; width: 26px; height: 26px; z-index: 7; pointer-events: none; overflow: visible; filter: drop-shadow(0 3px 4px rgb(0 0 0 / .3)); }
+  .stage .cur path { opacity: 0; }
+  .stage .rip { position: absolute; left: 0; top: 0; z-index: 6; pointer-events: none; }
+  .stage .rip i { display: block; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 2px solid var(--color-ink); opacity: 0; }
+
+  /* ---------- Merchant dashboard (scene 2) ---------- */
+  .stage .md { display: grid; grid-template-columns: 8cqw 1fr; background: #F4F5F8; }
+  .stage .md-side { display: flex; flex-direction: column; align-items: center; gap: 2.4cqw; padding: 2.6cqw 0; background: #fff; border-right: 1px solid #E6E8EE; color: #8A91A0; }
+  .stage .md-side img { width: 3.4cqw; height: 3.4cqw; margin-bottom: 1cqw; }
+  .stage .md-side span { display: grid; place-items: center; width: 4.4cqw; height: 4.4cqw; border-radius: 1cqw; }
+  .stage .md-side span.on { background: #E9EFF9; color: var(--color-blue); }
+  .stage .md-side svg { width: 2.3cqw; height: 2.3cqw; }
+  .stage .md-main { display: flex; flex-direction: column; justify-content: center; gap: 2.2cqw; padding: 3cqw 4cqw 3cqw 3.4cqw; }
+  .stage .ord { background: #fff; border-radius: 1.4cqw; box-shadow: 0 0 0 1px #E6E8EE; overflow: hidden; }
+  .stage .ph { display: flex; align-items: center; justify-content: space-between; gap: 1cqw; padding: 2.1cqw 2.6cqw; border-bottom: 1px solid #EEF0F4; }
+  .stage .ph b { font-size: 2.1cqw; font-weight: 700; }
+  .stage .ph > span { font-size: 1.55cqw; color: #6B7385; }
+  .stage .ph > span.cnt { padding: .4cqw 1.2cqw; border-radius: 99px; background: #FFF1D1; color: #8A5A00; font-weight: 650; }
+  .stage .orow { display: grid; grid-template-columns: 15cqw 1fr auto auto; align-items: center; gap: 2cqw; padding: 2.5cqw 2.6cqw; border-bottom: 1px solid #F1F2F6; font-size: 1.7cqw; }
+  .stage .orow:last-child { border-bottom: 0; }
+  .stage .orow .ch { display: inline-flex; align-items: center; gap: 1cqw; font-weight: 600; }
+  .stage .orow .line { color: #4B5568; }
+  .stage .orow b { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stage .orow em { font-style: normal; padding: .4cqw 1.1cqw; border-radius: 99px; background: #E9EFF9; color: var(--color-blue); font-size: 1.4cqw; font-weight: 650; }
+  .stage .total { display: flex; align-items: baseline; justify-content: space-between; padding: 2.2cqw 2.8cqw; border-radius: 1.4cqw; background: var(--color-navy); color: #fff; }
+  .stage .total small { font-size: 1.7cqw; color: var(--color-mist); }
+  .stage .total b { font-family: var(--font-display); font-size: 4.8cqw; font-weight: 750; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; color: var(--color-mango); }
+
+  /* ---------- Checkout (scene 3) ---------- */
+  .stage .co { align-self: center; width: min(100%, 56cqw); margin-block: auto; background: #fff; border-radius: 1.6cqw; box-shadow: 0 0 0 1px #E6E8EE, 0 2cqw 4cqw -2cqw rgb(14 26 43 / .18); }
+  .stage .co .amt { padding: 2.8cqw 2.6cqw 2cqw; font-family: var(--font-display); font-size: 6cqw; font-weight: 750; letter-spacing: -.03em; line-height: 1; }
+  .stage .pays { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4cqw; padding: 0 2.6cqw; }
+  .stage .pc { display: flex; align-items: center; justify-content: center; gap: .8cqw; height: 6cqw; border-radius: 1cqw; border: .2cqw solid #E6E8EE; font-size: 1.55cqw; font-weight: 600; color: #4B5568; transition: background-color .3s, border-color .3s, color .3s; }
+  .stage .pc[data-on="1"] { border-color: #E2136E; background: #FDF0F6; color: #B00F57; }
+  .stage .paid { display: flex; align-items: center; justify-content: center; gap: .8cqw; margin: 2.6cqw; padding: 1.5cqw; border-radius: 1cqw; background: #E2F6EE; color: #0F7A58; font-size: 1.65cqw; font-weight: 650; }
+  .stage .paid svg { width: 2cqw; height: 2cqw; }
+  .stage .co-wrap { padding-left: 6cqw; }
+
+  /* ======================= Phone screens (cqw = phone width) ======================= */
+  /* font-size lives on .ps: cqw on .screen itself would resolve against the viewport */
+  .stage .ps { padding-top: 14cqw; font-family: var(--font-ui); font-size: 5cqw; line-height: 1.35; color: var(--color-ink); }
+
+  /* 0 · Facebook page */
+  .stage .ps-fb { background: #F0F2F5; }
+  .stage .fb-top { display: flex; align-items: center; gap: 3cqw; padding: 2cqw 4.5cqw 3cqw; background: #fff; }
+  .stage .fb-search { flex: 1; height: 7cqw; border-radius: 99px; background: #F0F2F5; }
+  .stage .fb-cover { height: 38cqw; background: linear-gradient(120deg, #D9E9DA, #BFD9C3); }
+  .stage .fb-id { display: grid; justify-items: start; padding: 0 4.5cqw 4cqw; margin-top: -10cqw; background: #fff; }
+  .stage .fb-av { display: grid; place-items: center; width: 20cqw; height: 20cqw; border-radius: 50%; background: #fff; padding: 1.2cqw; margin-bottom: 1.6cqw; }
+  .stage .fb-av img { width: 100%; height: 100%; }
+  .stage .fb-id b { font-size: 6cqw; font-weight: 700; }
+  .stage .fb-id small { font-size: 4.2cqw; color: #65676B; }
+  .stage .fb-acts { display: flex; gap: 2cqw; margin-top: 3.4cqw; width: 100%; }
+  .stage .fb-acts i { height: 7cqw; flex: 1; border-radius: 1.6cqw; background: #E7F0FD; }
+  .stage .fb-acts i:first-child { flex: 1.4; background: #1877F2; }
+  .stage .fb-posts { display: grid; gap: 3cqw; padding: 3.4cqw 3cqw; }
+  .stage .fb-posts li { display: flex; align-items: center; gap: 3.6cqw; padding: 3.6cqw; border-radius: 3cqw; background: #fff; }
+  .stage .fb-posts .th { display: grid; place-items: center; width: 20cqw; height: 20cqw; border-radius: 2cqw; background: #F1F4EF; flex: none; }
+  .stage .fb-posts .th img { width: 15cqw; height: 15cqw; }
+  .stage .fb-posts .meta { display: grid; }
+  .stage .fb-posts b { font-size: 4.6cqw; font-weight: 600; line-height: 1.25; }
+  .stage .fb-posts small { font-size: 4.2cqw; color: #1E8E4E; font-weight: 650; }
+
+  /* 1 · Mobile store (same brand as the desktop store) */
+  .stage .ps-store { display: flex; flex-direction: column; gap: 4cqw; padding-inline: 4.5cqw; background: var(--tb); }
+  .stage .m-head { display: flex; align-items: center; justify-content: space-between; }
+  .stage .m-head b { display: flex; align-items: center; gap: 2cqw; font-family: var(--serif); font-size: 5.6cqw; font-weight: 700; }
+  .stage .m-head img { width: 7cqw; height: 7cqw; }
+  .stage .m-head svg { width: 6.4cqw; height: 6.4cqw; }
+  .stage .m-ban { position: relative; display: grid; gap: 3cqw; justify-items: start; padding: 6cqw 5cqw; border-radius: 4cqw; background: var(--ta); color: #fff; overflow: hidden; }
+  .stage .m-ban b { position: relative; max-width: 62%; font-family: var(--serif); font-size: 8cqw; font-weight: 400; line-height: 1.02; }
+  .stage .m-ban .shop { position: relative; font-size: 4cqw; padding: 2cqw 4cqw; }
+  .stage .m-ban img { position: absolute; right: -2cqw; bottom: -2cqw; width: 34cqw; height: 34cqw; filter: drop-shadow(0 3cqw 3cqw rgb(0 0 0 / .25)); }
+  .stage .m-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; }
+  .stage .m-grid .sf-card { padding: 2.4cqw; border-radius: 3cqw; gap: 1.6cqw; }
+  .stage .m-grid .sf-th { border-radius: 2cqw; }
+  .stage .m-grid b { font-size: 4cqw; }
+  .stage .m-grid small { font-size: 4cqw; }
+  .stage .m-grid .add { font-size: 3.4cqw; padding: 1.2cqw 2.6cqw; }
+
+  /* 2 · Notifications */
+  .stage .ps-notes { display: flex; flex-direction: column; justify-content: center; gap: 3cqw; padding: 11cqw 4cqw 20cqw; background: linear-gradient(170deg, #1A2563, #070B24 72%); }
+  .stage .note { display: flex; align-items: center; gap: 3cqw; padding: 3.4cqw; border-radius: 5cqw; background: rgb(255 255 255 / .94); }
+  .stage .n-ic { display: grid; place-items: center; width: 11cqw; height: 11cqw; border-radius: 2.8cqw; background: #F1F2F5; flex: none; }
+  .stage .n-txt { display: grid; }
+  .stage .n-txt b { font-size: 4.4cqw; font-weight: 650; }
+  .stage .n-txt small { font-size: 3.9cqw; color: #5B6274; }
+
+  /* 3 · Delivery */
+  .stage .ps-trk { background: #fff; }
+  .stage .ps-trk .ph { padding: 3cqw 5cqw 4cqw; }
+  .stage .ps-trk .ph b { font-size: 6cqw; }
+  .stage .m-order { display: flex; justify-content: space-between; align-items: baseline; margin: 5cqw 5cqw 0; padding: 4cqw; border-radius: 3cqw; background: #F4F5F8; font-size: 4.2cqw; color: #4B5568; }
+  .stage .m-order b { font-size: 5cqw; color: var(--color-ink); font-variant-numeric: tabular-nums; }
+  .stage .tl-wrap { position: relative; padding: 9cqw 5cqw 0 6cqw; }
+  .stage .tl { display: grid; gap: 14cqw; }
+  .stage .tl-line { position: absolute; left: calc(6cqw + 2.8cqw - .35cqw); top: calc(9cqw + 2.8cqw); height: calc(3 * (5.6cqw + 14cqw)); width: .7cqw; background: #E9EBF0; }
+  .stage .tl-line i { display: block; height: 100%; background: var(--color-mint); transform-origin: top; transform: scaleY(0); }
+  .stage .tl li { position: relative; display: flex; align-items: center; gap: 4cqw; height: 5.6cqw; font-size: 5cqw; font-weight: 600; color: #9AA1B0; transition: color .3s; }
+  .stage .tl li i { width: 5.6cqw; height: 5.6cqw; border-radius: 50%; border: .9cqw solid #D8DCE4; background: #fff; flex: none; transition: background-color .3s, border-color .3s; }
+  .stage .tl li[data-on="1"] { color: var(--color-ink); }
+  .stage .tl li[data-on="1"] i { border-color: var(--color-mint); background: var(--color-mint); }
+</style>

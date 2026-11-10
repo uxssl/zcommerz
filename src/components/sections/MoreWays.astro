@@ -1,0 +1,105 @@
+---
+/**
+ * I · More ways. Editorial split: the merchant photograph holds just under half the spread
+ * at full column height, the heading and the six ways sit beside it on paper. Nothing is
+ * set over the subject — the type has its own column.
+ * Nothing is claimed about the person in the picture — no quote, no name, no metric.
+ * Strings and destinations verbatim from the product-team file.
+ */
+import { ArrowUpRight } from '@lucide/astro';
+import { moreHead, moreRows } from '../../data/sections2';
+---
+<section id="more" class="sec more-sec" aria-labelledby="more-title">
+  <div class="page more">
+    <figure class="shot" data-more-shot>
+      <img src="/images/merchant.jpg" width="1800" height="1200" loading="lazy" decoding="async"
+        alt="A Bangladeshi entrepreneur at her desk, packing orders beside a rail of clothing"
+        data-bn-alt="নিজের ডেস্কে বসে অর্ডার প্যাক করছেন একজন বাংলাদেশি উদ্যোক্তা"
+        data-more-img />
+    </figure>
+
+    <div class="body">
+      <h2 id="more-title" data-sr data-bn={moreHead.bn}>{moreHead.en}</h2>
+      <ol class="rows" data-sr data-sr-stagger>
+        {moreRows.map((r, i) => (
+          <li>
+            <a href={r.href}>
+              <span class="n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="t"><b data-bn={r.t.bn}>{r.t.en}</b><small data-bn={r.s.bn}>{r.s.en}</small></span>
+              <span class="go" aria-hidden="true"><ArrowUpRight size={18} stroke-width={2} /></span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .more-sec { padding: var(--sec-y) 0; background: var(--color-paper); }
+
+  .more { display: grid; gap: clamp(26px, 3.4vw, 40px); align-items: stretch; }
+  @media (min-width: 1000px) {
+    /* the photograph takes just under half the spread and runs the full height of the copy */
+    .more { grid-template-columns: minmax(0, 47fr) minmax(0, 53fr); gap: clamp(36px, 4.4vw, 72px); }
+  }
+
+  /* ---------- the photograph ---------- */
+  .shot {
+    position: relative; margin: 0; overflow: hidden; border-radius: 20px;
+    background: #EFE7DC; /* warm hold while the file loads */
+    aspect-ratio: 4 / 3;
+  }
+  @media (min-width: 640px) { .shot { aspect-ratio: 16 / 10; } }
+  @media (min-width: 1000px) { .shot { aspect-ratio: auto; min-height: clamp(420px, 44vw, 600px); } }
+  .shot img {
+    display: block; width: 100%; height: 100%; object-fit: cover;
+    /* keeps her and the laptop in frame as the column narrows */
+    object-position: 44% 32%;
+    will-change: transform;
+  }
+  @media (min-width: 1000px) { .shot img { object-position: 42% 28%; } }
+  /* the barest edge so the rounded corner doesn't float off the paper */
+  .shot::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgb(7 11 36 / .07);
+  }
+
+  /* ---------- heading + index ---------- */
+  .body { display: grid; align-content: center; gap: clamp(20px, 2.4vw, 30px); min-width: 0; }
+  .body h2 {
+    max-width: 17ch; font-size: var(--h2); font-weight: 800;
+    line-height: 1.04; letter-spacing: -.035em; text-wrap: balance;
+  }
+  :global(:lang(bn)) .body h2 { letter-spacing: 0; line-height: 1.22; font-weight: 700; }
+
+  .rows { border-top: 1px solid var(--color-ink); }
+  .rows li { border-bottom: 1px solid var(--color-rule); }
+  .rows a { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 13px 2px 13px 0; color: var(--color-ink); text-decoration: none; }
+  .n { align-self: start; padding-top: 3px; font-size: .72rem; font-weight: 700; color: #A4AAB6; font-variant-numeric: tabular-nums; }
+  .t { display: grid; gap: 2px; min-width: 0; }
+  .t b { font-size: 1.02rem; font-weight: 650; line-height: 1.35; }
+  .t small { font-size: .86rem; color: var(--color-ink-2); }
+  .go { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: #A4AAB6; transition: background-color .25s, color .25s, transform .35s var(--ease-out-expo); }
+  .rows a:hover .go { background: var(--color-blue); color: #fff; transform: translate(2px, -2px); }
+  .rows a:hover b { color: var(--color-blue); }
+</style>
+
+<script>
+  import { gsap, MOTION_OK } from '../../scripts/motion';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+  const shot = document.querySelector<HTMLElement>('[data-more-shot]');
+  const img = document.querySelector<HTMLElement>('[data-more-img]');
+  if (shot && img) {
+    const mm = gsap.matchMedia();
+    // a slow drift inside the frame: depth without moving the layout
+    mm.add(`${MOTION_OK} and (min-width: 640px)`, () => {
+      gsap.fromTo(img, { yPercent: -2.6, scale: 1.06 }, {
+        yPercent: 2.6, scale: 1.06, ease: 'none',
+        scrollTrigger: { trigger: shot, start: 'top bottom', end: 'bottom top', scrub: 0.6 },
+      });
+    });
+  }
+</script>

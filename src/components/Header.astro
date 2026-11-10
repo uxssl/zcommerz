@@ -1,0 +1,210 @@
+---
+/**
+ * Navigation. Destinations, labels and the language toggle are preserved from the
+ * product-team page. Addition: a mobile menu so Login and section links stay reachable
+ * on small screens (the original hid them with no replacement).
+ */
+import { SIGNUP_URL, LOGIN_URL } from '../data/logos';
+import { ArrowRight } from '@lucide/astro';
+
+const links = [
+  { href: '#how', en: 'How it works', bn: 'কীভাবে কাজ করে' },
+  { href: '#pillars', en: 'Features', bn: 'ফিচার' },
+  { href: '#pricing', en: 'Pricing', bn: 'প্রাইসিং' },
+  { href: '#faq', en: 'FAQ', bn: 'প্রশ্নোত্তর' },
+];
+---
+<header class="site-header" data-header data-reveal>
+  <div class="page bar">
+    <a href="#" class="brand" aria-label="Zcommerz home">
+      <span class="logo-mark" role="img" aria-label="Zcommerz"></span>
+    </a>
+
+    <nav class="primary" aria-label="Main" data-bn-aria-label="প্রধান">
+      <ul>
+        {links.map((l) => (
+          <li><a class="ulink" href={l.href} data-bn={l.bn}>{l.en}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <div class="lang" role="group" aria-label="Language" data-bn-aria-label="ভাষা">
+        <button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button>
+        <button type="button" data-lang="bn" aria-pressed="false" lang="bn">বাং</button>
+      </div>
+      <a class="login ulink" href={LOGIN_URL} data-bn="লগইন">Login</a>
+      <a class="btn btn-primary trial" href={SIGNUP_URL} data-bn="ফ্রি ট্রায়াল">Free trial</a>
+      <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" data-menu-toggle>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="mobile-menu" hidden data-menu>
+    <nav class="page" aria-label="Mobile" data-bn-aria-label="মোবাইল মেনু">
+      <ul>
+        {links.map((l, i) => (
+          <li>
+            <a href={l.href}>
+              <span class="micro">{String(i + 1).padStart(2, '0')}</span>
+              <span data-bn={l.bn}>{l.en}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="mm-actions">
+        <a class="btn btn-primary mm-trial" href={SIGNUP_URL}><span data-bn="৭ দিনের ফ্রি ট্রায়াল শুরু করুন">Start 7-day free trial</span><ArrowRight size={18} stroke-width={2} aria-hidden="true" /></a>
+        <a class="btn btn-line" href={LOGIN_URL} data-bn="লগইন">Login</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    --h: 76px;
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    border-bottom: 1px solid transparent;
+    transition: border-color .35s, background-color .35s;
+  }
+  .site-header[data-scrolled] {
+    --h: 62px;
+    background: color-mix(in oklab, var(--color-paper) 95%, transparent);
+    border-bottom-color: var(--color-rule);
+  }
+  @supports (backdrop-filter: blur(1px)) {
+    .site-header[data-scrolled] { backdrop-filter: saturate(1.3) blur(12px); }
+  }
+  .site-header[data-open] { background: var(--color-paper); border-bottom-color: var(--color-rule); }
+
+  .bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: var(--h);
+    transition: height .35s var(--ease-out-expo);
+  }
+  .brand { color: var(--color-blue); }
+  .brand .logo-mark { width: 128px; }
+
+  .primary { display: none; }
+  @media (min-width: 1024px) {
+    .primary { display: block; position: absolute; left: 50%; translate: -50% 0; }
+  }
+  .primary ul { display: flex; gap: 32px; font-size: .94rem; font-weight: 500; color: var(--color-ink-2); }
+  .primary a { padding: 8px 0; transition: color .2s; }
+  .primary a:hover { color: var(--color-ink); }
+
+  .actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  @media (min-width: 640px) { .actions { gap: 16px; } }
+  .login { display: none; padding: 8px 0; font-size: .94rem; font-weight: 600; }
+  .trial { display: none; min-height: 40px; padding: 0 1rem; font-size: .92rem; border-radius: 7px; }
+  @media (min-width: 1024px) { .login { display: inline; } }
+  @media (min-width: 640px) { .trial { display: inline-flex; } }
+
+  .lang {
+    display: inline-flex;
+    padding: 3px;
+    border: 1px solid var(--color-rule);
+    border-radius: 8px;
+    font-size: .78rem;
+    font-weight: 600;
+    background: rgb(255 255 255 / .4);
+  }
+  .lang button {
+    min-width: 40px;
+    min-height: 32px;
+    padding: 0 .55rem;
+    border-radius: 5px;
+    color: var(--color-ink-2);
+    cursor: pointer;
+    transition: background-color .2s, color .2s;
+  }
+  .lang button:hover { color: var(--color-ink); }
+  .lang button[aria-pressed="true"] { background: var(--color-blue); color: #fff; }
+  .lang button[lang="bn"] { font-family: "Hind Siliguri", sans-serif; font-size: .85rem; }
+
+  .menu-btn { position: relative; width: 44px; height: 44px; border-radius: 8px; cursor: pointer; }
+  @media (min-width: 1024px) { .menu-btn { display: none; } }
+  .menu-btn span { position: absolute; left: 12px; right: 12px; height: 1.5px; background: var(--color-ink); transition: transform .35s var(--ease-out-expo); }
+  .menu-btn span:first-child { transform: translateY(-4px); }
+  .menu-btn span:last-child { transform: translateY(4px); }
+  .menu-btn[aria-expanded="true"] span:first-child { transform: rotate(45deg); }
+  .menu-btn[aria-expanded="true"] span:last-child { transform: rotate(-45deg); }
+
+  .mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: calc(100dvh - var(--h));
+    overflow-y: auto;
+    background: var(--color-paper);
+  }
+  .mobile-menu ul { border-top: 1px solid var(--color-rule); margin-top: 8px; }
+  .mobile-menu li { border-bottom: 1px solid var(--color-rule); }
+  .mobile-menu li a { display: flex; align-items: baseline; gap: 16px; padding: 18px 0; font-family: var(--font-display); font-size: 1.85rem; font-weight: 700; letter-spacing: -.03em; }
+  :global(:lang(bn)) .mobile-menu li a { letter-spacing: 0; }
+  .mobile-menu .micro { width: 24px; color: var(--color-ink-2); }
+  .mm-actions { display: grid; gap: 10px; margin: 24px 0 32px; }
+  .mm-actions .btn { min-height: 54px; }
+  .mm-trial { justify-content: space-between; }
+</style>
+
+<script>
+  import { gsap, prefersReducedMotion } from '../scripts/motion';
+  import { tr } from '../scripts/i18n';
+
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const btn = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const menu = header.querySelector<HTMLElement>('[data-menu]')!;
+
+  // Compact, solid header once the page scrolls
+  const sentinel = document.createElement('div');
+  sentinel.style.cssText = 'position:absolute;top:24px;height:1px;width:1px;pointer-events:none';
+  document.body.prepend(sentinel);
+  new IntersectionObserver(([e]) => header.toggleAttribute('data-scrolled', !e.isIntersecting)).observe(sentinel);
+
+  const label = (open: boolean) => (open ? tr('Close menu', 'মেনু বন্ধ করুন') : tr('Open menu', 'মেনু খুলুন'));
+  const isOpen = () => btn.getAttribute('aria-expanded') === 'true';
+
+  function setOpen(open: boolean, restoreFocus = false) {
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', label(open));
+    header.toggleAttribute('data-open', open);
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    if (open) {
+      menu.hidden = false;
+      if (!prefersReducedMotion()) {
+        gsap.fromTo(menu, { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.55, ease: 'expo.out', overwrite: true });
+        gsap.fromTo(menu.querySelectorAll('li, .mm-actions > a'), { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.05, duration: 0.5, delay: 0.08, ease: 'expo.out', overwrite: true });
+      }
+      menu.querySelector<HTMLElement>('a')?.focus();
+    } else {
+      menu.hidden = true;
+      if (restoreFocus) btn.focus();
+    }
+  }
+
+  btn.addEventListener('click', () => setOpen(!isOpen()));
+  menu.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!isOpen()) return;
+    if (e.key === 'Escape') setOpen(false, true);
+    // Keep focus inside menu + toggle while open
+    if (e.key === 'Tab') {
+      const f = [btn, ...menu.querySelectorAll<HTMLElement>('a')];
+      const i = f.indexOf(document.activeElement as HTMLElement);
+      if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+    }
+  });
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => e.matches && setOpen(false));
+  document.addEventListener('langchange', () => btn.setAttribute('aria-label', label(isOpen())));
+</script>

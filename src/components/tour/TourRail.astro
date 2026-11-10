@@ -1,0 +1,102 @@
+---
+/**
+ * Tour controls (approved in Phase 01): play/pause, replay, numbered steps with a short
+ * progress marker. Shared by the hero tour and the chat walkthrough.
+ * Wiring (data-tour-play, data-tour-replay, data-step, data-bar, data-tour-caption) is read by scripts/tour.ts.
+ * tone="dark" for use on the navy chat section.
+ */
+import { Play, Pause, RotateCcw } from '@lucide/astro';
+
+interface Step { en: string; bn: string; sen: string; sbn: string }
+interface Props {
+  steps: Step[];
+  label: { en: string; bn: string };
+  reveal?: string;
+  tone?: 'light' | 'dark';
+}
+const { steps, label, reveal, tone = 'light' } = Astro.props;
+const icon = { 'stroke-width': 2, 'aria-hidden': 'true' } as const;
+---
+<div class:list={['rail', tone === 'dark' && 'is-dark']} data-reveal={reveal ? '' : undefined} data-h={reveal}>
+  <div class="rail-row">
+    <div class="rail-btns">
+      <button class="r-btn" type="button" data-tour-play aria-label="Pause tour">
+        <span class="i-pause"><Pause size={13} {...icon} fill="currentColor" /></span>
+        <span class="i-play"><Play size={13} {...icon} fill="currentColor" /></span>
+      </button>
+      <button class="r-btn" type="button" data-tour-replay aria-label="Replay tour" data-bn-aria-label="ট্যুর আবার চালান"><RotateCcw size={13} {...icon} /></button>
+    </div>
+    <ol class="r-steps" aria-label={label.en} data-bn-aria-label={label.bn}>
+      {steps.map((s, i) => (
+        <li>
+          <button class="r-step" type="button" data-step={i} aria-current={i === 0 ? 'step' : undefined}>
+            <span class="bar" aria-hidden="true"><i data-bar></i></span>
+            <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span class="txt"><b data-bn={s.bn}>{s.en}</b><small data-bn={s.sbn}>{s.sen}</small></span>
+          </button>
+        </li>
+      ))}
+    </ol>
+  </div>
+  <div class="rail-foot">
+    <p class="r-caption" aria-hidden="true" data-tour-caption><b></b><small></small></p>
+  </div>
+</div>
+
+<style>
+  .rail { margin-top: 14px; }
+  /* Rail: two quiet buttons + four steps, everything centred on one line */
+  .rail-row { display: flex; align-items: center; gap: 20px; }
+  .rail-btns { display: flex; gap: 4px; padding: 0 16px 0 0; border-right: 1px solid var(--color-rule); }
+  .r-btn {
+    display: grid; place-items: center;
+    width: 32px; height: 32px; border-radius: 50%;
+    color: var(--color-ink-2); cursor: pointer;
+    transition: background-color .2s, color .2s;
+  }
+  .r-btn:hover { background: var(--color-paper-2); color: var(--color-ink); }
+  .r-btn span { display: grid; }
+  .r-btn .i-play { display: none; }
+  :global(.is-paused) .r-btn .i-play { display: grid; }
+  :global(.is-paused) .r-btn .i-pause { display: none; }
+
+  .r-steps { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .r-step { display: grid; grid-template-columns: auto 1fr; gap: 0 8px; width: 100%; padding: 6px 0; text-align: left; cursor: pointer; }
+  .r-step .bar { grid-column: 1 / -1; justify-self: start; position: relative; width: 28px; height: 3px; margin-bottom: 9px; border-radius: 3px; background: var(--color-rule); overflow: hidden; } /* short marker, not a long line */
+  .r-step .bar i { position: absolute; inset: 0; background: var(--color-mango); transform-origin: left; transform: scaleX(0); }
+  .r-step.done .bar i { transform: scaleX(1); background: #C9CED9; }
+  .r-step .num { font-size: .72rem; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.5; color: #A4AAB6; }
+  .r-step .txt { display: grid; }
+  .r-step b { font-size: .84rem; font-weight: 500; line-height: 1.4; color: #8A91A0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; transition: color .2s; }
+  .r-step small { display: none; }
+  .r-step:hover b { color: var(--color-ink-2); }
+  .r-step[aria-current="step"] b { color: var(--color-ink); font-weight: 600; }
+  .r-step[aria-current="step"] .num { color: var(--color-mango-d, #C98100); }
+
+  .rail-foot { display: none; } /* desktop: step titles are visible in the rail; no extra lines */
+  .r-caption small { display: none; }
+
+  /* Narrow: segments show numbers only; caption carries the active title + line */
+  @media (max-width: 899.98px) {
+    .r-steps { gap: 6px; }
+    .r-step { grid-template-columns: 1fr; }
+    .r-step .txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    /* mobile: segments show numbers only, so the active step's title shows below (no description) */
+    .rail-foot { display: block; margin-top: 12px; }
+    .r-caption b { display: block; font-weight: 650; color: var(--color-ink); font-size: .95rem; }
+  }
+
+
+  /* Dark tone (navy sections) */
+  .is-dark .rail-btns { border-right-color: var(--color-navy-rule); }
+  .is-dark .r-btn { color: var(--color-mist); }
+  .is-dark .r-btn:hover { background: rgb(255 255 255 / .08); color: #fff; }
+  .is-dark .r-step .bar { background: rgb(255 255 255 / .16); }
+  .is-dark .r-step.done .bar i { background: rgb(255 255 255 / .45); }
+  .is-dark .r-step .num { color: rgb(255 255 255 / .45); }
+  .is-dark .r-step b { color: rgb(255 255 255 / .55); }
+  .is-dark .r-step:hover b { color: rgb(255 255 255 / .8); }
+  .is-dark .r-step[aria-current="step"] b { color: #fff; }
+  .is-dark .r-step[aria-current="step"] .num { color: var(--color-mango); }
+  .is-dark .r-caption b { color: #fff; }
+</style>

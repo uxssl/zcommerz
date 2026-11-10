@@ -1,0 +1,191 @@
+---
+/**
+ * Hero — "From feed to storefront" (docs/03-phase01-art-direction.md, revision 3).
+ * Title block on top (title left, lead + CTAs right); product stage below at full content width.
+ * The stage is a phone and a browser of equal height joined by "the seam": the product's core
+ * action, "Build my store", on a mango thread.
+ * A compact tour rail sits under the stage; proof (stats + partners) spans the full width below.
+ * All copy, links, numbers and Bangla strings are verbatim from the product-team file.
+ */
+import StoreStage from './tour/StoreStage.astro';
+import TourRail from './tour/TourRail.astro';
+import Logo from './ui/Logo.astro';
+import { ArrowRight, Play } from '@lucide/astro';
+import { heroHeadline } from '../data/hero';
+import { SIGNUP_URL } from '../data/logos';
+
+const h = heroHeadline.en;
+// Verified against the product-team file's stats block: 36+ channels, 20 tools (5+4+2+2+3+2+2), 7-day trial
+const stats = [
+  { n: '36+', nbn: '৩৬+', l: 'Payment channels', lbn: 'পেমেন্ট চ্যানেল' },
+  { n: '20', nbn: '২০', l: 'Dashboard tools', lbn: 'ড্যাশবোর্ড টুল' },
+  { n: '7 days', nbn: '৭ দিন', l: 'Free trial', lbn: 'ফ্রি ট্রায়াল' },
+];
+const steps = [
+  { en: 'Start from your Facebook page', bn: 'ফেসবুক পেজ থেকে শুরু করুন', sen: 'Connect once, we build the first draft.', sbn: 'একবার কানেক্ট করুন, প্রথম খসড়া আমরা বানিয়ে দেব।' },
+  { en: 'Your store goes live', bn: 'আপনার স্টোর লাইভ হয়', sen: 'Pick a theme and publish.', sbn: 'থিম বেছে প্রকাশ করুন।' },
+  { en: 'Orders arrive from every channel', bn: 'সব চ্যানেল থেকে অর্ডার আসে', sen: 'Facebook, Daraz and WhatsApp in one list.', sbn: 'ফেসবুক, দারাজ ও হোয়াটসঅ্যাপ এক তালিকায়।' },
+  { en: 'Get paid, then deliver', bn: 'পেমেন্ট নিন, তারপর ডেলিভারি দিন', sen: 'bKash, cards and Bangla QR, then Pathao.', sbn: 'বিকাশ, কার্ড ও বাংলা QR, তারপর পাঠাও।' },
+];
+const icon = { 'stroke-width': 2, 'aria-hidden': 'true' } as const;
+---
+<section class="hero" aria-labelledby="hero-title" data-hero>
+  <div class="page hero-grid">
+    <!-- Promise -->
+    <div class="hero-copy">
+
+      <h1 id="hero-title" class="hero-title" data-h1 data-reveal data-h="title">
+        <span class="sr-only" data-h1-sr>{h.pre} {h.words.join(', ')}</span>
+        <span aria-hidden="true" data-h1-visual>{h.pre} <span class="rot"><span class="rot-words">{h.words.map((w) => <span class="rw">{w}</span>)}</span><svg class="rot-line" viewBox="0 0 300 18" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12.5C60 6 150 4 297 8.5" /></svg></span></span>
+      </h1>
+
+      <div class="hero-side">
+      <p class="hero-lead" data-reveal data-h="lead" data-bn="থিম বেছে নিন, পেমেন্ট নিন, পাঠাও বা ই-কুরিয়ারে ডেলিভারি দিন, আর দারাজ ও হোয়াটসঅ্যাপেও বিক্রি করুন, সবকিছু এক ড্যাশবোর্ড থেকে।">Pick a theme, take payments, ship with Pathao or eCourier, and sell on Daraz and WhatsApp, all from one dashboard.</p>
+
+      <div class="hero-cta" data-reveal data-h="cta">
+        <a class="btn btn-primary btn-xl" href={SIGNUP_URL}>
+          <span data-bn="৭ দিনের ফ্রি ট্রায়াল শুরু করুন">Start 7-day free trial</span>
+          <span class="arrow"><ArrowRight size={18} {...icon} /></span>
+        </a>
+        <a class="btn-quiet" href="#video">
+          <span class="play-dot"><Play size={12} {...icon} fill="currentColor" /></span>
+          <span class="lbl" data-bn="ডেমো দেখুন">Watch the demo</span>
+        </a>
+      </div>
+      </div>
+    </div>
+
+    <!-- Product: stage + compact tour rail -->
+    <div class="hero-product">
+      <div class="hero-visual" data-reveal data-h="visual" role="region" aria-label="Animated product tour" data-bn-aria-label="অ্যানিমেটেড প্রোডাক্ট ট্যুর">
+        <StoreStage />
+      </div>
+
+      <TourRail steps={steps} label={{ en: 'Tour steps', bn: 'ট্যুরের ধাপ' }} reveal="rail" />
+    </div>
+
+    <!-- Proof: full width under both columns -->
+    <div class="proof" data-reveal data-h="proof">
+      <dl class="stats">
+        {stats.map((s) => (
+          <div>
+            <dt data-bn={s.lbn}>{s.l}</dt>
+            <dd data-bn={s.nbn}>{s.n}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="works">
+        <p class="micro" data-bn="যেসব সার্ভিসের সঙ্গে কাজ করে">Works with</p>
+        <ul aria-label="Partners" data-bn-aria-label="পার্টনার">
+          <li class="txt">SSLCOMMERZ</li>
+          <li class="txt" data-bn="মোবাইল ওয়ালেট">Mobile wallets</li>
+          <li class="txt" data-bn="কার্ড">Cards</li>
+          <li class="txt">Bangla QR</li>
+          <li><Logo k="pathao" h="22px" label /></li>
+          <li><Logo k="ecourier" h="15px" label /></li>
+          <li><Logo k="daraz" h="19px" label /></li>
+          <li><Logo k="facebook" h="22px" label /></li>
+          <li><Logo k="messenger" h="22px" label /></li>
+          <li><Logo k="whatsapp" h="22px" label /></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    --pad: 20px;
+    --bleed: max(var(--pad), calc((100vw - var(--container-page)) / 2 + var(--pad)));
+    position: relative;
+    overflow: clip;
+    padding: 24px 0 0;
+    background: var(--color-paper);
+  }
+  @media (min-width: 768px) { .hero { --pad: 32px; padding-top: 32px; } }
+
+  /* ---------- Grid ---------- */
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .hero-copy { display: grid; justify-items: start; }
+  .hero-product { margin-top: 32px; }
+  @media (min-width: 768px) { .hero-product { margin-top: 36px; } }
+
+  /* Title block (≥1024): title left; subtitle + buttons stacked right.
+     Subtitle top aligns with the title's top, buttons' bottom with the title's last line. */
+  @media (min-width: 1024px) {
+    .hero-copy {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      column-gap: clamp(40px, 6vw, 96px);
+      align-items: stretch;
+    }
+    .hero-copy .hero-title { margin-top: 0; max-width: 12.5em; }
+    .hero-side { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; padding: .55em 0 .2em; }
+    .hero-side .hero-lead, .hero-side .hero-cta { margin-top: 0; }
+  }
+  @media (min-width: 1024px) and (max-width: 1279.98px) {
+    .hero-copy { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 40px; } /* buttons stay on one row */
+  }
+
+  /* ---------- Copy ---------- */
+
+  .hero-title {
+    margin-top: 0;
+    font-size: clamp(2.35rem, 1.2rem + 4.6vw, 4rem);
+    font-weight: 800;
+    font-stretch: 100%; /* standard Bricolage Grotesque, as in the product-team file */
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    max-width: 13ch;
+  }
+  @media (min-width: 640px) and (max-width: 1023.98px) { .hero-title { max-width: 17ch; } }
+  :global(:lang(bn)) .hero-title { font-size: clamp(2.1rem, 1.1rem + 4vw, 3.5rem); font-weight: 700; font-stretch: 100%; line-height: 1.2; letter-spacing: 0; max-width: 15ch; }
+  .hero-title :global(.rot) { position: relative; display: inline-block; vertical-align: top; }
+  .hero-title :global(.rot-words) { display: inline-grid; overflow: hidden; padding: 0 .06em .16em 0; margin-bottom: -.16em; }
+  .hero-title :global(.rw) { grid-area: 1 / 1; color: var(--color-blue); white-space: nowrap; font-stretch: 100%; }
+  .hero-title :global(.rw + .rw) { visibility: hidden; }
+  :global(html.motion-ready) .hero-title :global(.rw + .rw) { visibility: visible; }
+  .hero-title :global(.rot-line) { position: absolute; left: 0; bottom: -.03em; width: calc(100% - .06em); height: .15em; overflow: visible; }
+  .hero-title :global(.rot-line path) { fill: none; stroke: var(--color-mango); stroke-width: 6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+
+  .hero-lead { margin-top: 22px; max-width: 31rem; font-size: clamp(1.05rem, 1rem + .3vw, 1.2rem); line-height: 1.55; color: var(--color-ink-2); }
+  :global(:lang(bn)) .hero-lead { line-height: 1.7; }
+
+  .hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin-top: 30px; }
+  .hero-cta > a { margin: 0; }
+  .btn-xl { min-height: 54px; padding: 0 1.5rem 0 1.6rem; font-size: 1.04rem; box-shadow: 0 10px 24px -14px rgb(42 93 168 / .8); }
+  .btn-xl .arrow { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #fff; color: var(--color-blue); transition: transform .3s var(--ease-out-expo); }
+  .btn-xl:hover .arrow { transform: translateX(3px); }
+  .btn-quiet { display: inline-flex; align-items: center; gap: 10px; min-height: 54px; line-height: 1; font-weight: 600; color: var(--color-ink); }
+  .btn-quiet .play-dot { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--color-ink); transition: background-color .25s, color .25s; }
+  .btn-quiet .play-dot :global(svg) { translate: 1px 0; }
+  .btn-quiet:hover .play-dot { background: var(--color-ink); color: #fff; }
+  .btn-quiet .lbl { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat; transition: background-size .35s var(--ease-out-expo); }
+  .btn-quiet:hover .lbl { background-size: 100% 1.5px; }
+  @media (max-width: 479.98px) { .hero-cta .btn-xl { flex: 1 1 100%; justify-content: space-between; } }
+
+  /* ---------- Tour rail: one compact row under the stage ---------- */
+  /* ---------- Proof band: stats row / hairline / one row of partners ---------- */
+  .proof { margin-top: 28px; padding-bottom: 32px; border-top: 1px solid var(--color-rule); }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stats > div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 4px; padding: 18px 12px 18px 0; }
+  .stats > div + div { padding-left: 16px; border-left: 1px solid var(--color-rule); }
+  @media (min-width: 768px) { .stats > div { padding: 20px 24px 20px 0; } .stats > div + div { padding-left: 32px; } }
+  .stats dd { white-space: nowrap; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 1.1rem + 1.4vw, 2.2rem); letter-spacing: -.035em; line-height: 1; font-variant-numeric: tabular-nums; }
+  :global(:lang(bn)) .stats dd { letter-spacing: 0; font-weight: 700; }
+  .stats dt { color: var(--color-ink-2); font-size: .88rem; }
+
+  .works { display: grid; gap: 14px; padding-top: 18px; border-top: 1px solid var(--color-rule); }
+  .works > p { color: #8A91A0; white-space: nowrap; }
+  @media (min-width: 1024px) { .works { grid-template-columns: auto 1fr; align-items: center; gap: 48px; } }
+  .works ul { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+  @media (min-width: 1024px) { .works ul { display: flex; justify-content: space-between; gap: 16px; } }
+  /* one quiet tone; brand colour returns on hover */
+  .works li { display: grid; place-items: center; height: 28px; filter: grayscale(1) brightness(.45); opacity: .55; transition: filter .25s, opacity .25s; }
+  .works li:hover { filter: none; opacity: 1; }
+  .works li.txt { font-family: var(--font-display); font-weight: 800; font-size: .92rem; letter-spacing: -.01em; color: var(--color-ink); white-space: nowrap; }
+</style>
+
+<script>
+  import { initHero } from '../scripts/hero';
+  initHero();
+</script>

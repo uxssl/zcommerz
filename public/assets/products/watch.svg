@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="wc" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="#E3E8F0"/><stop offset="1" stop-color="#8F9BAD"/></linearGradient></defs><ellipse cx="50" cy="91" rx="28" ry="4.5" fill="#0E1A2B" opacity=".14"/>
+<rect x="39" y="5" width="22" height="30" rx="7" fill="#5E6C85"/><rect x="39" y="65" width="22" height="30" rx="7" fill="#5E6C85"/>
+<rect x="30" y="29" width="40" height="42" rx="12" fill="url(#wc)"/>
+<rect x="34.5" y="33.5" width="31" height="33" rx="9" fill="#0B1220"/>
+<circle cx="50" cy="50" r="10" fill="none" stroke="#19C28F" stroke-width="3" stroke-dasharray="46 20" transform="rotate(-90 50 50)"/>
+<circle cx="50" cy="50" r="10" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="3"/>
+<rect x="46" y="48" width="8" height="2.4" rx="1.2" fill="#fff"/><rect x="47.5" y="52.5" width="5" height="1.8" rx=".9" fill="#7C8AA0"/>
+<rect x="70" y="43" width="3.4" height="9" rx="1.7" fill="#9AA5B5"/>
+<path d="M36 36 Q40 33 46 33" stroke="#fff" stroke-opacity=".5" stroke-width="1.4" fill="none"/></svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img">
+  <defs>
+    <filter id="psh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+    <linearGradient id="palu" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#151C28"/><stop offset=".08" stop-color="#364256"/>
+      <stop offset=".3" stop-color="#5F6F8A"/><stop offset=".46" stop-color="#8295AE"/>
+      <stop offset=".62" stop-color="#4E5D76"/><stop offset=".86" stop-color="#262F3F"/><stop offset="1" stop-color="#121822"/>
+    </linearGradient>
+    <linearGradient id="ptop" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3C4A60"/><stop offset=".4" stop-color="#7488A3"/>
+      <stop offset=".75" stop-color="#44536B"/><stop offset="1" stop-color="#1E2634"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="160" cy="280" rx="70" ry="12" fill="#000" opacity=".4" filter="url(#psh)"/>
+  <!-- body -->
+  <rect x="94" y="66" width="132" height="204" rx="22" fill="url(#palu)"/>
+  <rect x="94" y="66" width="132" height="16" rx="8" fill="url(#ptop)"/>
+  <!-- brushed lines -->
+  <g stroke="#0F141D" opacity=".16">
+    <path d="M104 90v170" stroke-width="1.5"/><path d="M118 90v170" stroke-width="1.5"/>
+    <path d="M132 90v170" stroke-width="1.5"/><path d="M146 90v170" stroke-width="1.5"/>
+    <path d="M174 90v170" stroke-width="1.5"/><path d="M188 90v170" stroke-width="1.5"/>
+    <path d="M202 90v170" stroke-width="1.5"/><path d="M216 90v170" stroke-width="1.5"/>
+  </g>
+  <!-- port deck -->
+  <rect x="106" y="94" width="108" height="46" rx="10" fill="#0D131C"/>
+  <rect x="118" y="110" width="30" height="12" rx="6" fill="#2B3647"/>
+  <rect x="121" y="113" width="24" height="6" rx="3" fill="#8FA0B8"/>
+  <rect x="160" y="110" width="20" height="12" rx="6" fill="#2B3647"/>
+  <rect x="163" y="113" width="14" height="6" rx="3" fill="#8FA0B8"/>
+  <rect x="190" y="110" width="14" height="12" rx="4" fill="#2B3647"/>
+  <!-- charge leds -->
+  <g>
+    <rect x="118" y="168" width="20" height="7" rx="3.5" fill="#22B8E6"/>
+    <rect x="144" y="168" width="20" height="7" rx="3.5" fill="#22B8E6"/>
+    <rect x="170" y="168" width="20" height="7" rx="3.5" fill="#22B8E6"/>
+    <rect x="196" y="168" width="20" height="7" rx="3.5" fill="#22B8E6" opacity=".22"/>
+  </g>
+  <!-- capacity mark -->
+  <g fill="#8FA0B8" opacity=".75">
+    <rect x="118" y="206" width="48" height="7" rx="3.5"/>
+    <rect x="118" y="222" width="30" height="5" rx="2.5" opacity=".6"/>
+  </g>
+  <path d="M206 198l-18 26h12l-6 20 20-28h-12z" fill="#22B8E6" opacity=".9"/>
+  <!-- highlights -->
+  <rect x="100" y="92" width="7" height="168" rx="3.5" fill="#D4E2F2" opacity=".3"/>
+  <rect x="214" y="96" width="5" height="160" rx="2.5" fill="#D4E2F2" opacity=".14"/>
+  <rect x="94" y="258" width="132" height="12" rx="6" fill="#070B12" opacity=".5"/>
+</svg>

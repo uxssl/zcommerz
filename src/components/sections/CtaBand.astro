@@ -1,0 +1,28 @@
+---
+/**
+ * M · Closing CTA. Navy band, mango button — the one place mango carries the action,
+ * as in the product-team file.
+ */
+import { ArrowRight } from '@lucide/astro';
+import { ctaBand } from '../../data/sections2';
+import { SIGNUP } from '../../data/sections';
+---
+<section class="sec cta-sec on-navy" aria-labelledby="cta-title">
+  <div class="page cta" data-sr>
+    <h2 id="cta-title" data-bn={ctaBand.h2.bn}>{ctaBand.h2.en}</h2>
+    <p data-bn={ctaBand.lead.bn}>{ctaBand.lead.en}</p>
+    <a class="btn btn-mango btn-xl" href={SIGNUP}>
+      <span data-bn={ctaBand.cta.bn}>{ctaBand.cta.en}</span>
+      <ArrowRight size={18} stroke-width={2} aria-hidden="true" />
+    </a>
+  </div>
+</section>
+
+<style>
+  .cta-sec { padding: var(--sec-y-lg) 0; background: var(--color-navy); }
+  .cta { display: grid; justify-items: center; text-align: center; }
+  .cta h2 { max-width: 16ch; font-size: var(--h2); font-weight: 800; line-height: 1.04; letter-spacing: -.035em; color: #fff; text-wrap: balance; }
+  :global(:lang(bn)) .cta h2 { letter-spacing: 0; line-height: 1.24; font-weight: 700; }
+  .cta p { margin-top: 16px; max-width: 42ch; font-size: clamp(1.02rem, .98rem + .3vw, 1.18rem); line-height: 1.6; color: var(--color-mist); }
+  .cta .btn { margin-top: 30px; min-height: 54px; padding: 0 1.6rem; font-size: 1.04rem; }
+</style>

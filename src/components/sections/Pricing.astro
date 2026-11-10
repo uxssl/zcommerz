@@ -1,0 +1,181 @@
+---
+/**
+ * K · Pricing. The decision sits above the fold of the card: name, who it is for, price,
+ * what you save, one action. The feature lines then read as structure — six labelled groups
+ * instead of one list of twelve — and the long dashboard sentence becomes a description line
+ * under its group rather than a bullet.
+ * Growth is the recommended plan, so it is the only card on the night ground.
+ * Plan names, prices, struck-through prices, savings and every feature line are verbatim from
+ * the product-team file; the billing toggle swaps the billing note exactly as the source does
+ * (the listed price is the same either way — no price is computed here).
+ */
+import SectionHead from './SectionHead.astro';
+import { Check, X, ArrowRight } from '@lucide/astro';
+import { priceHead as P, plans, planFeats, featGroups } from '../../data/sections2';
+import { SIGNUP } from '../../data/sections';
+
+/** The groups this plan actually has lines for, keeping each group's order. */
+const groupsFor = (feats: string[]) => {
+  // a plan lists a key as "k" or "!k" (not included); keep the clean key for lookups
+  const has = (k: string) => (feats.some((f) => f.replace(/^!/, '') === k) ? k : undefined);
+  return featGroups
+    .map((g) => ({ ...g, items: g.keys.map(has).filter(Boolean) as string[] }))
+    .filter((g) => g.items.length);
+};
+const isDash = (k: string) => k.startsWith('dash');
+---
+<section id="pricing" class="sec price-sec" aria-labelledby="price-title">
+  <div class="page">
+    <SectionHead id="price-title" h2={P.h2} lead={P.lead}>
+      <div class="bill" role="group" aria-label={P.billing.en} data-bn-aria-label={P.billing.bn} data-bill>
+        <button type="button" data-v="m" aria-pressed="true" data-bn={P.monthly.bn}>{P.monthly.en}</button>
+        <button type="button" data-v="y" aria-pressed="false"><span data-bn={P.yearly.bn}>{P.yearly.en}</span><em>−15%</em></button>
+      </div>
+    </SectionHead>
+
+    <div class="plans" data-sr data-sr-stagger data-plans>
+      {plans.map((p) => {
+        const groups = groupsFor(p.feats as string[]);
+        const no = (k: string) => (p.feats as string[]).includes(`!${k}`);
+        return (
+          <article class:list={['plan', p.pop && 'pop']}>
+            <div class="top">
+              <div class="idline">
+                <h3>{p.name}</h3>
+                {p.pop && <span class="badge" data-bn={P.best.bn}>{P.best.en}</span>}
+              </div>
+              <p class="for" data-bn={p.tag.bn}>{p.tag.en}</p>
+
+              <p class="price">
+                <span class="cy">৳</span>
+                <span class="m-only">{p.price}</span><span class="y-only">{p.priceY}</span>
+                <span class="mo" data-bn={P.mo.bn}>{P.mo.en}</span>
+              </p>
+              <p class="was">
+                <s class="m-only">৳{p.was}</s>
+                <s class="y-only">৳{p.price}</s>
+                <span class="save m-only" data-bn={`৳${p.save} ${P.save.bn}`}>{P.save.en} ৳{p.save}</span>
+                <span class="save y-only" data-bn={`৳${p.saveY} ${P.save.bn}${P.mo.bn}`}>{P.save.en} ৳{p.saveY}{P.mo.en}</span>
+                <span class="ychip y-only" data-bn={P.yearChip.bn}>{P.yearChip.en}</span>
+              </p>
+              <p class="total y-only">৳{p.totalY} <span data-bn={P.billedYear.bn}>{P.billedYear.en}</span></p>
+              <p class="pernote" data-pernote data-m={P.perMonth.en} data-m-bn={P.perMonth.bn}
+                 data-y={P.perYear.en} data-y-bn={P.perYear.bn} data-bn={P.perMonth.bn}>{P.perMonth.en}</p>
+
+              <a class:list={['btn', p.pop ? 'btn-mango' : 'btn-primary']} href={SIGNUP}>
+                <span data-bn={P.cta.bn}>{P.cta.en}</span>
+                <ArrowRight size={16} stroke-width={2} aria-hidden="true" />
+              </a>
+            </div>
+
+            <div class="feats">
+              {groups.map((g) => (
+                <section class="grp">
+                  <h4 class="glab" data-bn={g.n.bn}>{g.n.en}</h4>
+                  {g.items.map((k) =>
+                    isDash(k) ? (
+                      <p class="gdesc" data-bn={planFeats[k].bn}>{planFeats[k].en}</p>
+                    ) : (
+                      <p class:list={['gi', no(k) && 'no']}>
+                        {no(k)
+                          ? <X size={14} stroke-width={2.6} aria-hidden="true" />
+                          : <Check size={14} stroke-width={2.6} aria-hidden="true" />}
+                        <span data-bn={planFeats[k].bn}>{planFeats[k].en}</span>
+                      </p>
+                    ),
+                  )}
+                </section>
+              ))}
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <p class="pro-note" data-bn={P.note.bn}>{P.note.en}</p>
+  </div>
+</section>
+
+<style>
+  .price-sec { padding: var(--sec-y-lg) 0; background: var(--color-paper); }
+
+  /* ---------- billing toggle ---------- */
+  .bill { display: inline-flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--color-paper-2); }
+  .bill button { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 16px; border-radius: 9px; cursor: pointer; font-size: .9rem; font-weight: 650; color: var(--color-ink-2); transition: background-color .2s, color .2s, box-shadow .2s; }
+  .bill button:hover { color: var(--color-ink); }
+  .bill button[aria-pressed="true"] { background: #fff; color: var(--color-ink); box-shadow: 0 1px 2px rgb(14 26 43 / .14), 0 0 0 1px rgb(14 26 43 / .05); }
+  .bill em { font-style: normal; padding: 2px 7px; border-radius: 6px; background: #E2F6EE; color: #0F7A58; font-size: .72rem; font-weight: 700; }
+
+  /* ---------- cards ---------- */
+  /* stretch: the three cards are always the same height */
+  .plans { display: grid; gap: 16px; margin-top: var(--head-gap); align-items: stretch; }
+  @media (min-width: 940px) { .plans { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; } }
+
+  .plan { display: flex; flex-direction: column; height: 100%; border-radius: 18px; background: #fff; box-shadow: inset 0 0 0 1px var(--color-rule); overflow: hidden; }
+
+  /* monthly / yearly price variants; the grid carries .is-yearly */
+  .y-only { display: none; }
+  :global(.is-yearly) .m-only { display: none; }
+  :global(.is-yearly) .y-only { display: inline-block; }
+  :global(.is-yearly) p.y-only { display: block; }
+  /* the recommended plan is the only one on the night ground */
+  .plan.pop { background: var(--color-navy); color: #fff; box-shadow: 0 34px 64px -40px rgb(7 11 36 / .8); }
+
+  .top { padding: 26px 24px 24px; border-bottom: 1px solid var(--color-rule); }
+  .plan.pop .top { border-bottom-color: var(--color-navy-rule); }
+  .idline { display: flex; align-items: center; gap: 10px; }
+  .plan h3 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; letter-spacing: -.028em; }
+  .badge { padding: 4px 10px; border-radius: 99px; background: var(--color-mango); color: var(--color-ink); font-size: .68rem; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+  :global(:lang(bn)) .badge { text-transform: none; letter-spacing: 0; }
+  .for { margin-top: 5px; font-size: .88rem; color: var(--color-ink-2); }
+  .plan.pop .for { color: var(--color-mist); }
+
+  .price { display: flex; align-items: baseline; margin-top: 20px; font-family: var(--font-display); font-size: clamp(2.5rem, 2rem + 1.6vw, 3.1rem); font-weight: 800; letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+  :global(:lang(bn)) .price { letter-spacing: 0; font-weight: 700; }
+  .cy { font-size: .56em; margin-right: .06em; }
+  .mo { font-family: var(--font-ui); font-size: .95rem; font-weight: 600; letter-spacing: 0; color: #8A91A0; margin-left: 5px; }
+  .plan.pop .mo { color: var(--color-mist); }
+
+  .was { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; font-size: .9rem; }
+  .was s { color: #A4AAB6; font-variant-numeric: tabular-nums; }
+  .plan.pop .was s { color: rgb(255 255 255 / .45); }
+  .save { padding: 3px 9px; border-radius: 7px; background: #E2F6EE; color: #0F7A58; font-size: .76rem; font-weight: 700; }
+  /* only visible in the yearly state (scripts/pricing.ts flips .is-yearly on the grid) */
+  .ychip { display: none; padding: 3px 9px; border-radius: 7px; background: #FFF1D1; color: #8A5A00; font-size: .76rem; font-weight: 700; }
+  :global(.is-yearly) .ychip { display: inline-block; }
+  .plan.pop .save { background: rgb(25 194 143 / .18); color: #4FE3B6; }
+  .plan.pop .ychip { background: rgb(255 178 30 / .2); color: var(--color-mango); }
+
+  .total { margin-top: 8px; font-size: .86rem; font-weight: 650; color: var(--color-ink); font-variant-numeric: tabular-nums; }
+  .total span { font-weight: 500; color: #8A91A0; }
+  .plan.pop .total { color: #fff; }
+  .plan.pop .total span { color: var(--color-mist); }
+  .pernote { margin-top: 10px; min-height: 2.6em; font-size: .8rem; line-height: 1.4; color: #8A91A0; }
+  :global(.is-yearly) .pernote { min-height: 1.4em; }
+  .plan.pop .pernote { color: var(--color-mist); }
+  .plan .btn { width: 100%; margin-top: 4px; min-height: 48px; }
+
+  /* ---------- features as groups ---------- */
+  .feats { flex: 1; display: grid; gap: 18px; align-content: start; padding: 22px 24px 26px; }
+  .grp { display: grid; gap: 7px; }
+  .glab { font-size: .68rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: #A4AAB6; }
+  :global(:lang(bn)) .glab { letter-spacing: 0; text-transform: none; font-size: .76rem; }
+  .plan.pop .glab { color: rgb(255 255 255 / .45); }
+  .gi { display: flex; gap: 9px; align-items: flex-start; font-size: .86rem; line-height: 1.45; color: var(--color-ink-2); }
+  .plan.pop .gi { color: #E6ECF7; }
+  .gi :global(svg) { flex: none; margin-top: 2px; color: var(--color-mint); }
+  .gi.no { color: #A4AAB6; }
+  .gi.no :global(svg) { color: #C3C9D4; }
+  .plan.pop .gi.no { color: rgb(255 255 255 / .4); }
+  .plan.pop .gi.no :global(svg) { color: rgb(255 255 255 / .3); }
+  /* the long dashboard sentence reads as a description, not a bullet */
+  .gdesc { padding-left: 11px; border-left: 2px solid var(--color-rule); font-size: .82rem; line-height: 1.5; color: var(--color-ink-2); }
+  .plan.pop .gdesc { border-left-color: rgb(255 255 255 / .22); color: var(--color-mist); }
+
+  .pro-note { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--color-rule); font-size: .84rem; line-height: 1.55; color: var(--color-ink-2); max-width: 74ch; }
+</style>
+
+<script>
+  import { initPricing } from '../../scripts/pricing';
+  initPricing();
+</script>

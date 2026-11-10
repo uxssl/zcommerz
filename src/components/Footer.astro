@@ -1,0 +1,160 @@
+---
+/**
+ * Footer, matching the live zcommerz.com layout: light ground, four columns
+ * (brand + social / Products / Company / Stay updated), the official SSLCOMMERZ
+ * "Pay With" banner full width underneath, then a centred copyright.
+ * Link labels and the tagline are verbatim from the product-team file.
+ * The newsletter only validates the address in the page and shows a message —
+ * nothing is sent anywhere.
+ */
+
+const product = [
+  { href: '#how', en: 'How it works', bn: 'কীভাবে কাজ করে' },
+  { href: '#pillars', en: 'Features', bn: 'ফিচার' },
+  { href: '#pricing', en: 'Pricing', bn: 'প্রাইসিং' },
+  { href: '#faq', en: 'FAQ', bn: 'প্রশ্নোত্তর' },
+];
+const company = [
+  { href: 'https://zcommerz.com/terms-and-conditions', en: 'Terms', bn: 'শর্তাবলি' },
+  { href: 'https://zcommerz.com/privacy-policy', en: 'Privacy Policy', bn: 'প্রাইভেসি পলিসি' },
+];
+/* Brand glyphs inline: @lucide/astro v1 dropped brand icons.
+   The live site links these to "#"; swap in the real profiles when they exist. */
+const social = [
+  { n: 'Facebook', href: '#', d: 'M9.6 21v-7.4H7.1V10.6h2.5V8.4C9.6 5.9 11.1 4.6 13.4 4.6c1.1 0 2 .1 2.3.1v2.7h-1.6c-1.2 0-1.5.6-1.5 1.5v1.7h3l-.4 3H12.6V21z' },
+  { n: 'LinkedIn', href: '#', d: 'M5 3.4a1.9 1.9 0 110 3.8 1.9 1.9 0 010-3.8zM3.5 8.9h3V21h-3zM9 8.9h2.9v1.65h.04c.4-.76 1.4-1.56 2.9-1.56 3.1 0 3.66 2 3.66 4.6V21h-3v-6.1c0-1.45-.03-3.3-2-3.3-2 0-2.3 1.57-2.3 3.2V21H9z' },
+];
+const instagram = true;
+---
+<footer class="ft">
+  <div class="page">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <a class="ft-logo" href="#main" aria-label="Zcommerz home" data-bn-aria-label="Zcommerz হোম">
+          <span class="logo-mark" role="img" aria-label="Zcommerz"></span>
+        </a>
+        <p data-bn="বাংলাদেশি উদ্যোক্তাদের জন্য ই-কমার্স সহজ করছি।">Simplifying e-commerce for Bangladeshi entrepreneurs.</p>
+        <ul class="social">
+          {social.map((s) => (
+            <li>
+              <a href={s.href} aria-label={s.n}>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={s.d} /></svg>
+              </a>
+            </li>
+          ))}
+          {instagram && (
+            <li>
+              <a href="#" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                  <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" />
+                  <circle cx="12" cy="12" r="3.9" />
+                  <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+            </li>
+          )}
+        </ul>
+      </div>
+
+      <nav class="col" aria-label="Product links" data-bn-aria-label="প্রোডাক্ট লিংক">
+        <h2 data-bn="প্রোডাক্ট">Products</h2>
+        <ul>{product.map((l) => <li><a href={l.href} data-bn={l.bn}>{l.en}</a></li>)}</ul>
+      </nav>
+
+      <nav class="col" aria-label="Company links" data-bn-aria-label="কোম্পানি লিংক">
+        <h2 data-bn="কোম্পানি">Company</h2>
+        <ul>{company.map((l) => <li><a href={l.href} data-bn={l.bn}>{l.en}</a></li>)}</ul>
+      </nav>
+
+      <div class="col">
+        <h2 id="nlHead" data-bn="আপডেট পেতে">Stay updated</h2>
+        <form class="news" novalidate data-news>
+          <div class="nrow">
+            <input id="newsEmail" type="email" placeholder="Enter your email" autocomplete="email"
+              aria-labelledby="nlHead" data-bn-placeholder="আপনার ইমেইল দিন" data-news-input />
+            <button type="submit" data-bn="যোগ দিন">Join</button>
+          </div>
+          <small data-news-msg aria-live="polite" data-bn="সর্বশেষ আপডেট ও খবর পান।">Get the latest updates and news.</small>
+        </form>
+      </div>
+    </div>
+
+    <figure class="paybanner">
+      <img src="/assets/payment-banner.png" width="3974" height="843" loading="lazy" decoding="async"
+        alt="Pay with cards, mobile wallets and bank channels. Verified by SSLCOMMERZ."
+        data-bn-alt="কার্ড, মোবাইল ওয়ালেট ও ব্যাংক চ্যানেলে পেমেন্ট। SSLCOMMERZ দ্বারা যাচাইকৃত।" />
+    </figure>
+
+    <small class="cr">© 2026 ZCOMMERZ. <span data-bn="সর্বস্বত্ব সংরক্ষিত।">All rights reserved.</span></small>
+  </div>
+</footer>
+
+<style>
+  .ft { padding: clamp(40px, 4.6vw, 64px) 0 24px; background: var(--color-paper-2); color: var(--color-ink); }
+
+  .ft-top { display: grid; gap: 32px; }
+  @media (min-width: 640px) { .ft-top { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 28px; } }
+  @media (min-width: 1000px) {
+    .ft-top { grid-template-columns: minmax(0, 3.4fr) minmax(0, 2.2fr) minmax(0, 2.2fr) minmax(0, 3.6fr); gap: clamp(24px, 3vw, 48px); }
+  }
+
+  /* brand */
+  /* the wordmark is a mask tinted by currentColor, same as the header */
+  .ft-logo { display: inline-block; color: var(--color-blue); }
+  .ft-logo :global(.logo-mark) { width: 148px; }
+  .ft-brand > p { margin-top: 14px; max-width: 30ch; font-size: .95rem; line-height: 1.55; color: var(--color-ink-2); }
+  .social { display: flex; gap: 10px; margin-top: 22px; }
+  .social a {
+    display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%;
+    background: #E7EAF1; color: var(--color-ink); transition: background-color .2s, color .2s, transform .25s var(--ease-out-expo);
+  }
+  .social a:hover { background: var(--color-blue); color: #fff; transform: translateY(-2px); }
+  .social svg { width: 19px; height: 19px; }
+
+  /* link columns */
+  .col h2 { font-size: .88rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--color-ink); }
+  :global(:lang(bn)) .col h2 { letter-spacing: 0; text-transform: none; font-size: .95rem; }
+  .col ul { display: grid; gap: 14px; margin-top: 20px; }
+  .col a { font-size: .98rem; font-weight: 600; color: var(--color-ink-2); text-decoration: none; transition: color .2s; }
+  .col a:hover { color: var(--color-blue); }
+
+  /* newsletter: the button sits inside the field, as on the live site */
+  .news { margin-top: 20px; }
+  .nrow {
+    display: flex; align-items: center; gap: 6px; padding: 5px 5px 5px 6px;
+    border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--color-rule);
+    transition: box-shadow .2s;
+  }
+  .nrow:focus-within { box-shadow: 0 0 0 1.5px var(--color-blue); }
+  .news input { flex: 1; min-width: 0; height: 38px; padding: 0 10px; border: 0; background: transparent; font: inherit; font-size: .95rem; color: var(--color-ink); }
+  .news input:focus { outline: 0; }
+  .news input::placeholder { color: #9AA1AF; }
+  .news button {
+    flex: none; height: 38px; padding: 0 20px; border-radius: 9px; cursor: pointer;
+    background: var(--color-blue); color: #fff; font-size: .86rem; font-weight: 800;
+    letter-spacing: .04em; text-transform: uppercase; transition: background-color .2s;
+  }
+  :global(:lang(bn)) .news button { letter-spacing: 0; text-transform: none; }
+  .news button:hover { background: var(--color-blue-d); }
+  .news small { display: block; margin-top: 12px; font-size: .8rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: #8A91A0; }
+  :global(:lang(bn)) .news small { letter-spacing: 0; text-transform: none; }
+  .news small.ok { color: #0F7A58; }
+  .news small.bad { color: #B4232A; }
+
+  /* official SSLCOMMERZ channel banner */
+  .paybanner { margin: clamp(28px, 3.4vw, 44px) 0 0; padding: clamp(10px, 1.2vw, 16px) clamp(12px, 1.6vw, 20px); border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px var(--color-rule); }
+  .paybanner img { display: block; width: 100%; height: auto; }
+  /* at 4.7:1 the marks stop being legible on a phone, so the panel scrolls instead of shrinking */
+  @media (max-width: 719.98px) {
+    .paybanner { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .paybanner::-webkit-scrollbar { display: none; }
+    .paybanner img { width: auto; min-width: 560px; height: 124px; }
+  }
+
+  .cr { display: block; margin-top: clamp(20px, 2.4vw, 30px); text-align: center; font-size: .88rem; color: #8A91A0; }
+</style>
+
+<script>
+  import { initNewsletter } from '../scripts/newsletter';
+  initNewsletter();
+</script>

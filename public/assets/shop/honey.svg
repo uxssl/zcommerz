@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img">
+  <defs>
+    <filter id="hsh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+    <linearGradient id="hglass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8A4A12"/><stop offset=".12" stop-color="#D98A22"/>
+      <stop offset=".38" stop-color="#F6B53C"/><stop offset=".62" stop-color="#E59A26"/>
+      <stop offset=".88" stop-color="#A85E15"/><stop offset="1" stop-color="#7C4310"/>
+    </linearGradient>
+    <linearGradient id="hlid" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4E3418"/><stop offset=".2" stop-color="#8A5F30"/>
+      <stop offset=".5" stop-color="#A5783F"/><stop offset=".8" stop-color="#6E4A23"/><stop offset="1" stop-color="#452E14"/>
+    </linearGradient>
+    <linearGradient id="hlab" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E8DCC0"/><stop offset=".35" stop-color="#FBF5E4"/><stop offset="1" stop-color="#DACCAC"/>
+    </linearGradient>
+    <linearGradient id="htop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFD98A"/><stop offset="1" stop-color="#E7A42C"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="160" cy="288" rx="86" ry="14" fill="#2A1A06" opacity=".22" filter="url(#hsh)"/>
+  <!-- jar -->
+  <path d="M88 150c0-20 10-30 10-44h124c0 14 10 24 10 44v104c0 18-10 28-28 28H116c-18 0-28-10-28-28z" fill="url(#hglass)"/>
+  <!-- honey meniscus inside shoulder -->
+  <path d="M98 112h124c0 13 10 23 10 42H88c0-19 10-29 10-42z" fill="#C97C18" opacity=".55"/>
+  <!-- lid -->
+  <rect x="96" y="66" width="128" height="50" rx="13" fill="url(#hlid)"/>
+  <rect x="96" y="66" width="128" height="12" rx="6" fill="#B98A4D" opacity=".5"/>
+  <g fill="#2E1E0B" opacity=".22">
+    <rect x="104" y="84" width="4" height="26" rx="2"/><rect x="118" y="84" width="4" height="26" rx="2"/>
+    <rect x="132" y="84" width="4" height="26" rx="2"/><rect x="146" y="84" width="4" height="26" rx="2"/>
+    <rect x="160" y="84" width="4" height="26" rx="2"/><rect x="174" y="84" width="4" height="26" rx="2"/>
+    <rect x="188" y="84" width="4" height="26" rx="2"/><rect x="202" y="84" width="4" height="26" rx="2"/>
+  </g>
+  <rect x="96" y="110" width="128" height="8" rx="4" fill="#2A1C0A" opacity=".35"/>
+  <!-- label -->
+  <rect x="106" y="176" width="108" height="76" rx="9" fill="url(#hlab)"/>
+  <path d="M160 190l13 7.5v15L160 220l-13-7.5v-15z" fill="#C7891C"/>
+  <path d="M160 196.5l7.5 4.3v8.6l-7.5 4.3-7.5-4.3v-8.6z" fill="#FBF5E4"/>
+  <rect x="124" y="228" width="72" height="5" rx="2.5" fill="#8A6A2E"/>
+  <rect x="138" y="239" width="44" height="4" rx="2" fill="#B8A174"/>
+  <!-- glass highlights -->
+  <rect x="100" y="128" width="12" height="138" rx="6" fill="#FFF3D0" opacity=".42"/>
+  <rect x="206" y="138" width="7" height="118" rx="3.5" fill="#FFF3D0" opacity=".2"/>
+  <path d="M116 272h88c-8 6-24 9-44 9s-36-3-44-9z" fill="#5C3208" opacity=".35"/>
+</svg>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img">
+  <defs>
+    <filter id="gsh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+    <linearGradient id="gbody" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#B07E1A"/><stop offset=".14" stop-color="#EFC54F"/>
+      <stop offset=".4" stop-color="#FBE08C"/><stop offset=".66" stop-color="#F0C650"/>
+      <stop offset=".9" stop-color="#B9871F"/><stop offset="1" stop-color="#8F6512"/>
+    </linearGradient>
+    <linearGradient id="gcap" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6E5A1E"/><stop offset=".25" stop-color="#C9AC4C"/>
+      <stop offset=".55" stop-color="#E6CE76"/><stop offset=".85" stop-color="#9C8129"/><stop offset="1" stop-color="#6A5417"/>
+    </linearGradient>
+    <linearGradient id="glab" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1E4A2E"/><stop offset=".4" stop-color="#2F6B3F"/><stop offset="1" stop-color="#1A3F27"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="160" cy="286" rx="84" ry="14" fill="#2A1A06" opacity=".22" filter="url(#gsh)"/>
+  <!-- wide jar -->
+  <path d="M82 142c0-14 8-20 8-30h140c0 10 8 16 8 30v110c0 16-10 26-26 26H108c-16 0-26-10-26-26z" fill="url(#gbody)"/>
+  <!-- ghee surface line -->
+  <path d="M90 118h140c0 9 8 14 8 26H82c0-12 8-17 8-26z" fill="#D9A82A" opacity=".45"/>
+  <!-- metal cap -->
+  <rect x="88" y="62" width="144" height="56" rx="10" fill="url(#gcap)"/>
+  <rect x="88" y="62" width="144" height="10" rx="5" fill="#FFF0B8" opacity=".5"/>
+  <rect x="88" y="108" width="144" height="10" rx="5" fill="#3F3209" opacity=".35"/>
+  <g fill="#3B2F08" opacity=".18">
+    <rect x="98" y="76" width="5" height="28" rx="2.5"/><rect x="114" y="76" width="5" height="28" rx="2.5"/>
+    <rect x="130" y="76" width="5" height="28" rx="2.5"/><rect x="146" y="76" width="5" height="28" rx="2.5"/>
+    <rect x="162" y="76" width="5" height="28" rx="2.5"/><rect x="178" y="76" width="5" height="28" rx="2.5"/>
+    <rect x="194" y="76" width="5" height="28" rx="2.5"/><rect x="210" y="76" width="5" height="28" rx="2.5"/>
+  </g>
+  <!-- label band -->
+  <rect x="82" y="176" width="156" height="72" fill="url(#glab)"/>
+  <circle cx="160" cy="200" r="15" fill="none" stroke="#F3E2A8" stroke-width="2.4"/>
+  <path d="M153 200c4-9 10-11 14-5-4 9-10 11-14 5z" fill="#F3E2A8"/>
+  <rect x="116" y="224" width="88" height="5" rx="2.5" fill="#F3E2A8"/>
+  <rect x="134" y="235" width="52" height="4" rx="2" fill="#F3E2A8" opacity=".6"/>
+  <!-- glass highlights -->
+  <rect x="94" y="130" width="13" height="140" rx="6.5" fill="#FFFAE0" opacity=".45"/>
+  <rect x="214" y="140" width="7" height="118" rx="3.5" fill="#FFFAE0" opacity=".22"/>
+  <path d="M108 268h104c-9 6-28 10-52 10s-43-4-52-10z" fill="#6A4A08" opacity=".3"/>
+</svg>

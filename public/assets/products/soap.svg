@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs></defs><ellipse cx="50" cy="91" rx="28" ry="4.5" fill="#0E1A2B" opacity=".14"/>
+<polygon points="14,52 54,38 90,50 50,64" fill="#B2DB9B"/>
+<polygon points="14,52 50,64 50,84 14,72" fill="#6BAA5A"/>
+<polygon points="50,64 90,50 90,70 50,84" fill="#4F8C45"/>
+<path d="M44 56 C44 48 54 44 62 46 C62 54 54 60 44 56Z" fill="#8CC274"/><path d="M45 56 L59 48" stroke="#5E9A4E" stroke-width="1.2"/>
+<polygon points="14,52 54,38 90,50 50,64" fill="none" stroke="#fff" stroke-opacity=".5"/></svg>

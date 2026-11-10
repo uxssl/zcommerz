@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img">
+  <defs>
+    <filter id="bsh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+    <linearGradient id="bcase" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1A212E"/><stop offset=".1" stop-color="#39465C"/>
+      <stop offset=".38" stop-color="#5C6E8A"/><stop offset=".62" stop-color="#3C4A62"/>
+      <stop offset=".9" stop-color="#232C3C"/><stop offset="1" stop-color="#141A24"/>
+    </linearGradient>
+    <linearGradient id="blid" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#232C3C"/><stop offset=".35" stop-color="#4C5C76"/>
+      <stop offset=".7" stop-color="#2E394C"/><stop offset="1" stop-color="#18202C"/>
+    </linearGradient>
+    <linearGradient id="bbud" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#E3E9F2"/>
+      <stop offset=".8" stop-color="#AFBACB"/><stop offset="1" stop-color="#8D99AB"/>
+    </linearGradient>
+    <radialGradient id="bin" cx=".5" cy=".3" r=".8">
+      <stop offset="0" stop-color="#1C2636"/><stop offset="1" stop-color="#090D14"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="160" cy="276" rx="86" ry="13" fill="#000" opacity=".4" filter="url(#bsh)"/>
+  <!-- open lid behind -->
+  <path d="M78 148c0-10 8-18 18-18h128c10 0 18 8 18 18v22H78z" fill="url(#blid)"/>
+  <rect x="78" y="166" width="164" height="8" fill="#0C1119"/>
+  <!-- case body -->
+  <path d="M74 172h172v62c0 16-13 29-29 29H103c-16 0-29-13-29-29z" fill="url(#bcase)"/>
+  <!-- inner wells -->
+  <ellipse cx="124" cy="182" rx="26" ry="9" fill="url(#bin)"/>
+  <ellipse cx="196" cy="182" rx="26" ry="9" fill="url(#bin)"/>
+  <!-- earbuds -->
+  <g>
+    <path d="M124 110c13 0 23 10 23 23 0 11-7 18-14 21l-4 30c-.6 5-4 8-9 8h-2c-5 0-8-3-9-8l-4-30c-7-3-14-10-14-21 0-13 10-23 23-23z" fill="url(#bbud)"/>
+    <ellipse cx="124" cy="131" rx="12" ry="11" fill="#D2DAE6"/>
+    <ellipse cx="124" cy="130" rx="7" ry="6.4" fill="#58647A"/>
+    <path d="M114 116c3-4 7-6 11-6" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+  </g>
+  <g>
+    <path d="M196 110c13 0 23 10 23 23 0 11-7 18-14 21l-4 30c-.6 5-4 8-9 8h-2c-5 0-8-3-9-8l-4-30c-7-3-14-10-14-21 0-13 10-23 23-23z" fill="url(#bbud)"/>
+    <ellipse cx="196" cy="131" rx="12" ry="11" fill="#D2DAE6"/>
+    <ellipse cx="196" cy="130" rx="7" ry="6.4" fill="#58647A"/>
+    <path d="M186 116c3-4 7-6 11-6" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+  </g>
+  <!-- case front: led + highlight -->
+  <circle cx="160" cy="244" r="5" fill="#22B8E6"/>
+  <circle cx="160" cy="244" r="10" fill="#22B8E6" opacity=".25"/>
+  <rect x="84" y="182" width="9" height="68" rx="4.5" fill="#C6D6EC" opacity=".3"/>
+  <rect x="230" y="186" width="6" height="58" rx="3" fill="#C6D6EC" opacity=".16"/>
+  <path d="M74 196h172v6H74z" fill="#fff" opacity=".07"/>
+</svg>
