@@ -403,7 +403,15 @@ const hasBuild = buildIds !== '';
   }
 
   /* ---------- Storefront: the merchant's own brand (serif wordmark + banner type) ---------- */
-  .stage .store { --ta: #1E6B43; --tb: #F6F3EA; --tt: #ECE6D6; --serif: Georgia, "Times New Roman", serif; }
+  /* Store theme lives on the stage, so every store screen (live, mobile, built, checkout) shares
+     it. The hero tour rotates data-theme on the stage across loops (2026-11-10: "not only green"):
+     Grocery → Fashion → Electronics → Beauty → … The vars are registered (see the :global block at
+     the end), so a theme change eases instead of snapping. Default/resting theme: Grocery. */
+  .stage { --ta: #1E6B43; --tb: #F6F3EA; --tt: #ECE6D6; }
+  .stage[data-theme="fashion"] { --ta: #B4325A; --tb: #FBF5F2; --tt: #F6E6EA; }
+  .stage[data-theme="electronics"] { --ta: #2A4FA8; --tb: #F2F5FC; --tt: #E2E9F7; }
+  .stage[data-theme="beauty"] { --ta: #7A4DD8; --tb: #F6F2FF; --tt: #ECE4FB; }
+  .stage .store { --serif: Georgia, "Times New Roman", serif; transition: --ta .5s ease, --tb .5s ease, --tt .5s ease; }
   .stage .sf { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 1.8cqw; padding: 2.4cqw 4cqw 2.8cqw 10cqw; background: var(--tb, #FAFBFC); }
   .stage .sf-head { display: flex; align-items: center; gap: 3cqw; height: 3.6cqw; }
   .stage .sf-brand { display: flex; align-items: center; gap: 1cqw; font-family: var(--serif, inherit); font-size: 2.3cqw; font-weight: 700; color: var(--color-ink); white-space: nowrap; }
@@ -587,4 +595,11 @@ const hasBuild = buildIds !== '';
   .stage .tl li i { width: 5.6cqw; height: 5.6cqw; border-radius: 50%; border: .9cqw solid #D8DCE4; background: #fff; flex: none; transition: background-color .3s, border-color .3s; }
   .stage .tl li[data-on="1"] { color: var(--color-ink); }
   .stage .tl li[data-on="1"] i { border-color: var(--color-mint); background: var(--color-mint); }
+</style>
+
+<style is:global>
+  /* registered so a store theme change eases (the stage's data-theme is rotated by hero-tour.ts) */
+  @property --ta { syntax: '<color>'; inherits: true; initial-value: #1E6B43; }
+  @property --tb { syntax: '<color>'; inherits: true; initial-value: #F6F3EA; }
+  @property --tt { syntax: '<color>'; inherits: true; initial-value: #ECE6D6; }
 </style>

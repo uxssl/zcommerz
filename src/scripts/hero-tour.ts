@@ -81,8 +81,17 @@ const buildFromPage: SceneBuilder = ({ els, q, stage }) => {
     .to(q('ok'), { autoAlpha: 1, scale: 1, duration: 0.35, ease: 'back.out(2)' }, 3.15);
 };
 
-const storeLive: SceneBuilder = ({ q }) => {
-  const stores = [...q('store'), ...q('mstore')];
+/* Store themes rotate across the whole tour (user, 2026-11-10: "not only green"). Each
+   "Switching themes…" moment moves forward three themes and stays there, so the scenes after it
+   (build, orders, checkout) carry that colour and every loop looks different. */
+const THEMES = ['grocery', 'fashion', 'electronics', 'beauty'] as const;
+let themeIdx = 0;
+const nextTheme = (stage: HTMLElement) => {
+  themeIdx = (themeIdx + 1) % THEMES.length;
+  stage.dataset.theme = THEMES[themeIdx];
+};
+
+const storeLive: SceneBuilder = ({ q, stage }) => {
   return gsap
     .timeline({ paused: true, defaults: { ease: 'power3.out' } })
     .fromTo(q('url'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'steps(21)' }, 0)
@@ -91,11 +100,11 @@ const storeLive: SceneBuilder = ({ q }) => {
     .from([...q('item'), ...q('mitem')], { autoAlpha: 0, y: 14, stagger: 0.08, duration: 0.5 }, 0.4)
     .from(q('pay'), { autoAlpha: 0, duration: 0.4 }, 0.8)
     .from(q('live'), { scale: 0.6, autoAlpha: 0, duration: 0.45, ease: 'back.out(2.2)' }, 1)
-    // "Switching themes…": both screens cycle Fashion → Beauty → back to Grocery
+    // "Switching themes…": three themes forward, and the last one stays for the rest of the loop
     .fromTo(q('hint'), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.4 }, 1.9)
-    .to(stores, { '--ta': '#B4325A', '--tb': '#FBF5F2', '--tt': '#F6E6EA', duration: 0.45, ease: 'power2.inOut' }, 2.25)
-    .to(stores, { '--ta': '#7A4DD8', '--tb': '#F6F2FF', '--tt': '#ECE4FB', duration: 0.45, ease: 'power2.inOut' }, 2.95)
-    .to(stores, { '--ta': '#1E6B43', '--tb': '#F6F3EA', '--tt': '#ECE6D6', duration: 0.45, ease: 'power2.inOut' }, 3.65)
+    .add(() => nextTheme(stage), 2.25)
+    .add(() => nextTheme(stage), 2.95)
+    .add(() => nextTheme(stage), 3.65)
     .to(q('hint'), { autoAlpha: 0, duration: 0.3 }, 4.05);
 };
 
