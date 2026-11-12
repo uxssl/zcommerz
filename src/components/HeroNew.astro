@@ -147,12 +147,15 @@ const icon = { 'stroke-width': 2, 'aria-hidden': 'true' } as const;
   /* Title block (≥1024): title left; subtitle + buttons stacked right.
      Subtitle top aligns with the title's top, buttons' bottom with the title's last line. */
   @media (min-width: 1024px) {
+    /* wider title column, tighter gap (user, 2026-11-12: the gap between the columns read too wide;
+       the title was capped at 15ch and left ~250px empty before the subtitle at 1280) */
     .hero-copy {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-      column-gap: clamp(40px, 5vw, 72px);
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      column-gap: clamp(28px, 3vw, 44px);
       align-items: stretch;
     }
-    .hero-copy .hero-title { margin-top: 0; }
+    .hero-copy .hero-title { margin-top: 0; max-width: 20ch; }
+    :global(:lang(bn)) .hero-copy .hero-title { max-width: 22ch; }
     .hero-side { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; padding: .5em 0 .35em; }
     .hero-side .hero-lead, .hero-side .hero-cta { margin-top: 0; }
   }
