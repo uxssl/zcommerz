@@ -102,4 +102,18 @@ const cta = { en: 'Start free trial', bn: 'ফ্রি ট্রায়াল
     details[open] .a p { animation: faq-in .4s var(--ease-out-expo) both; }
   }
   @keyframes faq-in { from { opacity: 0; transform: translateY(-4px); } }
+
+  /* ---------- phones: compact (user, 2026-11-12: "make the FAQ compact") ----------
+     Same questions, same one-open-at-a-time accordion; tighter heading block, rows and answer panel. */
+  @media (max-width: 639.98px) {
+    .faq-grid { gap: 22px; }
+    .faq-lead { margin-top: 10px; font-size: .92rem; line-height: 1.5; }
+    .faq-head .btn { margin-top: 14px; min-height: 42px; font-size: .9rem; }
+    summary { gap: 12px; padding: 12px 12px 12px 14px; font-size: .9rem; line-height: 1.35; }
+    :global(:lang(bn)) summary { line-height: 1.5; }
+    summary i { width: 24px; height: 24px; }
+    summary i :global(svg) { width: 13px; height: 13px; }
+    details[open] { border-radius: 12px; }
+    .a p { padding: 0 14px 14px; font-size: .84rem; line-height: 1.55; }
+  }
 </style>
