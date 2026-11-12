@@ -503,6 +503,72 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
   .bx-n { display: flex; align-items: center; gap: 8px; color: var(--color-ink-2); }
   .box li b { font-weight: 700; font-variant-numeric: tabular-nums; }
 
+
+  /* ===================== Phones: compact demo (user, 2026-11-12: "make this animation more compact") =====================
+     ~1040px → ~600px tall at 375. Keeps every cursor target (first order row, the Low tag, today's bar);
+     drops secondary detail: panel subtitles, the payment line in order rows, inventory aging, the payment/channel boxes. */
+  @media (max-width: 639.98px) {
+    .app { border-radius: 14px; }
+    .side { padding: 10px 10px 8px; }
+    .side-store { gap: 8px; padding: 2px 4px 8px; }
+    .side-store img { width: 22px; height: 22px; }
+    .side-store b { font-size: .84rem; }
+    .side-store small { display: none; }
+    .side-nav { padding-top: 8px; gap: 4px; }
+    .nv { gap: 7px; padding: 6px 10px 6px 7px; border-radius: 8px; font-size: .78rem; }
+    .nv-ic { width: 22px; height: 22px; border-radius: 6px; }
+    .nv-ic :global(svg) { width: 13px; height: 13px; }
+
+    .bar { gap: 10px; padding: 7px 12px; }
+    .bar-ic :global(svg) { width: 15px; height: 15px; }
+    .bar-av { width: 24px; height: 24px; font-size: .68rem; }
+
+    .pnl { padding: 12px 12px 14px; }
+    .p-head { align-items: center; gap: 10px; }
+    .p-head h3 { font-size: 1.02rem; }
+    .p-head > div > p { display: none; }
+    .p-act { height: 28px; padding: 0 10px; gap: 5px; font-size: .72rem; border-radius: 8px; }
+    .p-act :global(svg) { width: 13px; height: 13px; }
+    .p-range { height: 26px; padding: 0 9px; font-size: .7rem; }
+
+    .chips { flex-wrap: nowrap; gap: 5px; margin-top: 10px; overflow: hidden; }
+    .f-ic { display: none; }
+    .fc { flex: none; height: 24px; padding: 0 8px; gap: 4px; font-size: .7rem; border-radius: 7px; }
+
+    .tbl { margin-top: 10px; border-radius: 11px; }
+    .tr { gap: 4px 10px; padding: 9px 12px; font-size: .8rem; }
+    .c-ord small, .c-who { font-size: .72rem; }
+    .c-pay { display: none; }
+    .o-tbl .c-end { grid-row: 2; flex-direction: row; align-items: center; gap: 8px; }
+    .st { padding: 3px 8px; font-size: .66rem; }
+    .rowact { height: 24px; padding: 0 8px; font-size: .68rem; border-radius: 7px; }
+    .tfoot { padding: 8px 12px; font-size: .74rem; }
+    .tfoot b { font-size: .86rem; }
+
+    .stock-wrap { gap: 0; }
+    .aging { display: none; }
+    .shot { width: 32px; height: 32px; border-radius: 8px; }
+    .shot img { width: 24px; height: 24px; }
+    .c-prod { gap: 8px; }
+    .c-prod b { font-size: .8rem; }
+    .c-prod small { font-size: .7rem; }
+    .s-tbl .tr { grid-template-columns: minmax(0, 1fr) 96px; }
+    .sq b { font-size: .8rem; }
+
+    .kpis { margin-top: 10px; border-radius: 11px; }
+    .kpis > div { padding: 9px 10px; }
+    .kpis dt { font-size: .68rem; }
+    .kpis dd { font-size: 1.15rem; }
+    .sales-grid { margin-top: 10px; }
+    .chart { padding: 11px 12px 8px; border-radius: 11px; }
+    .ch-h b { font-size: .82rem; }
+    .ch-peak { font-size: .68rem; }
+    .bars { height: 168px; gap: 6px; margin-top: 22px; } /* fills the height the Orders view sets, so Sales has no empty band */
+    .cb { gap: 5px; }
+    .cb i { border-radius: 5px 5px 2px 2px; }
+    .cb small { font-size: .62rem; }
+    .split { display: none; }
+  }
 </style>
 
 <script>
