@@ -147,14 +147,33 @@ const instagram = true;
   /* official SSLCOMMERZ channel banner */
   .paybanner { margin: clamp(28px, 3.4vw, 44px) 0 0; padding: clamp(10px, 1.2vw, 16px) clamp(12px, 1.6vw, 20px); border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px var(--color-rule); }
   .paybanner img { display: block; width: 100%; height: auto; }
-  /* at 4.7:1 the marks stop being legible on a phone, so the panel scrolls instead of shrinking */
-  @media (max-width: 719.98px) {
-    .paybanner { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-    .paybanner::-webkit-scrollbar { display: none; }
-    .paybanner img { width: auto; min-width: 560px; height: 124px; }
-  }
+  /* phones show the whole banner, fitted to the width (no sideways scroll; user, 2026-11-12) */
 
   .cr { display: block; margin-top: clamp(20px, 2.4vw, 30px); text-align: center; font-size: .88rem; color: #8A91A0; }
+
+  /* ---------- phones: compact (user, 2026-11-12: "make the footer compact") ----------
+     Logo and social icons share one row with the tagline under them; tighter link lists and
+     newsletter; the payment banner fits the width with a slimmer frame. */
+  @media (max-width: 639.98px) {
+    .ft { padding: 30px 0 18px; }
+    .ft-top { gap: 22px 16px; }
+    .ft-brand { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; }
+    .ft-logo :global(.logo-mark) { width: 124px; }
+    .ft-brand > p { grid-column: 1 / -1; grid-row: 2; margin-top: 8px; max-width: none; font-size: .86rem; line-height: 1.5; }
+    .social { grid-column: 2; grid-row: 1; gap: 8px; margin-top: 0; }
+    .social a { width: 34px; height: 34px; }
+    .social svg { width: 16px; height: 16px; }
+    .col h2 { font-size: .76rem; }
+    :global(:lang(bn)) .col h2 { font-size: .84rem; }
+    .col ul { gap: 9px; margin-top: 12px; }
+    .col a { font-size: .88rem; }
+    .news { margin-top: 12px; }
+    .news input { height: 34px; font-size: .88rem; }
+    .news button { height: 34px; padding: 0 16px; font-size: .78rem; }
+    .news small { margin-top: 8px; font-size: .7rem; }
+    .paybanner { margin-top: 22px; padding: 8px 10px; border-radius: 12px; }
+    .cr { margin-top: 16px; font-size: .78rem; }
+  }
 </style>
 
 <script>

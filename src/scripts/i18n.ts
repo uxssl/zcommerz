@@ -5,7 +5,7 @@
  * emits `langchange` so scripted components can re-render their own strings.
  *
  * Additions over the original: `data-bn-aria-label` for translated accessible names,
- * `data-bn-alt` for image alt text.
+ * `data-bn-alt` for image alt text, `data-bn-placeholder` for input placeholders.
  */
 export type Lang = 'en' | 'bn';
 
@@ -26,6 +26,9 @@ export function captureEnglish(root: ParentNode = document) {
   $$('[data-bn-alt]', root).forEach((el) => {
     if (el.dataset.enAlt === undefined) el.dataset.enAlt = el.getAttribute('alt') ?? '';
   });
+  $$('[data-bn-placeholder]', root).forEach((el) => {
+    if (el.dataset.enPlaceholder === undefined) el.dataset.enPlaceholder = el.getAttribute('placeholder') ?? '';
+  });
 }
 
 export function applyLang(root: ParentNode = document) {
@@ -39,6 +42,10 @@ export function applyLang(root: ParentNode = document) {
   $$('[data-bn-alt]', root).forEach((el) => {
     const v = current === 'bn' ? el.dataset.bnAlt : el.dataset.enAlt;
     if (v) el.setAttribute('alt', v);
+  });
+  $$('[data-bn-placeholder]', root).forEach((el) => {
+    const v = current === 'bn' ? el.dataset.bnPlaceholder : el.dataset.enPlaceholder;
+    if (v) el.setAttribute('placeholder', v);
   });
 }
 
