@@ -128,8 +128,10 @@ export const howHead = {
 };
 export const howSteps = [
   {
-    t: { en: 'Add your business, or connect your Facebook page', bn: 'ব্যবসার তথ্য দিন, অথবা ফেসবুক পেজ কানেক্ট করুন' },
-    s: { en: 'Enter your online business name, logo, category and contact details. Or pick your page.', bn: 'অনলাইন বিজনেসের নাম, লোগো, ক্যাটাগরি ও যোগাযোগের তথ্য দিন। অথবা পেজ বেছে নিন।' },
+    // shortened 2026-11-12 at the user's request (was: "Add your business, or connect your Facebook page" /
+    // "Enter your online business name, logo, category and contact details. Or pick your page.")
+    t: { en: 'Add your business', bn: 'বিজনেস যুক্ত করুন' },
+    s: { en: 'Enter your business name and logo, or connect your Facebook page.', bn: 'বিজনেসের নাম ও লোগো দিন, অথবা ফেসবুক পেজ কানেক্ট করুন।' },
   },
   {
     t: { en: 'Choose a theme', bn: 'থিম বেছে নিন' },
@@ -147,7 +149,9 @@ export const howSteps = [
 
 /* ---------- K · Pricing ---------- */
 export const priceHead = {
-  h2: { en: 'Simple plans, clear prices', bn: 'সহজ প্ল্যান, স্পষ্ট দাম' },
+  // retitled 2026-11-12 at the user's request (was "Simple plans, clear prices" / "সহজ প্ল্যান, স্পষ্ট দাম")
+  // \n = explicit line break (user, 2026-11-12), shown via white-space: pre-line
+  h2: { en: 'Simple pricing for\nevery online business', bn: 'প্রতিটি অনলাইন বিজনেসের\nজন্য সহজ প্রাইসিং' },
   lead: { en: 'Choose the plan that fits your business size. Pay yearly and save 15%.', bn: 'ব্যবসার আকার অনুযায়ী প্ল্যান বেছে নিন। বছরে পরিশোধ করলে ১৫% ছাড়।' },
   note: {
     en: 'Coupons come with Growth. Campaigns, Inventory Aging and Abandoned Cart recovery come with Pro.',

@@ -34,7 +34,9 @@ import { pillarRows, pillarItems, pillarMore } from '../../data/pillars';
 <style>
   /* equal space above and below the cards: the hero's stats strip already leaves 40px under it
      (.proof margin-bottom), so the top padding tops that up to one --sec-y */
-  .pillars { padding: calc(var(--sec-y) - 40px) 0 var(--sec-y); background: var(--color-paper); }
+  /* tight to the hero (user, 2026-11-12: "reduce this spacing"): the hero's 40px under its logo row is
+     the only gap now (was 82px desktop / 58px phone) */
+  .pillars { padding: 0 0 var(--sec-y); background: var(--color-paper); }
 
   /* ---------- The map: four outline cards (border only, no shadow) ---------- */
   .map { display: grid; gap: 16px; }

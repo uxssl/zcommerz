@@ -49,18 +49,38 @@ export function applyLang(root: ParentNode = document) {
   });
 }
 
-export function setLang(lang: Lang) {
+function swap(lang: Lang) {
   current = lang;
   document.documentElement.lang = lang;
   applyLang();
-  $$('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
   document.dispatchEvent(new CustomEvent<Lang>('langchange', { detail: lang }));
+}
+
+/* A user switch crossfades the text (out, swap, in) so the change doesn't snap (user, 2026-11-12).
+   The fade classes exist only for the ~0.3s of the switch, so they never touch GSAP-driven opacity
+   at other times; reduced motion swaps instantly. */
+const FADE = 140;
+let timer = 0;
+export function setLang(lang: Lang, animate = false) {
+  $$('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+  const html = document.documentElement;
+  if (!animate || matchMedia('(prefers-reduced-motion: reduce)').matches) { swap(lang); return; }
+  clearTimeout(timer);
+  html.classList.add('lang-swap', 'lang-out');
+  timer = window.setTimeout(() => {
+    swap(lang);
+    html.classList.remove('lang-out');
+    timer = window.setTimeout(() => html.classList.remove('lang-swap'), FADE + 40);
+  }, FADE);
 }
 
 export function initLang() {
   captureEnglish();
   $$('[data-lang]').forEach((b) =>
-    b.addEventListener('click', () => setLang(b.dataset.lang === 'bn' ? 'bn' : 'en')),
+    b.addEventListener('click', () => {
+      const next = b.dataset.lang === 'bn' ? 'bn' : 'en';
+      if (next !== current) setLang(next, true);
+    }),
   );
   setLang('en');
 }

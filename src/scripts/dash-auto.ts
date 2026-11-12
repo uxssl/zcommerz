@@ -27,6 +27,16 @@ function initOne(root: HTMLElement) {
   const cur = root.querySelector<SVGElement>('[data-dash-cur]')!;
   const rip = root.querySelector<HTMLElement>('[data-dash-rip]')!;
 
+  /* The panel area takes the active view's own height (CSS eases it), so a short view doesn't sit
+     on the white space of the tallest one (user, 2026-11-12). Each .pnl is align-self: start, so
+     offsetHeight is its natural height. */
+  const panelsEl = root.querySelector<HTMLElement>('.panels')!;
+  let fitTo: View = 'orders';
+  const fit = () => { panelsEl.style.height = `${panels.get(fitTo)!.offsetHeight}px`; };
+  fit();
+  addEventListener('resize', fit);
+  document.addEventListener('langchange', () => requestAnimationFrame(fit));
+
   if (prefersReducedMotion()) return; // resting frame: Orders, as rendered
 
   let idx = 0;
@@ -55,6 +65,8 @@ function initOne(root: HTMLElement) {
       p.inert = !on;
       p.setAttribute('aria-hidden', String(!on));
     });
+    fitTo = id;
+    fit();
     enter(panels.get(id)!, id);
     play(id);
   }

@@ -348,10 +348,10 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
   .cb.is-hover em { opacity: 1; }
 
 
-  .side-rest { margin-top: 16px; padding-top: 12px; border-top: 1px solid #EEF0F4; }
+  .side-rest { margin-top: 12px; padding-top: 10px; border-top: 1px solid #EEF0F4; }
   .side-lbl { font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #A4AAB6; padding: 0 10px 8px; }
   .side-rest ul { display: grid; gap: 1px; }
-  .side-rest li { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; font-size: .84rem; color: #9AA1AF; }
+  .side-rest li { display: flex; align-items: center; gap: 10px; padding: 5px 10px; border-radius: 8px; font-size: .84rem; color: #9AA1AF; }
   .side-rest :global(svg) { flex: none; color: #BFC5D0; }
   @media (max-width: 1023.98px) {
     .side-rest { display: none; }
@@ -379,7 +379,10 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
   .bar-av { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #E9EFF9; color: var(--color-blue); font-size: .78rem; font-weight: 700; }
   @media (max-width: 479.98px) { .bar-search { display: none; } .bar-sample { margin-left: 0; } }
 
-  .panels { display: grid; flex: 1; }
+  /* height is set to the active view by scripts/dash-auto.ts and eases between views */
+  .panels { display: grid; flex: none; overflow: hidden; transition: height .5s var(--ease-out-expo); }
+  .panels > .pnl { align-self: start; }
+  @media (prefers-reduced-motion: reduce) { .panels { transition: none; } }
   .pnl { grid-area: 1 / 1; min-width: 0; padding: 20px clamp(16px, 2.2vw, 26px) 24px; }
   .pnl[data-off] { visibility: hidden; pointer-events: none; }
 
@@ -485,7 +488,7 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
   .ch-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
   .ch-h b { font-size: .92rem; font-weight: 700; }
   .ch-peak { font-size: .76rem; color: #8A91A0; font-variant-numeric: tabular-nums; }
-  .bars { display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; gap: 8px; height: 150px; margin-top: 14px; }
+  .bars { display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; gap: 8px; height: 124px; margin-top: 14px; }
   .cb { display: grid; grid-template-rows: 1fr auto; align-items: end; height: 100%; gap: 8px; text-align: center; }
   .cb i { position: relative; display: block; align-self: end; border-radius: 7px 7px 3px 3px; background: #DCE4EF; transform-origin: bottom center; }
   .cb.now i { background: var(--color-blue); }
@@ -563,7 +566,7 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
     .chart { padding: 11px 12px 8px; border-radius: 11px; }
     .ch-h b { font-size: .82rem; }
     .ch-peak { font-size: .68rem; }
-    .bars { height: 168px; gap: 6px; margin-top: 22px; } /* fills the height the Orders view sets, so Sales has no empty band */
+    .bars { height: 104px; gap: 6px; margin-top: 22px; }
     .cb { gap: 5px; }
     .cb i { border-radius: 5px 5px 2px 2px; }
     .cb small { font-size: .62rem; }

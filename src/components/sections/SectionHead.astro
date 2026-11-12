@@ -14,13 +14,15 @@ interface Props {
   /** 'center' for a short (one-line) title beside a taller lead + action, so the title doesn't
    *  sit at the bottom under empty space (2026-11-10). Default 'end' keeps bottoms aligned. */
   align?: 'end' | 'center';
-  /** 'stacked': one centred column, title then lead (2026-11-12, How it works). */
-  layout?: 'row' | 'stacked';
+  /** 'stacked': one centred column, title then lead (2026-11-12, How it works).
+   *  'stacked-start': the same single column, left-aligned.
+   *  'split': title left, lead + actions as a left-aligned block on the right edge (Pricing, ≥1024px). */
+  layout?: 'row' | 'stacked' | 'stacked-start' | 'split';
 }
 const { id, tag, h2, lead, tone = 'light', align = 'end', layout = 'row' } = Astro.props;
 const hasSide = !!lead || Astro.slots.has('default');
 ---
-<header class:list={['sh', tone === 'dark' && 'is-dark', !hasSide && 'solo', align === 'center' && 'is-center', layout === 'stacked' && 'is-stacked']}>
+<header class:list={['sh', tone === 'dark' && 'is-dark', !hasSide && 'solo', align === 'center' && 'is-center', (layout === 'stacked' || layout === 'stacked-start') && 'is-stacked', layout === 'stacked-start' && 'is-start', layout === 'split' && 'is-split']}>
   <div class="sh-main" data-sr>
     {tag && <p class="sh-tag micro"><i aria-hidden="true"></i><span data-bn={tag.bn}>{tag.en}</span></p>}
     <h2 id={id} data-bn={h2.bn}>{h2.en}</h2>
@@ -62,7 +64,23 @@ const hasSide = !!lead || Astro.slots.has('default');
   @media (min-width: 1024px) { .sh.is-stacked:not(.solo) { grid-template-columns: minmax(0, 1fr); } }
   .sh.is-stacked h2 { margin-inline: auto; }
   .sh.is-stacked .sh-side { justify-items: center; }
-  .sh.is-stacked .sh-lead { margin-inline: auto; }
+  .sh.is-stacked .sh-lead { margin-inline: auto; max-width: 46rem; text-wrap: balance; }
+  .sh.is-stacked.is-start { justify-items: start; text-align: left; }
+  .sh.is-stacked.is-start h2, .sh.is-stacked.is-start .sh-lead { margin-inline: 0; }
+  .sh.is-stacked.is-start .sh-side { justify-items: start; }
+
+  /* split: title on the left, lead + actions as a block on the right edge (2026-11-12, Pricing) */
+  @media (min-width: 1024px) {
+    .sh.is-split:not(.solo) { grid-template-columns: auto minmax(0, 1fr); }
+    /* the block sits on the right; its text and actions stay left-aligned inside it */
+    .sh.is-split:not(.solo) { column-gap: 48px; }
+    .sh.is-split h2 { max-width: none; font-size: min(4.2vw, 3.6rem); } /* larger title (user, 2026-11-12) */
+    .sh.is-split .sh-side { justify-self: end; justify-items: start; text-align: left; width: 100%; max-width: 25rem; }
+    .sh.is-split .sh-lead { max-width: none; text-wrap: pretty; }
+  }
+
+  /* titles may carry an explicit line break (\n in the data) */
+  .sh h2 { white-space: pre-line; }
 </style>
 
 <script>

@@ -212,3 +212,7 @@
             mask-image: radial-gradient(ellipse 70% 80% at 50% 30%, #000 0%, transparent 75%);
   }
 }
+
+/* language switch crossfade: scripts/i18n.ts adds these classes only for the ~0.3s of a switch */
+html.lang-swap [data-bn] { transition: opacity .14s ease; }
+html.lang-out [data-bn] { opacity: 0 !important; }

@@ -74,9 +74,13 @@ const tools = [
             )}
           </div>
 
-          <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-          <h3 data-bn={s.t.bn}>{s.t.en}</h3>
-          <p data-bn={s.s.bn}>{s.s.en}</p>
+          <div class="txt">
+            <div class="head-row">
+              <span class="num" aria-hidden="true">{i + 1}</span>
+              <h3 data-bn={s.t.bn}>{s.t.en}</h3>
+            </div>
+            <p data-bn={s.s.bn}>{s.s.en}</p>
+          </div>
         </li>
       ))}
     </ol>
@@ -87,37 +91,61 @@ const tools = [
 </section>
 
 <style>
-  .how-sec { padding: var(--sec-y) 0; background: var(--color-paper-2); }
-  .steps { position: relative; display: grid; gap: 34px; margin-top: var(--head-gap); }
-  @media (min-width: 760px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px clamp(24px, 3vw, 44px); } }
-  @media (min-width: 1100px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 2.4vw, 36px); } }
-  .steps > li { position: relative; display: flex; flex-direction: column; min-width: 0; }
+  /* 2026-11-12 (user: "more compact, better UI"): each step is one white card — snapshot on a soft
+     tile across its top, a numbered circle on the seam, the title, then the text. On desktop one line
+     runs through the four numbers. Phones keep two cards per row. */
+  /* tighter than the other sections (user, 2026-11-12: "less spacing top and bottom") */
+  .how-sec { padding: clamp(40px, 4.4vw, 60px) 0; background: var(--color-paper-2); }
+  .how-sec :global(.sh-lead) { max-width: 44rem; }
+  .steps { position: relative; display: grid; gap: 14px; margin-top: clamp(22px, 2.2vw, 30px); }
+  @media (min-width: 760px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
+  @media (min-width: 1100px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; } }
 
-  /* ---------- the snapshot tile ---------- */
-  .snap { display: grid; place-items: center; height: 150px; padding: 16px; border-radius: 16px; background: #fff; overflow: hidden; }
+  .steps > li {
+    position: relative; display: flex; flex-direction: column; min-width: 0;
+    border-radius: 18px; background: #fff;
+    box-shadow: 0 1px 2px rgb(14 26 43 / .04), 0 0 0 1px rgb(14 26 43 / .05);
+    transition: box-shadow .3s, transform .3s var(--ease-out-expo);
+  }
+  @media (hover: hover) { .steps > li:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -18px rgb(14 26 43 / .25), 0 0 0 1px rgb(14 26 43 / .06); } }
+
+  /* one line through the four numbers, along the seam between snapshot and text (4-up only),
+     so the order reads at a glance */
+  @media (min-width: 1100px) {
+    .steps > li:not(:last-child)::after {
+      content: ""; position: absolute; z-index: 2; top: 151px; left: 54px; right: -50px; height: 2px;
+      border-radius: 2px; background: linear-gradient(90deg, rgb(42 93 168 / .55), rgb(42 93 168 / .25));
+    }
+  }
+
+  /* ---------- the snapshot tile (inside the card) ---------- */
+  /* edge to edge across the top of the card (no box inside the box), hairline under it */
+  .snap { display: grid; place-items: center; height: 152px; padding: 12px 14px 26px; border-radius: 18px 18px 0 0; background: linear-gradient(180deg, #F6F8FC, #EEF2F9); border-bottom: 1px solid #E8ECF3; overflow: hidden; }
+  /* chips inside the tile sit on white, so they read on the tinted tile */
+  .snap { --chip: #fff; --chip-ring: 0 0 0 1px #E5E9F1; }
 
   /* 01 · business name, or the Facebook page */
   .s1 { display: grid; gap: 6px; width: 100%; max-width: 230px; }
   .s-lab { font-size: .66rem; font-weight: 650; color: #8A91A0; }
-  .s-field { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border-radius: 9px; background: var(--color-paper-2); box-shadow: inset 0 -1.5px 0 var(--color-blue); }
+  .s-field { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px; border-radius: 9px; background: var(--chip); box-shadow: var(--chip-ring), inset 0 -1.5px 0 var(--color-blue); }
   .s-field b { font-size: .84rem; font-weight: 700; color: var(--color-ink); }
-  .s-or { justify-self: center; font-size: .64rem; font-weight: 650; text-transform: uppercase; letter-spacing: .08em; color: #A4AAB6; }
+  .s-or { justify-self: center; font-size: .62rem; font-weight: 650; text-transform: uppercase; letter-spacing: .08em; color: #A4AAB6; }
   :global(:lang(bn)) .s-or { text-transform: none; letter-spacing: 0; }
-  .s-fb { display: flex; align-items: center; justify-content: center; gap: 8px; height: 32px; border-radius: 9px; background: #EEF3FC; color: #1F4A89; font-size: .76rem; font-weight: 650; white-space: nowrap; }
+  .s-fb { display: flex; align-items: center; justify-content: center; gap: 8px; height: 30px; border-radius: 9px; background: #E4ECFA; color: #1F4A89; font-size: .76rem; font-weight: 650; white-space: nowrap; }
 
   /* 02 · three themes, one chosen */
-  .s2 { display: grid; grid-template-columns: repeat(3, 66px); gap: 10px; }
-  .th { position: relative; display: grid; gap: 5px; align-content: start; height: 92px; padding: 8px; border-radius: 10px; background: var(--color-paper-2); }
-  .th.on { box-shadow: 0 0 0 2px var(--color-blue); background: #fff; }
+  .s2 { display: grid; grid-template-columns: repeat(3, 64px); gap: 10px; }
+  .th { position: relative; display: grid; gap: 5px; align-content: start; height: 90px; padding: 8px; border-radius: 10px; background: var(--chip); box-shadow: var(--chip-ring); }
+  .th.on { box-shadow: 0 0 0 2px var(--color-blue); }
   .th-top { height: 28px; border-radius: 5px; background: var(--c); }
-  .th-row { height: 6px; border-radius: 3px; background: #DCE1EA; }
+  .th-row { height: 6px; border-radius: 3px; background: #E3E7EF; }
   .th-row.short { width: 60%; }
   .th small { margin-top: auto; font-size: .6rem; font-weight: 650; color: var(--color-ink-2); }
-  .th-tick { position: absolute; top: -7px; right: -7px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--color-blue); color: #fff; }
+  .th-tick { position: absolute; top: -7px; right: -7px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--color-blue); color: #fff; box-shadow: 0 0 0 2px #F3F6FB; }
 
   /* 03 · tools, each connected */
-  .s3 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 8px; width: 100%; max-width: 240px; }
-  .s3 li { display: flex; align-items: center; justify-content: space-between; gap: 6px; height: 32px; padding: 0 8px 0 10px; border-radius: 9px; background: var(--color-paper-2); }
+  .s3 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 7px; width: 100%; max-width: 240px; }
+  .s3 li { display: flex; align-items: center; justify-content: space-between; gap: 6px; height: 30px; padding: 0 8px 0 10px; border-radius: 9px; background: var(--chip); box-shadow: var(--chip-ring); }
   .s3 li:first-child { grid-column: 1 / -1; }
   .tl { display: flex; align-items: center; min-width: 0; }
   .ssl { font-family: var(--font-display); font-size: .74rem; font-weight: 800; letter-spacing: .02em; color: var(--color-ink); }
@@ -125,45 +153,49 @@ const tools = [
 
   /* 04 · the live address */
   .s4 { display: grid; justify-items: center; gap: 12px; }
-  .url { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; border-radius: 99px; background: var(--color-paper-2); font-size: .8rem; font-weight: 600; color: var(--color-ink); white-space: nowrap; }
+  .url { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; border-radius: 99px; background: var(--chip); box-shadow: var(--chip-ring); font-size: .8rem; font-weight: 600; color: var(--color-ink); white-space: nowrap; }
   .url :global(svg) { color: #8A91A0; }
   .live { display: inline-flex; align-items: center; gap: 7px; height: 28px; padding: 0 12px; border-radius: 99px; background: rgb(25 194 143 / .14); color: #0F7A58; font-size: .78rem; font-weight: 700; }
   .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--color-mint); box-shadow: 0 0 0 3px rgb(25 194 143 / .22); }
 
-  /* ---------- number on one light rail ---------- */
+  /* 4-up on narrower desktops: cards are ~240px, so the snapshots scale a touch to fit */
+  @media (min-width: 1100px) and (max-width: 1279.98px) { .snap > * { zoom: .88; } }
+
+  /* ---------- text: number + title on one line, then the line of copy ---------- */
+  .txt { padding: 28px 20px 16px; }
+  .head-row { display: grid; gap: 6px; }
+  /* the step number: a solid circle sitting on the seam between snapshot and text; the last one is
+     green (the finish). Big enough that 1 → 2 → 3 → 4 is the first thing the eye reads. */
+  .txt { position: relative; }
   .num {
-    position: relative; z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; margin: 20px 0 12px;
-    border-radius: 50%; background: var(--color-paper-2); box-shadow: inset 0 0 0 1.5px #C9D3E6;
-    font-family: var(--font-display); font-size: .78rem; font-weight: 800; color: var(--color-blue);
-    font-variant-numeric: tabular-nums;
+    position: absolute; z-index: 3; top: -18px; left: 20px; display: grid; place-items: center;
+    width: 36px; height: 36px; border-radius: 50%; background: var(--color-blue); color: #fff;
+    box-shadow: 0 0 0 4px #fff, 0 6px 14px -6px rgb(42 93 168 / .7);
+    font-family: var(--font-display); font-size: 1rem; font-weight: 800; font-variant-numeric: tabular-nums;
   }
-  @media (min-width: 1100px) {
-    /* a dashed rail from each number to the next step's number, through the gap */
-    .steps > li:not(:last-child)::after {
-      content: ""; position: absolute; top: calc(150px + 20px + 17px); left: 42px; right: calc(-1 * clamp(20px, 2.4vw, 36px) + 8px);
-      height: 1.5px; background: repeating-linear-gradient(90deg, #C9D3E6 0 6px, transparent 6px 11px);
-    }
-  }
-
-  .steps h3 { font-size: 1.06rem; font-weight: 700; line-height: 1.35; letter-spacing: -.012em; }
+  .steps > li:last-child .num { background: #12A57A; box-shadow: 0 0 0 4px #fff, 0 6px 14px -6px rgb(18 165 122 / .7); }
+  .steps h3 { font-size: 1.08rem; font-weight: 750; line-height: 1.35; letter-spacing: -.012em; text-wrap: balance; }
   :global(:lang(bn)) .steps h3 { letter-spacing: 0; line-height: 1.5; }
-  .steps p { margin-top: 7px; font-size: .92rem; line-height: 1.5; color: var(--color-ink-2); max-width: 32ch; }
+  .steps p { margin-top: 8px; font-size: .88rem; line-height: 1.55; color: var(--color-ink-2); text-wrap: pretty; }
 
-  /* ---------- phones: two steps per row (user, 2026-11-12: "make How it works compact") ----------
-     ~1310px of steps → about a third. Snapshots keep their content, scaled with zoom to fit the
-     ~160px column; number, title and text tighten. */
+  .how-cta { display: flex; justify-content: center; margin-top: clamp(20px, 2.2vw, 28px); }
+
+  /* ---------- phones: two cards per row ---------- */
   @media (max-width: 759.98px) {
-    .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 12px; }
-    .snap { height: 92px; padding: 8px; border-radius: 12px; }
-    .snap > * { zoom: .6; }
-    .num { width: 26px; height: 26px; margin: 10px 0 6px; font-size: .66rem; box-shadow: inset 0 0 0 1.25px #C9D3E6; }
-    .steps h3 { font-size: .86rem; line-height: 1.3; }
+    .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .steps > li { border-radius: 14px; }
+    .snap { height: 96px; padding: 6px 6px 16px; border-radius: 14px 14px 0 0; }
+    .snap > * { zoom: .56; }
+    .txt { padding: 20px 11px 13px; }
+    .head-row { gap: 4px; }
+    .num { top: -14px; left: 11px; width: 28px; height: 28px; font-size: .82rem; box-shadow: 0 0 0 3px #fff; }
+    .steps > li:last-child .num { box-shadow: 0 0 0 3px #fff; }
+    .steps h3 { font-size: .84rem; line-height: 1.3; }
     :global(:lang(bn)) .steps h3 { line-height: 1.45; }
-    .steps p { margin-top: 4px; font-size: .76rem; line-height: 1.45; max-width: none; }
+    .steps p { margin-top: 4px; font-size: .74rem; line-height: 1.45; }
+    .how-cta { margin-top: 18px; }
+    .how-cta .btn { min-height: 44px; font-size: .92rem; }
   }
   /* smallest phones: the three theme swatches need a little more shrink to fit the column */
-  @media (max-width: 359.98px) { .snap > * { zoom: .52; } }
-
-  .how-cta { display: flex; justify-content: center; margin-top: clamp(32px, 4vw, 52px); }
-  @media (max-width: 759.98px) { .how-cta { margin-top: 26px; } .how-cta .btn { min-height: 44px; font-size: .92rem; } }
+  @media (max-width: 359.98px) { .snap > * { zoom: .48; } }
 </style>

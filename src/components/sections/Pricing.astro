@@ -16,7 +16,7 @@ import { SIGNUP } from '../../data/sections';
 
 /** `omit` (landing, 2026-11-10): feature groups to leave out; / drops the long Dashboard lines
  *  at the user's request, /old shows everything. */
-const { omit = [], headAlign = 'end' } = Astro.props as { omit?: string[]; headAlign?: 'end' | 'center' };
+const { omit = [], headAlign = 'end', headLayout = 'row' } = Astro.props as { omit?: string[]; headAlign?: 'end' | 'center'; headLayout?: 'row' | 'stacked' | 'stacked-start' | 'split' };
 
 /** The groups this plan actually has lines for, keeping each group's order. */
 const groupsFor = (feats: string[]) => {
@@ -30,7 +30,7 @@ const isDash = (k: string) => k.startsWith('dash');
 ---
 <section id="pricing" class="sec price-sec" aria-labelledby="price-title">
   <div class="page">
-    <SectionHead id="price-title" h2={P.h2} lead={P.lead} align={headAlign}>
+    <SectionHead id="price-title" h2={P.h2} lead={P.lead} align={headAlign} layout={headLayout}>
       <div class="bill" role="group" aria-label={P.billing.en} data-bn-aria-label={P.billing.bn} data-bill>
         <button type="button" data-v="m" aria-pressed="true" data-bn={P.monthly.bn}>{P.monthly.en}</button>
         <button type="button" data-v="y" aria-pressed="false"><span data-bn={P.yearly.bn}>{P.yearly.en}</span><em>−15%</em></button>
@@ -134,7 +134,8 @@ const isDash = (k: string) => k.startsWith('dash');
   .for { margin-top: 5px; font-size: .88rem; color: var(--color-ink-2); }
   .plan.pop .for { color: var(--color-mist); }
 
-  .price { display: flex; align-items: baseline; margin-top: 20px; font-family: var(--font-display); font-size: clamp(2.5rem, 2rem + 1.6vw, 3.1rem); font-weight: 800; letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+  /* smaller price figures (user, 2026-11-12; was clamp(2.5rem, 2rem + 1.6vw, 3.1rem)) */
+  .price { display: flex; align-items: baseline; margin-top: 18px; font-family: var(--font-display); font-size: clamp(2.05rem, 1.75rem + 1vw, 2.5rem); font-weight: 800; letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; }
   :global(:lang(bn)) .price { letter-spacing: 0; font-weight: 700; }
   .cy { font-size: .56em; margin-right: .06em; }
   .mo { font-family: var(--font-ui); font-size: .95rem; font-weight: 600; letter-spacing: 0; color: #8A91A0; margin-left: 5px; }
@@ -196,7 +197,7 @@ const isDash = (k: string) => k.startsWith('dash');
     .plan h3 { font-size: 1.25rem; }
     .badge { padding: 3px 8px; font-size: .62rem; }
     .for { margin-top: 3px; font-size: .8rem; }
-    .price { margin-top: 12px; font-size: 2.2rem; }
+    .price { margin-top: 12px; font-size: 1.9rem; }
     .mo { font-size: .85rem; }
     .was { gap: 6px; margin-top: 7px; font-size: .82rem; }
     .save, .ychip { padding: 2px 7px; font-size: .7rem; }

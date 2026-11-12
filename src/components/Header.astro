@@ -96,36 +96,58 @@ const links = [
     .primary { display: block; position: absolute; left: 50%; translate: -50% 0; }
   }
   .primary ul { display: flex; gap: 32px; font-size: .94rem; font-weight: 500; color: var(--color-ink-2); }
-  .primary a { padding: 8px 0; transition: color .2s; }
+  .primary a { display: inline-block; padding: 8px 0; text-align: center; transition: color .2s; }
   .primary a:hover { color: var(--color-ink); }
 
   .actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
   @media (min-width: 640px) { .actions { gap: 16px; } }
   .login { display: none; padding: 8px 0; font-size: .94rem; font-weight: 600; }
   .trial { display: none; min-height: 40px; padding: 0 1rem; font-size: .92rem; border-radius: 7px; }
-  @media (min-width: 1024px) { .login { display: inline; } }
+  @media (min-width: 1024px) { .login { display: inline-block; } }
   @media (min-width: 640px) { .trial { display: inline-flex; } }
+  /* fixed widths so switching EN ⇄ বাং doesn't resize them and shift the header (user, 2026-11-12) */
+  .login { min-width: 44px; text-align: center; }
+  .trial { width: 104px; justify-content: center; padding-inline: 0; }
 
+  /* language switch: a pill track with a white thumb that slides to the active language
+     (user, 2026-11-12: "make this toggle modern"; was a bordered box with a solid blue active cell) */
   .lang {
-    display: inline-flex;
+    position: relative;
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 44px;
     padding: 3px;
-    border: 1px solid var(--color-rule);
-    border-radius: 8px;
+    border-radius: 99px;
+    background: rgb(14 26 43 / .06);
+    box-shadow: inset 0 0 0 1px rgb(14 26 43 / .04);
     font-size: .78rem;
     font-weight: 600;
-    background: rgb(255 255 255 / .4);
   }
+  .lang::before {
+    content: "";
+    position: absolute;
+    top: 3px; bottom: 3px; left: 3px;
+    width: 44px;
+    border-radius: 99px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(14 26 43 / .12), 0 3px 8px -3px rgb(14 26 43 / .2);
+    transition: translate .4s var(--ease-out-expo);
+  }
+  .lang:has(button[lang="bn"][aria-pressed="true"])::before { translate: 100% 0; }
   .lang button {
-    min-width: 40px;
-    min-height: 32px;
-    padding: 0 .55rem;
-    border-radius: 5px;
-    color: var(--color-ink-2);
+    position: relative;
+    z-index: 1;
+    min-height: 30px;
+    padding: 0;
+    border-radius: 99px;
+    color: #7A8294;
     cursor: pointer;
-    transition: background-color .2s, color .2s;
+    transition: color .25s;
   }
   .lang button:hover { color: var(--color-ink); }
-  .lang button[aria-pressed="true"] { background: var(--color-blue); color: #fff; }
+  .lang button[aria-pressed="true"] { color: var(--color-blue); font-weight: 700; }
+  .lang button:focus-visible { outline: 2px solid var(--color-blue); outline-offset: 1px; }
+  @media (prefers-reduced-motion: reduce) { .lang::before { transition: none; } }
   .lang button[lang="bn"] { font-family: "Hind Siliguri", sans-serif; font-size: .85rem; }
 
   .menu-btn { position: relative; width: 44px; height: 44px; border-radius: 8px; cursor: pointer; }
@@ -207,4 +229,24 @@ const links = [
   });
   window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => e.matches && setOpen(false));
   document.addEventListener('langchange', () => btn.setAttribute('aria-label', label(isOpen())));
+
+  /* Each top-nav link reserves the width of its longer label (English or Bangla), so switching
+     language doesn't resize the centred nav and nudge the header (user, 2026-11-12). Measured on a
+     hidden copy with its lang set, so Bangla text is measured in the Bangla face. */
+  async function reserveNavWidths() {
+    try { await document.fonts?.load('500 15px "Hind Siliguri"', 'অ'); await document.fonts?.ready; } catch {}
+    header.querySelectorAll<HTMLAnchorElement>('.primary a[data-bn]').forEach((a) => {
+      const en = a.dataset.en ?? a.textContent ?? '';
+      const bn = a.dataset.bn ?? '';
+      const probe = document.createElement('span');
+      probe.className = a.className;
+      probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;padding:0';
+      a.parentElement!.append(probe);
+      const width = (lang: string, text: string) => { probe.setAttribute('lang', lang); probe.textContent = text; return probe.getBoundingClientRect().width; };
+      const max = Math.ceil(Math.max(width('en', en), width('bn', bn)));
+      probe.parentElement!.removeChild(probe);
+      a.style.minWidth = `${max}px`;
+    });
+  }
+  reserveNavWidths();
 </script>
