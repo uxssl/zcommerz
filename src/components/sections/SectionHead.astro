@@ -1,7 +1,7 @@
 ---
 /**
  * Section heading, same composition as the approved hero title block:
- * heading left, supporting copy (+ optional actions slot) right, bottoms aligned.
+ * heading left, supporting copy (+ optional actions slot) right, centred on each other.
  * Stacks below 1024px.
  */
 interface T { en: string; bn: string }
@@ -14,11 +14,13 @@ interface Props {
   /** 'center' for a short (one-line) title beside a taller lead + action, so the title doesn't
    *  sit at the bottom under empty space (2026-11-10). Default 'end' keeps bottoms aligned. */
   align?: 'end' | 'center';
+  /** 'stacked': one centred column, title then lead (2026-11-12, How it works). */
+  layout?: 'row' | 'stacked';
 }
-const { id, tag, h2, lead, tone = 'light', align = 'end' } = Astro.props;
+const { id, tag, h2, lead, tone = 'light', align = 'end', layout = 'row' } = Astro.props;
 const hasSide = !!lead || Astro.slots.has('default');
 ---
-<header class:list={['sh', tone === 'dark' && 'is-dark', !hasSide && 'solo', align === 'center' && 'is-center']}>
+<header class:list={['sh', tone === 'dark' && 'is-dark', !hasSide && 'solo', align === 'center' && 'is-center', layout === 'stacked' && 'is-stacked']}>
   <div class="sh-main" data-sr>
     {tag && <p class="sh-tag micro"><i aria-hidden="true"></i><span data-bn={tag.bn}>{tag.en}</span></p>}
     <h2 id={id} data-bn={h2.bn}>{h2.en}</h2>
@@ -34,8 +36,9 @@ const hasSide = !!lead || Astro.slots.has('default');
 <style>
   .sh { display: grid; gap: 20px; }
   @media (min-width: 1024px) {
-    .sh:not(.solo) { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 96px); align-items: end; }
-    .sh.is-center:not(.solo) { align-items: center; }
+    /* the heading column hugs the heading (it used to take 1.3fr and leave a wide empty band before the
+       lead); both columns centre vertically (user, 2026-11-12, matching the hero) */
+    .sh:not(.solo) { grid-template-columns: fit-content(56%) minmax(0, 1fr); column-gap: clamp(48px, 5vw, 80px); align-items: center; }
   }
   .sh-tag { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; color: var(--color-blue); }
   .sh-tag i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-mango); }
@@ -53,4 +56,16 @@ const hasSide = !!lead || Astro.slots.has('default');
   .is-dark h2 { color: #fff; }
   .is-dark .sh-tag { color: var(--color-mango); }
   .is-dark .sh-lead { color: var(--color-mist); }
+
+  /* stacked: one centred column (title, then lead) at every width */
+  .sh.is-stacked { justify-items: center; gap: 14px; text-align: center; }
+  @media (min-width: 1024px) { .sh.is-stacked:not(.solo) { grid-template-columns: minmax(0, 1fr); } }
+  .sh.is-stacked h2 { margin-inline: auto; }
+  .sh.is-stacked .sh-side { justify-items: center; }
+  .sh.is-stacked .sh-lead { margin-inline: auto; }
 </style>
+
+<script>
+  import { initShrinkwrap } from '../../scripts/shrinkwrap';
+  initShrinkwrap('.sh:not(.solo):not(.is-stacked) h2');
+</script>

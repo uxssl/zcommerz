@@ -197,7 +197,7 @@ const track = [
 
   /* head: promise + action left, the three claims right (no rules or boxes) */
   .chat-sec .sc-head { display: grid; gap: 30px; }
-  @media (min-width: 1024px) { .chat-sec .sc-head { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); column-gap: clamp(48px, 6vw, 104px); align-items: end; } }
+  @media (min-width: 1024px) { .chat-sec .sc-head { grid-template-columns: fit-content(56%) minmax(0, 1fr); column-gap: clamp(48px, 5vw, 80px); align-items: center; } } /* hugs the heading block, centred (2026-11-12) */
   .chat-sec .sc-main { display: grid; justify-items: start; }
   .chat-sec .sc-main h2 { max-width: 15ch; font-size: var(--h2); font-weight: 800; line-height: 1.03; letter-spacing: -0.035em; color: #fff; }
   :lang(bn) .chat-sec .sc-main h2 { letter-spacing: 0; line-height: 1.22; font-weight: 700; }

@@ -144,23 +144,25 @@ const icon = { 'stroke-width': 2, 'aria-hidden': 'true' } as const;
     background: radial-gradient(ellipse 50% 45% at 50% 50%, rgb(255 255 255 / .9), transparent 72%);
   }
 
-  /* Title block (≥1024): title left; subtitle + buttons stacked right.
-     Subtitle top aligns with the title's top, buttons' bottom with the title's last line. */
+  /* Title block (≥1024): title left; subtitle + buttons stacked right, centred vertically on the
+     title (user, 2026-11-12: "middle align"; was top/bottom aligned to the title's first/last line). */
   @media (min-width: 1024px) {
     /* wider title column, tighter gap (user, 2026-11-12: the gap between the columns read too wide;
        the title was capped at 15ch and left ~250px empty before the subtitle at 1280) */
     .hero-copy {
       grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
       column-gap: clamp(28px, 3vw, 44px);
-      align-items: stretch;
+      align-items: center;
     }
     .hero-copy .hero-title { margin-top: 0; max-width: 20ch; }
     :global(:lang(bn)) .hero-copy .hero-title { max-width: 22ch; }
-    .hero-side { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; padding: .5em 0 .35em; }
+    .hero-side { display: flex; flex-direction: column; justify-content: center; gap: 26px; }
     .hero-side .hero-lead, .hero-side .hero-cta { margin-top: 0; }
   }
   @media (min-width: 1024px) and (max-width: 1279.98px) {
-    .hero-copy { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 32px; } /* buttons stay on one row */
+    /* the title still sets on three lines here: its column hugs the title instead of leaving a band */
+    .hero-copy { grid-template-columns: fit-content(360px) minmax(0, 1fr); column-gap: 48px; }
+    :global(:lang(bn)) .hero-copy { grid-template-columns: fit-content(420px) minmax(0, 1fr); }
   }
 
   /* ---------- Copy ---------- */

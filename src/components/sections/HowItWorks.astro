@@ -31,9 +31,7 @@ const tools = [
 ---
 <section id="how" class="sec how-sec" aria-labelledby="how-title">
   <div class="page">
-    <SectionHead id="how-title" h2={howHead.h2} lead={howHead.lead} align="center">
-      <a class="btn btn-primary" href={SIGNUP}><span data-bn="ফ্রি ট্রায়াল শুরু করুন">Start free trial</span><ArrowRight size={16} stroke-width={2} aria-hidden="true" /></a>
-    </SectionHead>
+    <SectionHead id="how-title" h2={howHead.h2} lead={howHead.lead} layout="stacked" />
 
     <ol class="steps" data-sr data-sr-stagger>
       {howSteps.map((s, i) => (
@@ -82,6 +80,9 @@ const tools = [
         </li>
       ))}
     </ol>
+
+    <!-- action under the steps, centred (user, 2026-11-12) -->
+    <div class="how-cta"><a class="btn btn-primary" href={SIGNUP}><span data-bn="ফ্রি ট্রায়াল শুরু করুন">Start free trial</span><ArrowRight size={16} stroke-width={2} aria-hidden="true" /></a></div>
   </div>
 </section>
 
@@ -162,4 +163,7 @@ const tools = [
   }
   /* smallest phones: the three theme swatches need a little more shrink to fit the column */
   @media (max-width: 359.98px) { .snap > * { zoom: .52; } }
+
+  .how-cta { display: flex; justify-content: center; margin-top: clamp(32px, 4vw, 52px); }
+  @media (max-width: 759.98px) { .how-cta { margin-top: 26px; } .how-cta .btn { min-height: 44px; font-size: .92rem; } }
 </style>
