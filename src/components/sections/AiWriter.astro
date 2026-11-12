@@ -225,6 +225,42 @@ const seedOut = aiTpl.en.friendly.replace('{name}', 'Mustard honey 500g').replac
     @keyframes ai-shimmer { to { background-position: 200% 0, 0 0; } }
   }
   .outstage { transition: box-shadow .4s; }
+
+  /* ==================== Phones: compact demo (user, 2026-11-12: "make the AI writer more compact") ====================
+     Same fields and flow, tighter: Tone/Language labels sit inline beside their toggles, smaller
+     thumbnail, fields, chips and action, and a smaller result panel. */
+  @media (max-width: 519.98px) {
+    .ai { gap: 14px; }
+    .desk { gap: 12px; }
+    .prod { gap: 10px; }
+    .thumb { width: 42px; height: 42px; border-radius: 10px; }
+    .thumb img { width: 30px; height: 30px; }
+    .f { gap: 3px; }
+    .f label, .lbl { font-size: .7rem; }
+    .f input { height: 32px; font-size: .92rem; }
+    .kws { gap: 5px; min-height: 32px; padding: 4px 0; }
+    .kw { height: 24px; padding: 0 3px 0 8px; gap: 2px; font-size: .74rem; border-radius: 6px; }
+    .kx { width: 16px; height: 16px; }
+    .kws input { min-width: 56px; height: 24px; font-size: .8rem; }
+
+    .segrow { gap: 8px; margin-top: 2px; }
+    .segrow .f { grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 8px; }
+    .segrow .lbl { line-height: 1; } /* Bangla glyph metrics pushed the label above centre */
+    .seg { gap: 2px; padding: 3px; border-radius: 9px; }
+    .seg button { min-height: 28px; padding: 0 6px; border-radius: 7px; font-size: .76rem; }
+
+    .go { min-height: 42px; margin-top: 2px; gap: 7px; border-radius: 10px; font-size: .9rem; }
+    .go :global(svg) { width: 15px; height: 15px; }
+    .fine { margin-top: -4px; font-size: .7rem; line-height: 1.4; }
+
+    .outstage { min-height: 0; padding: 11px 14px 10px; border-radius: 14px; }
+    .st-state { gap: 7px; font-size: .76rem; }
+    .st-state .sp { width: 22px; height: 22px; border-radius: 7px; }
+    .cpy { height: 28px; padding: 0 10px; gap: 5px; font-size: .72rem; border-radius: 8px; }
+    .out { padding: 10px 0 12px; font-size: .96rem; line-height: 1.5; }
+    .meta { font-size: .7rem; }
+    .pill { font-size: .64rem; padding: 2px 8px; }
+  }
 </style>
 
 <script>
