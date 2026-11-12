@@ -252,12 +252,11 @@ const hasBuild = buildIds !== '';
 
 <style is:global>
   /* ======================= Stage geometry =======================
-     ≥768: phone | seam | browser side by side, both exactly the stage height.
+     All widths: phone | seam | browser side by side, both exactly the stage height.
            Widths in units of that height H: phone .46875H (9:19.2), gap .15H, browser 1.62H → stage 2.23875H.
-     <768: browser full width on top, phone (44% wide) overlapping the browser's bottom-left corner
-           by .17W (clears the order list's last row), seam button in the free space right of it.
-           In units of stage width W: browser h .617W, phone h .939W, phone top .447W → stage 1.386W.
-           (2026-11-12: a 54% phone made the block ~540px tall at 375; user asked for a smaller ratio.) */
+     Phones use the same composition, scaled down (user, 2026-11-12: "mobile and browser side by side");
+     it replaced a stacked layout (browser on top, phone overlapping below) that ran 460–540px tall.
+     Only the seam button changes on phones: an icon-only pill that fits the gap. */
   .stage {
     --phone-w: 20.94%;   /* .46875 / 2.23875 */
     --phone-top: 0%;
@@ -267,9 +266,6 @@ const hasBuild = buildIds !== '';
     position: relative;
     aspect-ratio: 2.23875 / 1;
     isolation: isolate;
-  }
-  @media (max-width: 767.98px) {
-    .stage { --phone-w: 44%; --phone-top: 32.25%; --win-left: 0%; --seam-y: 66.1%; --thread-l: -30%; --thread-w: 126%; --phone-left: 0%; aspect-ratio: 1 / 1.386; }
   }
   .stage .win {
     position: absolute;
@@ -289,7 +285,7 @@ const hasBuild = buildIds !== '';
     overflow: hidden;
     z-index: 1;
   }
-  @media (max-width: 767.98px) { .stage .win { border-radius: 12px; } .stage .sf { padding-left: 4cqw; } }
+  @media (max-width: 767.98px) { .stage .win { border-radius: 8px; } .stage .phone { border-radius: 13% / 6.2%; } }
   .stage .phone {
     position: absolute;
     left: var(--phone-left, 0);
@@ -331,8 +327,6 @@ const hasBuild = buildIds !== '';
 
   /* ======================= The seam ======================= */
   .stage .seam { position: absolute; left: var(--seam-x); top: var(--seam-y); z-index: 4; translate: -50% -50%; display: grid; place-items: center; }
-  /* mobile: edges align with the page: phone on the left edge, button on the right edge */
-  @media (max-width: 767.98px) { .stage .seam { left: auto; right: 0; translate: 0 -50%; } }
   .stage .thread { position: absolute; left: var(--thread-l, -55%); top: 50%; width: var(--thread-w, 162%); height: 2px; translate: 0 -50%; pointer-events: none; } /* long on the page side, stops just past the button on the store side */
   .stage .thread::before, .stage .thread::after { content: ""; position: absolute; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: var(--color-mango); box-shadow: 0 0 0 3px #fff; }
   .stage .thread::before { left: -3px; }
@@ -355,8 +349,15 @@ const hasBuild = buildIds !== '';
     isolation: isolate;
     box-shadow: 0 0 0 4px #fff, 0 14px 26px -12px rgb(201 129 0 / .8);
   }
-  /* mobile: a tighter pill so it overlaps less of the larger phone */
-  @media (max-width: 767.98px) { .stage .seam-btn { padding: 9px 12px 9px 14px; gap: 6px; font-size: .76rem; } .stage .seam-btn .ok { width: 17px; height: 17px; } }
+  /* phones: the gap is ~22px, so the pill drops its label (kept for screen readers) and shows the check only;
+     the thread spans from inside the phone into the browser edge */
+  @media (max-width: 767.98px) {
+    .stage { --thread-l: -120%; --thread-w: 340%; }
+    .stage .seam-btn { padding: 5px; gap: 0; box-shadow: 0 0 0 3px #fff, 0 8px 16px -8px rgb(201 129 0 / .8); }
+    .stage .seam-btn .lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .stage .seam-btn .ok { width: 18px; height: 18px; }
+    .stage .seam-btn .ok svg { width: 11px; height: 11px; }
+  }
   @media (min-width: 768px) and (max-width: 1023.98px) { .stage .seam-btn { padding: 8px 11px 8px 13px; gap: 6px; } .stage .seam-btn .ok { width: 17px; height: 17px; } }
   .stage .seam-btn .fill { position: absolute; inset: 0; z-index: -1; background: var(--color-mint); transform-origin: left; }
   .stage .seam-btn .ok { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--color-ink); color: var(--color-mint); }
