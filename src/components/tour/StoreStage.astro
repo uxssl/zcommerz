@@ -254,11 +254,10 @@ const hasBuild = buildIds !== '';
   /* ======================= Stage geometry =======================
      ≥768: phone | seam | browser side by side, both exactly the stage height.
            Widths in units of that height H: phone .46875H (9:19.2), gap .15H, browser 1.62H → stage 2.23875H.
-     <768: browser full width on top, a larger phone (54% wide, so its screen text stays legible on a phone)
-           overlapping the browser's bottom-left corner by .16W (clears the order list's last row),
-           seam button in the free space right of it.
-           In units of stage width W: browser h .617W, phone h 1.152W, phone top .457W → stage 1.609W.
-           (2026-11-12, mobile pass: was a 44% phone below the browser; text inside it rendered ~6px.) */
+     <768: browser full width on top, phone (44% wide) overlapping the browser's bottom-left corner
+           by .17W (clears the order list's last row), seam button in the free space right of it.
+           In units of stage width W: browser h .617W, phone h .939W, phone top .447W → stage 1.386W.
+           (2026-11-12: a 54% phone made the block ~540px tall at 375; user asked for a smaller ratio.) */
   .stage {
     --phone-w: 20.94%;   /* .46875 / 2.23875 */
     --phone-top: 0%;
@@ -270,7 +269,7 @@ const hasBuild = buildIds !== '';
     isolation: isolate;
   }
   @media (max-width: 767.98px) {
-    .stage { --phone-w: 54%; --phone-top: 28.4%; --win-left: 0%; --seam-y: 64.2%; --thread-l: -30%; --thread-w: 126%; --phone-left: 0%; aspect-ratio: 1 / 1.609; }
+    .stage { --phone-w: 44%; --phone-top: 32.25%; --win-left: 0%; --seam-y: 66.1%; --thread-l: -30%; --thread-w: 126%; --phone-left: 0%; aspect-ratio: 1 / 1.386; }
   }
   .stage .win {
     position: absolute;

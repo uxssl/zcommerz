@@ -198,11 +198,12 @@ const icon = { 'stroke-width': 2, 'aria-hidden': 'true' } as const;
   /* Secondary: outlined, same height as the primary; no shadow */
   .btn-explore { box-shadow: none; border-width: 1.5px; padding: 0 1.4rem; }
   @media (min-width: 1024px) and (max-width: 1279.98px) { .hero-cta .btn-xl { padding-inline: 1.15rem; font-size: .98rem; } }
-  /* phones: both CTAs share one row (user, 2026-11-12); the primary gets the wider column,
-     labels may wrap to two centred lines, and the arrow chip drops to save width */
+  /* phones: both CTAs share one row (user, 2026-11-12), compact (user: "make the buttons smaller");
+     each sizes to its label so they sit on one line where they fit, and wrap to two centred lines on
+     the narrowest phones. The arrow chip drops to save width. */
   @media (max-width: 479.98px) {
-    .hero-cta { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 10px; }
-    .hero-cta .btn-xl { min-height: 58px; padding: 6px 12px; font-size: .94rem; line-height: 1.2; text-align: center; text-wrap: balance; }
+    .hero-cta { display: flex; flex-wrap: nowrap; align-items: stretch; gap: 8px; margin-top: 24px; }
+    .hero-cta .btn-xl { flex: 1 1 auto; min-height: 44px; padding: 6px 12px; border-radius: 9px; font-size: .82rem; line-height: 1.2; text-align: center; text-wrap: balance; }
     .hero-cta .btn-xl .arrow { display: none; }
   }
 
