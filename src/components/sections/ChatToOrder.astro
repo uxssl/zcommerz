@@ -327,6 +327,11 @@ const track = [
   .chat-sec .pw .typing { font-size: 4cqw; }
 
   @media (max-width: 767.98px) {
+    /* the merchant side is half the story here (replies, inbox, order tracker), so the phone only
+       just tucks under the browser's bottom edge (.02W) and sits centred: browser h .617W, phone 48% → h 1.024W,
+       top .597W → stage 1.621W. No seam on this stage. */
+    .chat-sec .stage { --phone-w: 48%; --phone-left: 26%; --phone-top: 36.8%; aspect-ratio: 1 / 1.621; }
+    .chat-sec .pw-body { font-size: 5.4cqw; gap: 2.6cqw; } /* phone bubbles: ~10px at 375 instead of ~6.6px */
     .chat-sec .lc { grid-template-columns: 38% 1fr; }
     .chat-sec .lc-prof { display: none; }
     .chat-sec .co2-body { grid-template-columns: 1fr; }

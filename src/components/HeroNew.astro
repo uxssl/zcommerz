@@ -198,7 +198,13 @@ const icon = { 'stroke-width': 2, 'aria-hidden': 'true' } as const;
   /* Secondary: outlined, same height as the primary; no shadow */
   .btn-explore { box-shadow: none; border-width: 1.5px; padding: 0 1.4rem; }
   @media (min-width: 1024px) and (max-width: 1279.98px) { .hero-cta .btn-xl { padding-inline: 1.15rem; font-size: .98rem; } }
-  @media (max-width: 479.98px) { .hero-cta .btn-xl { flex: 1 1 100%; justify-content: space-between; } }
+  /* phones: both CTAs share one row (user, 2026-11-12); the primary gets the wider column,
+     labels may wrap to two centred lines, and the arrow chip drops to save width */
+  @media (max-width: 479.98px) {
+    .hero-cta { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 10px; }
+    .hero-cta .btn-xl { min-height: 58px; padding: 6px 12px; font-size: .94rem; line-height: 1.2; text-align: center; text-wrap: balance; }
+    .hero-cta .btn-xl .arrow { display: none; }
+  }
 
   /* ---------- Proof band: open, no panel, pills, borders or dividers (user: "too much box").
      Row 1: stats (number beside label). Row 2: partners grouped by job, label inline. ≥1024 both rows share one subgrid so the columns line up. ---------- */

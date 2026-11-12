@@ -355,10 +355,11 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
   .side-rest :global(svg) { flex: none; color: #BFC5D0; }
   @media (max-width: 1023.98px) {
     .side-rest { display: none; }
-    .side-nav { grid-auto-flow: column; grid-auto-columns: minmax(132px, 1fr); overflow-x: auto; scrollbar-width: none; }
+    .side-nav { grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; scrollbar-width: none; } /* no scroll-snap: it overrode the demo's own scrollTo and hid the active tab */
     .side-nav::-webkit-scrollbar { display: none; }
     .nv-go { display: none; }
-    .nv { grid-template-columns: auto 1fr; }
+    /* one-line tabs: "Products & stock" wrapped to two lines at phone width */
+    .nv { grid-template-columns: auto 1fr; white-space: nowrap; padding-right: 14px; }
   }
   @media (max-width: 639.98px) {
     .side-nav { overflow-x: auto; scrollbar-width: none; }
@@ -386,6 +387,8 @@ const sample = { en: 'Sample data', bn: 'নমুনা ডেটা' };
   .p-head h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 750; letter-spacing: -.022em; }
   .p-head > div > p { margin-top: 3px; font-size: .86rem; color: var(--color-ink-2); max-width: 44ch; }
   .p-act { display: inline-flex; align-items: center; gap: 7px; flex: none; height: 34px; padding: 0 13px; border-radius: 9px; background: var(--color-blue); color: #fff; font-size: .82rem; font-weight: 650; }
+  /* small phones: the action drops under the title instead of being clipped by the card */
+  @media (max-width: 379.98px) { .p-head { flex-wrap: wrap; gap: 12px; } }
   .p-range { flex: none; height: 30px; display: grid; place-items: center; padding: 0 11px; border-radius: 8px; background: #F3F5F8; color: var(--color-ink-2); font-size: .78rem; font-weight: 600; }
 
   /* ---------- filter chips ---------- */

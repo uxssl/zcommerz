@@ -124,9 +124,15 @@ function initOne(root: HTMLElement) {
       tl.to({}, { duration: 3.5 }, 1.1);
     }
 
-    // keep the next item in view on the mobile scroller (horizontal only, never the page)
+    // mobile scroller (horizontal only, never the page): show the item about to be clicked in full,
+    // since it becomes the active view. Scroll only as far as needed; offsets are relative to .app.
     tl.add(() => {
-      if (nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: nextItem.offsetLeft - 8, behavior: 'smooth' });
+      if (nav.scrollWidth <= nav.clientWidth) return;
+      const left = nextItem.offsetLeft - nav.offsetLeft;
+      const right = left + nextItem.offsetWidth;
+      const view = nav.scrollLeft;
+      const target = left < view + 8 ? left - 8 : right > view + nav.clientWidth - 8 ? right + 8 - nav.clientWidth : view;
+      nav.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
     });
 
     // go to the next sidebar item and click it
